@@ -102,8 +102,7 @@ const SignUp = () => {
             />
 
             <p role="alert" className="text-xs text-red-500 pl-2 h-4">
-              {/* {errors.name?.type === "required" && "Name is required"} */}
-              {errors.name && errors.name.message}
+              {errors.name?.message}
             </p>
           </div>
 

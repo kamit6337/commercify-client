@@ -29,7 +29,7 @@ const Home = () => {
   return (
     <>
       <Helmet>
-        <title>Add To Cart</title>
+        <title>Commercify</title>
         <meta name="description" content="An e-Commerce App" />
       </Helmet>
 

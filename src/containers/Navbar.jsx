@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { localStorageState } from "../redux/slice/localStorageSlice";
 import useLoginCheck from "../hooks/auth/useLoginCheck";
 import { getReq } from "../utils/api/api";
+import OnClickOutside from "../lib/OnClickOutside";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -15,6 +16,12 @@ const Navbar = () => {
   const { data } = useAllProducts();
   const [searchText, setSearchText] = useState("");
   const [showUserInfo, setShowUserInfo] = useState(false);
+
+  const callback = () => {
+    setShowUserInfo(false);
+  };
+
+  const { ref } = OnClickOutside(callback);
 
   const handleLogout = async () => {
     try {
@@ -110,10 +117,13 @@ const Navbar = () => {
         </div>
         {showUserInfo && (
           <div
+            ref={ref}
             className="absolute z-10 top-full bg-white shadow-2xl shadow-slate-700 w-64 text-black"
             onMouseLeave={() => setShowUserInfo(false)}
           >
-            <p className="py-3 border-b px-4 cursor-pointer">Profile</p>
+            <Link to={`/user`} onClick={() => setShowUserInfo(false)}>
+              <p className="py-3 border-b px-4 cursor-pointer">Profile</p>
+            </Link>
             <Link to={`/wishlist`} onClick={() => setShowUserInfo(false)}>
               <p className="py-3 border-b px-4 cursor-pointer">Wishlist</p>
             </Link>

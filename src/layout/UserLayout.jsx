@@ -1,10 +1,86 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, NavLink } from "react-router-dom";
+import CustomImages from "../assets/images";
+import useLoginCheck from "../hooks/auth/useLoginCheck";
+import { Icons } from "../assets/icons";
 
 const UserLayout = () => {
+  const { data: user } = useLoginCheck();
+
   return (
-    <div className="w-full h-screen flex justify-center items-center">
-      <Outlet />
-    </div>
+    <section className="bg-gray-100 px-10 py-5 flex gap-5">
+      <div className=" w-72 flex flex-col gap-5">
+        {/* MARK: PROFILE */}
+        <div className="bg-white p-3 px-4 flex gap-5 ">
+          <div className="w-14">
+            <img
+              src={CustomImages.dummyProfile}
+              alt="profile"
+              className="w-full object-cover rounded-full"
+            />
+          </div>
+          <div className="flex flex-col justify-between py-2">
+            <p className="text-xs">Hello,</p>
+            <p className="text-sm font-semibold tracking-wide">{user.name}</p>
+          </div>
+        </div>
+
+        {/* MARK: USER DATA */}
+        <div className="bg-white">
+          <div className="py-4 border-b flex items-center">
+            <p className="text-2xl text-blue-500 w-16 flex justify-center">
+              <Icons.myOrders />
+            </p>
+            <p className="uppercase flex-1">My Orders</p>
+          </div>
+
+          <div className="border-b py-2">
+            <div className="py-4 flex items-center">
+              <p className="text-2xl text-blue-500 w-16 flex justify-center">
+                <Icons.profile />
+              </p>
+              <p className="uppercase flex-1">Account Settings</p>
+            </div>
+
+            <div className="hover:bg-sky-200 text-sm flex">
+              <NavLink
+                to={`/user`}
+                end
+                className={({ isActive }) => {
+                  return isActive
+                    ? "bg-sky-100 py-2 pl-16 w-full"
+                    : "w-full py-2 pl-16";
+                }}
+              >
+                Profile Information
+              </NavLink>
+            </div>
+
+            <div className="hover:bg-sky-200 text-sm flex">
+              <NavLink
+                to={`/user/address`}
+                className={({ isActive }) => {
+                  return isActive
+                    ? "bg-sky-100 w-full py-2 pl-16"
+                    : "w-full py-2 pl-16";
+                }}
+              >
+                Manage Addresses
+              </NavLink>
+            </div>
+          </div>
+
+          <div className="py-4 border-b  flex items-center">
+            <p className="text-2xl text-blue-500 w-16 flex justify-center">
+              <Icons.payment />
+            </p>
+            <p className="uppercase flex-1">Payment</p>
+          </div>
+        </div>
+      </div>
+      <div className="bg-white flex-1">
+        <Outlet />
+      </div>
+    </section>
   );
 };
 

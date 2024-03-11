@@ -9,7 +9,6 @@ import Home from "../pages/home/Home";
 import CategoryProducts from "../pages/category/CategoryProducts";
 import SearchProducts from "../pages/search/SearchProducts";
 import SingleProduct from "../pages/singleProduct/SingleProduct";
-import User from "../pages/user/User";
 import UserUpdate from "../pages/user/UserUpdate";
 import UserOrders from "../pages/user/UserOrders";
 import Admin from "../pages/admin/Admin";
@@ -20,6 +19,8 @@ import HomeLayout from "../layout/HomeLayout";
 import Wishlist from "../pages/wishlist/Wishlist";
 import Cart from "../pages/cart/Cart";
 import CartLayout from "../layout/CartLayout";
+import Profile from "../pages/profile/Profile";
+import Address from "../pages/address/Address";
 
 const Router = () => {
   return (
@@ -55,7 +56,8 @@ const Router = () => {
 
         {/* NOTE: USER ROUTES */}
         <Route path="/user" element={<UserLayout />}>
-          <Route index element={<User />} />
+          <Route index element={<Profile />} />
+          <Route path="address" element={<Address />} />
           <Route path="update" element={<UserUpdate />} />
           <Route path="orders" element={<UserOrders />} />
         </Route>

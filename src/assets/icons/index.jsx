@@ -1,5 +1,5 @@
-import { IoIosArrowDown } from "react-icons/io";
-import { IoHomeOutline, IoHomeSharp, IoCart } from "react-icons/io5";
+import { IoIosArrowDown, IoIosEyeOff } from "react-icons/io";
+import { IoHomeOutline, IoHomeSharp, IoCart, IoEye } from "react-icons/io5";
 import {
   PiNoteLight,
   PiNotebookLight,
@@ -38,9 +38,17 @@ import {
   MdOutlineSubscriptions,
   MdOutlineHistory,
   MdDelete,
+  MdPayment,
 } from "react-icons/md";
+import { MdFileDownloadDone } from "react-icons/md";
+import { CgProfile } from "react-icons/cg";
 
 export const Icons = {
+  eyeOn: IoEye,
+  eyeOff: IoIosEyeOff,
+  payment: MdPayment,
+  profile: CgProfile,
+  myOrders: MdFileDownloadDone,
   deleteIcon: MdDelete,
   downArrow: IoIosArrowDown,
   setting: AiOutlineSetting,

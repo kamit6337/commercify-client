@@ -1,5 +1,7 @@
-import dummyProfile from "./dummy_profile.svg";
+import dummyProfile from "./dummy_profile.jpg";
 
-export const Images = {
+const CustomImages = {
   dummyProfile,
 };
+
+export default CustomImages;
