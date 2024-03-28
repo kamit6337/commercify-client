@@ -14,7 +14,14 @@ const FilterSection = ({ products, filterProducts }) => {
       setShowClearAll(false);
     }
 
-    const filter = products.filter((product) => product.price <= value);
+    const filter = products.filter((product) => {
+      const roundDiscountPercent = Math.round(product.discountPercentage);
+      const discountedPrice = Math.round(
+        (product.price * (100 - roundDiscountPercent)) / 100
+      );
+
+      return discountedPrice <= value;
+    });
     filterProducts(filter);
   };
 

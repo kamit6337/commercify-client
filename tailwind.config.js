@@ -10,6 +10,7 @@ export default {
         black950: "#020617",
         black900: "#0f172a",
         grap50: "#f9fafb",
+        product_addToCart: "#ff9f00",
       },
     },
     screens: {

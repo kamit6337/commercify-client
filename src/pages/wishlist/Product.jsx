@@ -28,7 +28,7 @@ const Product = ({ product }) => {
   } = product;
 
   useEffect(() => {
-    if (cart.includes(id)) {
+    if (cart.find((obj) => obj.id === id)) {
       setIsAddedToCart(true);
     } else {
       setIsAddedToCart(false);
@@ -47,6 +47,11 @@ const Product = ({ product }) => {
     dispatch(updateWishlist({ id, add: false }));
   };
 
+  const roundDiscountPercent = Math.round(discountPercentage);
+  const discountedPrice = Math.round(
+    (price * (100 - roundDiscountPercent)) / 100
+  );
+
   return (
     <div className="w-full h-48 border-b-2 last:border-none p-7 flex gap-10">
       <div className="h-full w-48">
@@ -58,11 +63,20 @@ const Product = ({ product }) => {
           />
         </Link>
       </div>
-      <div className="flex-1 h-full mr-20">
-        <Link to={`/products/${id}`}>
-          <p>{title}</p>
-          <p>{description}</p>
-        </Link>
+      <div className="flex-1 h-full mr-20 flex flex-col gap-3">
+        <div>
+          <Link to={`/products/${id}`}>
+            <p>{title}</p>
+          </Link>
+          <p className="text-sm">{description}</p>
+        </div>
+        <div className="flex gap-2 items-center">
+          <p className="text-2xl font-semibold tracking-wide">
+            ${discountedPrice}
+          </p>
+          <p className="line-through">${price}</p>
+          <p className="text-xs">{roundDiscountPercent}% Off</p>
+        </div>
       </div>
       <div className="flex flex-col justify-between">
         <div className="self-end relative">

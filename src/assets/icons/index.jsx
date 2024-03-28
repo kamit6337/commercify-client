@@ -42,8 +42,10 @@ import {
 } from "react-icons/md";
 import { MdFileDownloadDone } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
+import { FiMinus } from "react-icons/fi";
 
 export const Icons = {
+  minus: FiMinus,
   eyeOn: IoEye,
   eyeOff: IoIosEyeOff,
   payment: MdPayment,

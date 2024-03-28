@@ -3,20 +3,50 @@ import ScrollToTop from "../lib/ScrollToTop";
 import Navbar from "../containers/Navbar";
 import useLoginCheck from "../hooks/auth/useLoginCheck";
 import { useEffect } from "react";
+import useUserAddress from "../hooks/query/useUserAddress";
+import { useDispatch } from "react-redux";
+import { initialAddressData } from "../redux/slice/addressSlice";
+import Loading from "../containers/Loading";
 
 const RootLayout = () => {
   const navigate = useNavigate();
-  const { data, error } = useLoginCheck();
+  const dispatch = useDispatch();
+  const {
+    data,
+    error,
+    isSuccess,
+    isLoading: isLoadingLoginCheck,
+  } = useLoginCheck();
+
+  const {
+    data: addressData,
+    error: addressError,
+    isLoading,
+  } = useUserAddress(isSuccess);
 
   useEffect(() => {
-    if (error) {
-      navigate(`/login?msg=${error.message}`, {
-        state: { msg: error.message },
+    if (addressData) {
+      dispatch(initialAddressData(addressData));
+    }
+  }, [addressData, dispatch]);
+
+  useEffect(() => {
+    if (error || addressError) {
+      navigate(`/login?msg=${error.message || addressError.message}`, {
+        state: { msg: error.message || addressError.message },
       });
     }
-  }, [error, navigate]);
+  }, [error, navigate, addressError]);
 
   if (!data) return;
+
+  if (isLoadingLoginCheck || isLoading) {
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
+  }
 
   return (
     <>

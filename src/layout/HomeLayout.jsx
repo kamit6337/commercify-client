@@ -5,7 +5,7 @@ const HomeLayout = () => {
   return (
     <>
       <Outlet />
-      <div className="h-20 w-full">
+      <div className="h-96 w-full">
         <Footer />
       </div>
     </>

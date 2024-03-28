@@ -4,7 +4,6 @@ import UserLayout from "../layout/UserLayout";
 import AdminLayout from "../layout/AdminLayout";
 import SignUp from "../pages/auth/SignUp";
 import Login from "../pages/auth/Login";
-import LoginCheck from "../pages/auth/LoginCheck";
 import Home from "../pages/home/Home";
 import CategoryProducts from "../pages/category/CategoryProducts";
 import SearchProducts from "../pages/search/SearchProducts";
@@ -19,8 +18,12 @@ import HomeLayout from "../layout/HomeLayout";
 import Wishlist from "../pages/wishlist/Wishlist";
 import Cart from "../pages/cart/Cart";
 import CartLayout from "../layout/CartLayout";
-import Profile from "../pages/profile/Profile";
-import Address from "../pages/address/Address";
+import Profile from "../pages/user/Profile";
+import Address from "../pages/user/Address";
+import AddressInCart from "../pages/cart/AddressInCart";
+import Checkout from "../pages/cart/Checkout";
+import PaymentSuccess from "../pages/payment/PaymentSuccess";
+import PaymentCancel from "../pages/payment/PaymentCancel";
 
 const Router = () => {
   return (
@@ -28,7 +31,6 @@ const Router = () => {
       {/* NOTE: AUTH ROUTES */}
       <Route path="/signup" element={<SignUp />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/login/check" element={<LoginCheck />} />
 
       {/* NOTE: ERROR ROUTE */}
       <Route path="/error" element={<ErrorPage />} />
@@ -48,11 +50,13 @@ const Router = () => {
         {/* NOTE: CART ROUTES */}
         <Route path="cart" element={<CartLayout />}>
           <Route index element={<Cart />} />
-          {/* <Route path="address" element={<CartAddress />} />
+          <Route path="address" element={<AddressInCart />} />
           <Route path="checkout" element={<Checkout />} />
-          <Route path="payment" element={<Payment />} />
-          <Route path="success" element={<OrderSuccess />} /> */}
         </Route>
+
+        {/* NOTE: PAYMENT SUCCESS AND FAILURE */}
+        <Route path="payment/success" element={<PaymentSuccess />} />
+        <Route path="payment/cancel" element={<PaymentCancel />} />
 
         {/* NOTE: USER ROUTES */}
         <Route path="/user" element={<UserLayout />}>

@@ -7,14 +7,15 @@ import Toastify from "../lib/Toastify";
 import Loading from "../containers/Loading";
 import { postReq } from "../utils/api/api";
 import checkInputIsNumber from "../utils/javascript/checkInputIsNumber";
-import useUserAddress from "../hooks/query/useUserAddress";
+import { useDispatch } from "react-redux";
+import { createNewAddress } from "../redux/slice/addressSlice";
 
 const NewAddressForm = ({ handleCancel }) => {
+  const dispatch = useDispatch();
   const [selectedState, setSelectedState] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedPinCode, setSelectedPinCode] = useState("");
   const { ToastContainer, showErrorMessage, showSuccessMessage } = Toastify();
-  const { refetch } = useUserAddress();
 
   const {
     register,
@@ -69,7 +70,7 @@ const NewAddressForm = ({ handleCancel }) => {
       const createdNewAddress = await postReq("/address", postData);
       handleCancel();
       console.log("createdNewAddress", createdNewAddress);
-      refetch();
+      dispatch(createNewAddress(createdNewAddress));
       showSuccessMessage({
         message: createdNewAddress.message || "New Address Created",
       });

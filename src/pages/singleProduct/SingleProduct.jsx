@@ -1,47 +1,13 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Loading from "../../containers/Loading";
 import useSingleProduct from "../../hooks/query/useSingleProduct";
 import ImagePart from "../../components/ImagePart";
-import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  localStorageState,
-  updateCart,
-  updateWishlist,
-} from "../../redux/slice/localStorageSlice";
 
 const SingleProduct = () => {
-  const dispatch = useDispatch();
   const { id } = useParams();
-  const [isAddedToCart, setIsAddedToCart] = useState(false);
-  const [isAddedToWatchlist, setIsAddedToWatchlist] = useState(false);
-  const { cart, wishlist } = useSelector(localStorageState);
-
-  useEffect(() => {
-    if (cart.includes(id)) {
-      setIsAddedToCart(true);
-    } else {
-      setIsAddedToCart(false);
-    }
-  }, [id, cart]);
-
-  useEffect(() => {
-    if (wishlist.includes(id)) {
-      setIsAddedToWatchlist(true);
-    } else {
-      setIsAddedToWatchlist(false);
-    }
-  }, [id, wishlist]);
 
   const { isLoading, isError, error, data } = useSingleProduct(id);
-
-  useEffect(() => {
-    if (!data) return;
-    const { title } = data.data;
-
-    document.title = title;
-  }, [data]);
 
   if (isLoading) {
     return <Loading />;
@@ -51,24 +17,14 @@ const SingleProduct = () => {
     return <p>{error.message}</p>;
   }
 
-  const { title, description, price, stock, brand, category, images } =
+  const { title, description, price, category, images, discountPercentage } =
     data.data;
 
-  const removeFromCart = () => {
-    dispatch(updateCart({ id, add: false }));
-  };
+  const roundDiscountPercent = Math.round(discountPercentage);
 
-  const addToCart = () => {
-    dispatch(updateCart({ id }));
-  };
-
-  const removeFromWatchlist = () => {
-    dispatch(updateWishlist({ id, add: false }));
-  };
-
-  const addToWatchlist = () => {
-    dispatch(updateWishlist({ id }));
-  };
+  const discountedPrice = Math.round(
+    (price * (100 - roundDiscountPercent)) / 100
+  );
 
   return (
     <>
@@ -79,46 +35,31 @@ const SingleProduct = () => {
 
       <section className="grid grid-cols-2 gap-5 py-16 px-6">
         <div className="">
-          <ImagePart images={images} title={title} />
+          <ImagePart images={images} title={title} id={id} />
         </div>
 
-        <div>
-          <p>{title}</p>
-          <p>{brand}</p>
-          <p>{description}</p>
-          <p>$ {price}</p>
-          <p>{category.title}</p>
-          <p>{stock}</p>
-          {isAddedToCart ? (
-            <p
-              className="border p-3 w-max rounded-md cursor-pointer bg-gray-200"
-              onClick={removeFromCart}
-            >
-              Added To Cart
+        <div className="flex flex-col gap-4">
+          <div>
+            <p className="text-xl font-semibold">{title}</p>
+            <p className="text-xs">{description}</p>
+          </div>
+          <p className="text-sm">
+            <Link to={`/category/${category._id}`}>
+              Category : {category.title}
+            </Link>
+          </p>
+          <div>
+            <p className="text-xs text-green-700 font-semibold tracking-wide">
+              Special Price
             </p>
-          ) : (
-            <p
-              className="border p-3 w-max rounded-md cursor-pointer"
-              onClick={addToCart}
-            >
-              Add to Cart
-            </p>
-          )}
-          {isAddedToWatchlist ? (
-            <p
-              className="border p-3 w-max rounded-md cursor-pointer bg-gray-200"
-              onClick={removeFromWatchlist}
-            >
-              Added To Watchlist
-            </p>
-          ) : (
-            <p
-              className="border p-3 w-max rounded-md cursor-pointer"
-              onClick={addToWatchlist}
-            >
-              Add to Watchlist
-            </p>
-          )}
+            <div className="flex gap-2 items-center">
+              <p className="text-2xl font-semibold tracking-wide">
+                ${discountedPrice}
+              </p>
+              <p className="line-through">${price}</p>
+              <p className="text-xs">{roundDiscountPercent}% Off</p>
+            </div>
+          </div>
         </div>
       </section>
     </>

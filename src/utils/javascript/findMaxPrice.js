@@ -2,8 +2,13 @@ const findMaxPrice = (products) => {
   let maxPrice = 0;
 
   for (const product of products) {
-    if (product.price >= maxPrice) {
-      maxPrice = product.price;
+    const roundDiscountPercent = Math.round(product.discountPercentage);
+    const discountedPrice = Math.round(
+      (product.price * (100 - roundDiscountPercent)) / 100
+    );
+
+    if (discountedPrice >= maxPrice) {
+      maxPrice = discountedPrice;
     }
   }
 
