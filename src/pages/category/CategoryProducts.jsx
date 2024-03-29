@@ -20,6 +20,13 @@ const CategoryProducts = () => {
     }
   }, [data]);
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "instant",
+    });
+  }, [id]);
+
   if (isLoading) {
     return <Loading />;
   }

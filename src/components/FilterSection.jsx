@@ -2,8 +2,12 @@
 import { Box, Slider } from "@mui/material";
 import findMaxPrice from "../utils/javascript/findMaxPrice";
 import { useState } from "react";
+import useAllCategory from "../hooks/query/useAllCategory";
+import { Link } from "react-router-dom";
 
 const FilterSection = ({ products, filterProducts }) => {
+  const { data: allCategory } = useAllCategory();
+
   const [maxPrice, setMaxprice] = useState(findMaxPrice(products));
   const [showClearAll, setShowClearAll] = useState(false);
 
@@ -26,7 +30,7 @@ const FilterSection = ({ products, filterProducts }) => {
   };
 
   return (
-    <section className="">
+    <section className="flex flex-col h-full">
       <p className="border-b p-4 font-semibold tracking-wide  text-lg">
         Filters
       </p>
@@ -57,6 +61,32 @@ const FilterSection = ({ products, filterProducts }) => {
               onChange={handlePriceChange}
             />
           </Box>
+        </div>
+      </div>
+      <div className="flex-1 flex flex-col gap-2 p-4 pr-0">
+        <p className="uppercase text-sm tracking-wide font-semibold">
+          Categories
+        </p>
+        <div className="flex-1 relative">
+          <div className="absolute z-10 top-0 w-full h-full">
+            <div className="h-full overflow-x-auto space-y-2">
+              {allCategory.data.length > 0 ? (
+                allCategory.data.map((category, i) => {
+                  const { _id, title } = category;
+
+                  return (
+                    <div key={i} className="cursor-pointer">
+                      <Link to={`/category/${_id}`}>
+                        <p className="text-sm uppercase">{title}</p>
+                      </Link>
+                    </div>
+                  );
+                })
+              ) : (
+                <div>No Category available</div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </section>

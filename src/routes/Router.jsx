@@ -14,7 +14,6 @@ import Admin from "../pages/admin/Admin";
 import AddProduct from "../pages/admin/AddProduct";
 import UpdateProduct from "../pages/admin/UpdateProduct";
 import ErrorPage from "../pages/error/ErrorPage";
-import HomeLayout from "../layout/HomeLayout";
 import Wishlist from "../pages/wishlist/Wishlist";
 import Cart from "../pages/cart/Cart";
 import CartLayout from "../layout/CartLayout";
@@ -24,6 +23,7 @@ import AddressInCart from "../pages/cart/AddressInCart";
 import Checkout from "../pages/cart/Checkout";
 import PaymentSuccess from "../pages/payment/PaymentSuccess";
 import PaymentCancel from "../pages/payment/PaymentCancel";
+import HomeLayout from "../layout/HomeLayout";
 
 const Router = () => {
   return (
@@ -42,10 +42,10 @@ const Router = () => {
           <Route index element={<Home />} />
           <Route path="category/:id" element={<CategoryProducts />} />
           <Route path="search" element={<SearchProducts />} />
-
-          <Route path="products/:id" element={<SingleProduct />} />
-          <Route path="wishlist" element={<Wishlist />} />
         </Route>
+
+        <Route path="products/:id" element={<SingleProduct />} />
+        <Route path="wishlist" element={<Wishlist />} />
 
         {/* NOTE: CART ROUTES */}
         <Route path="cart" element={<CartLayout />}>

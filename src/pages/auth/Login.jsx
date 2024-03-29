@@ -7,6 +7,7 @@ import environment from "../../utils/environment";
 import { postAuthReq } from "../../utils/api/authApi";
 import Toastify from "../../lib/Toastify";
 import { Helmet } from "react-helmet";
+import CustomImages from "../../assets/images";
 
 const SERVER_URL = environment.SERVER_URL;
 
@@ -155,19 +156,22 @@ const Login = () => {
                     <Link to={`/signup`}>Sign Up</Link>
                   </span>
                 </p>
-                <p className="underline">
-                  <Link to={`/forgotPassword`}>Forgot Password</Link>
-                </p>
               </div>
             </div>
           </form>
 
           {/* MARK: GO TO LOGIN PAGE*/}
           <div
-            className="border rounded-lg p-3 w-full cursor-pointer bg-red-500 font-semibold  tracking-wide text-center"
+            className="border rounded-lg p-3 w-full cursor-pointer font-semibold  tracking-wide flex items-center gap-2 justify-center"
             onClick={googleOAuth}
           >
-            Login in Google
+            <div className="w-7">
+              <img
+                src={CustomImages.googleIcon}
+                className="w-full object-cover bg-inherit"
+              />
+            </div>
+            <p>Login in Google</p>
           </div>
         </div>
       </div>

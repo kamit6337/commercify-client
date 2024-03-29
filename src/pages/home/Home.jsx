@@ -1,12 +1,11 @@
 import { Helmet } from "react-helmet";
 import ProductGrid from "../../components/ProductGrid";
-import Loading from "../../containers/Loading";
 import useAllProducts from "../../hooks/query/useAllProducts";
 import { useEffect, useState } from "react";
 import FilterSection from "../../components/FilterSection";
 
 const Home = () => {
-  const { isLoading, error, data } = useAllProducts();
+  const { data } = useAllProducts();
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
@@ -14,13 +13,6 @@ const Home = () => {
       setProducts(data.data);
     }
   }, [data]);
-
-  if (isLoading) {
-    return <Loading />;
-  }
-  if (error) {
-    return <div>{error.message}</div>;
-  }
 
   const filterProducts = (products) => {
     setProducts(products);

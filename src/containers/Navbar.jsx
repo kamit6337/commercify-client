@@ -71,7 +71,7 @@ const Navbar = () => {
 
   return (
     <>
-      <section className="w-full flex justify-center  items-center gap-10 px-8 h-full bg-slate-800 text-white absolute z-10">
+      <section className="w-full flex justify-center  items-center gap-10 px-8 h-full absolute z-10">
         {/* MARK: APP LOGO */}
         <div className="cursor-pointer">
           <Link to={`/`}>Commercify</Link>

@@ -7,6 +7,9 @@ import useUserAddress from "../hooks/query/useUserAddress";
 import { useDispatch } from "react-redux";
 import { initialAddressData } from "../redux/slice/addressSlice";
 import Loading from "../containers/Loading";
+import Footer from "../containers/Footer";
+import useAllProducts from "../hooks/query/useAllProducts";
+import useAllCategory from "../hooks/query/useAllCategory";
 
 const RootLayout = () => {
   const navigate = useNavigate();
@@ -17,6 +20,12 @@ const RootLayout = () => {
     isSuccess,
     isLoading: isLoadingLoginCheck,
   } = useLoginCheck();
+
+  const { isLoading: isLoadingAllProducts, error: errorAllProducts } =
+    useAllProducts();
+
+  const { isLoading: isLoadingAllCategory, error: errorAllCategory } =
+    useAllCategory();
 
   const {
     data: addressData,
@@ -31,18 +40,31 @@ const RootLayout = () => {
   }, [addressData, dispatch]);
 
   useEffect(() => {
-    if (error || addressError) {
-      navigate(`/login?msg=${error.message || addressError.message}`, {
-        state: { msg: error.message || addressError.message },
-      });
+    if (error || addressError || errorAllProducts || errorAllCategory) {
+      navigate(
+        `/login?msg=${
+          error.message ||
+          addressError.message ||
+          errorAllProducts.message ||
+          errorAllCategory.message
+        }`,
+        {
+          state: { msg: error.message || addressError.message },
+        }
+      );
     }
-  }, [error, navigate, addressError]);
+  }, [error, navigate, addressError, errorAllProducts, errorAllCategory]);
 
   if (!data) return;
 
-  if (isLoadingLoginCheck || isLoading) {
+  if (
+    isLoadingLoginCheck ||
+    isLoading ||
+    isLoadingAllProducts ||
+    isLoadingAllCategory
+  ) {
     return (
-      <div>
+      <div className="h-96 w-full">
         <Loading />
       </div>
     );
@@ -50,10 +72,13 @@ const RootLayout = () => {
 
   return (
     <>
-      <div className="h-20 w-full border-b-2 sticky top-0 z-10 bg-white">
+      <div className="h-20 w-full border-b-2 sticky top-0 z-10 bg-slate-800 text-white">
         <Navbar />
       </div>
       <Outlet />
+      <div className="h-96 w-full bg-slate-800 text-white">
+        <Footer />
+      </div>
       <ScrollToTop />
     </>
   );

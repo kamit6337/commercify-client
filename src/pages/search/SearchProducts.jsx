@@ -46,7 +46,9 @@ const SearchProducts = () => {
           {products.length > 0 ? (
             <ProductGrid products={products} />
           ) : (
-            <div>Sorry, no product available</div>
+            <div className="w-full h-full flex items-center justify-center text-xl font-semibold">
+              Sorry, no product available
+            </div>
           )}
         </main>
       </section>
