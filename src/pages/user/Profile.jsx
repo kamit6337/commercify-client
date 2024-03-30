@@ -108,7 +108,7 @@ const Profile = () => {
             )}
           </div>
 
-          <div className="border w-max">
+          <div className="border max-w-96">
             <input
               type="text"
               {...register("name", {
@@ -117,7 +117,7 @@ const Profile = () => {
               spellCheck="false"
               autoComplete="off"
               disabled={!isEditable}
-              className="p-4 text-sm "
+              className="p-4 text-sm w-full"
             />
           </div>
 
@@ -127,16 +127,16 @@ const Profile = () => {
         </div>
 
         {/* MARK: EMAIL */}
-        <div className="flex flex-col items-start gap-4">
+        <div className="space-y-4">
           <p>Email Address</p>
-          <div className="border">
+          <div className="border max-w-96">
             <input
               type="email"
               {...register("email")}
               spellCheck="false"
               autoComplete="off"
               disabled={true}
-              className="p-4 text-sm "
+              className="p-4 text-sm w-full"
             />
           </div>
         </div>

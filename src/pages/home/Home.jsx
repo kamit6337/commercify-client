@@ -36,7 +36,9 @@ const Home = () => {
           {products.length > 0 ? (
             <ProductGrid products={products} />
           ) : (
-            <div>Sorry, no product available</div>
+            <div className="w-full h-full flex justify-center items-center">
+              Sorry, no product available
+            </div>
           )}
         </main>
       </section>

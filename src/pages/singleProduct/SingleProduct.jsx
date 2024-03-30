@@ -7,14 +7,22 @@ import { Helmet } from "react-helmet";
 const SingleProduct = () => {
   const { id } = useParams();
 
-  const { isLoading, isError, error, data } = useSingleProduct(id);
+  const { isLoading, error, data } = useSingleProduct(id);
 
   if (isLoading) {
-    return <Loading />;
+    return (
+      <div className="w-full h-96">
+        <Loading />
+      </div>
+    );
   }
 
-  if (isError) {
-    return <p>{error.message}</p>;
+  if (error) {
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        {error.message}
+      </div>
+    );
   }
 
   const { title, description, price, category, images, discountPercentage } =

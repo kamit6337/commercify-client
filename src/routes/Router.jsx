@@ -24,6 +24,7 @@ import Checkout from "../pages/cart/Checkout";
 import PaymentSuccess from "../pages/payment/PaymentSuccess";
 import PaymentCancel from "../pages/payment/PaymentCancel";
 import HomeLayout from "../layout/HomeLayout";
+import OrderCancel from "../pages/user/OrderCancel";
 
 const Router = () => {
   return (
@@ -59,15 +60,18 @@ const Router = () => {
         <Route path="payment/cancel" element={<PaymentCancel />} />
 
         {/* NOTE: USER ROUTES */}
-        <Route path="/user" element={<UserLayout />}>
+        <Route path="user" element={<UserLayout />}>
           <Route index element={<Profile />} />
           <Route path="address" element={<Address />} />
           <Route path="update" element={<UserUpdate />} />
           <Route path="orders" element={<UserOrders />} />
         </Route>
 
+        {/* NOTE: USER CANCEL ORDER */}
+        <Route path="orders/cancel/:id" element={<OrderCancel />} />
+
         {/* NOTE: PROTECTED ADMIN ROUTES */}
-        <Route path="/admin" element={<AdminLayout />}>
+        <Route path="admin" element={<AdminLayout />}>
           <Route index element={<Admin />} />
           <Route path="add" element={<AddProduct />} />
           <Route path="update" element={<UpdateProduct />} />

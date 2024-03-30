@@ -1,14 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { getReq } from "../../utils/api/api";
 
-const useAllCategory = () => {
+const useUserOrders = () => {
   const query = useQuery({
-    queryKey: ["All Categories"],
-    queryFn: () => getReq("/category"),
+    queryKey: ["buy products of user"],
+    queryFn: () => getReq("/buy"),
     staleTime: Infinity,
   });
 
   return query;
 };
 
-export default useAllCategory;
+export default useUserOrders;

@@ -1,4 +1,3 @@
-import React from "react";
 import Loading from "../../containers/Loading";
 import FullPageError from "../../components/FullPageError";
 import ProductInCart from "../cart/components/ProductInCart";

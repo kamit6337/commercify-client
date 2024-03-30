@@ -1,4 +1,4 @@
-import { Outlet, NavLink } from "react-router-dom";
+import { Outlet, NavLink, Link } from "react-router-dom";
 import CustomImages from "../assets/images";
 import useLoginCheck from "../hooks/auth/useLoginCheck";
 import { Icons } from "../assets/icons";
@@ -7,10 +7,10 @@ const UserLayout = () => {
   const { data: user } = useLoginCheck();
 
   return (
-    <section className="bg-gray-100 px-10 py-5 flex gap-5">
-      <div className=" w-72 flex flex-col gap-5">
+    <section className="bg-gray-100 px-10 py-5 flex items-start gap-5">
+      <div className=" w-72 flex flex-col gap-5 sticky top-[100px] ">
         {/* MARK: PROFILE */}
-        <div className="bg-white p-3 px-4 flex gap-5 ">
+        <div className="bg-white p-3 px-4 flex gap-5">
           <div className="w-14">
             <img
               src={CustomImages.dummyProfile}
@@ -26,12 +26,14 @@ const UserLayout = () => {
 
         {/* MARK: USER DATA */}
         <div className="bg-white">
-          <div className="py-4 border-b flex items-center">
-            <p className="text-2xl text-blue-500 w-16 flex justify-center">
-              <Icons.myOrders />
-            </p>
-            <p className="uppercase flex-1">My Orders</p>
-          </div>
+          <Link to={`/user/orders`}>
+            <div className="py-4 border-b flex items-center cursor-pointer">
+              <p className="text-2xl text-blue-500 w-16 flex justify-center">
+                <Icons.myOrders />
+              </p>
+              <p className="uppercase flex-1">My Orders</p>
+            </div>
+          </Link>
 
           <div className="border-b py-2">
             <div className="py-4 flex items-center">

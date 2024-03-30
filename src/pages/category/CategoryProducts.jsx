@@ -28,10 +28,18 @@ const CategoryProducts = () => {
   }, [id]);
 
   if (isLoading) {
-    return <Loading />;
+    return (
+      <div className="w-full h-96">
+        <Loading />
+      </div>
+    );
   }
   if (error) {
-    return <div>{error.message}</div>;
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        {error.message}
+      </div>
+    );
   }
 
   const filterProducts = (products) => {
@@ -56,7 +64,9 @@ const CategoryProducts = () => {
           {products.length > 0 ? (
             <ProductGrid products={products} />
           ) : (
-            <div>Sorry, no product available</div>
+            <div className="w-full h-full flex justify-center items-center">
+              Sorry, no product available
+            </div>
           )}
         </main>
       </section>
