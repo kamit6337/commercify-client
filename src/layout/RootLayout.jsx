@@ -14,23 +14,25 @@ import useAllCategory from "../hooks/query/useAllCategory";
 const RootLayout = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { error, isSuccess, isLoading: isLoadingLoginCheck } = useLoginCheck();
+
   const {
-    data,
-    error,
-    isSuccess,
-    isLoading: isLoadingLoginCheck,
-  } = useLoginCheck();
+    isLoading: isLoadingAllProducts,
+    error: errorAllProducts,
+    isSuccess: isSuccessAllProducts,
+  } = useAllProducts(isSuccess);
 
-  const { isLoading: isLoadingAllProducts, error: errorAllProducts } =
-    useAllProducts();
-
-  const { isLoading: isLoadingAllCategory, error: errorAllCategory } =
-    useAllCategory();
+  const {
+    isLoading: isLoadingAllCategory,
+    error: errorAllCategory,
+    isSuccess: isSuccessAllCategory,
+  } = useAllCategory(isSuccess);
 
   const {
     data: addressData,
     error: addressError,
     isLoading,
+    isSuccess: isSuccessUserAddress,
   } = useUserAddress(isSuccess);
 
   useEffect(() => {
@@ -55,8 +57,6 @@ const RootLayout = () => {
     }
   }, [error, navigate, addressError, errorAllProducts, errorAllCategory]);
 
-  if (!data) return;
-
   if (
     isLoadingLoginCheck ||
     isLoading ||
@@ -64,11 +64,19 @@ const RootLayout = () => {
     isLoadingAllCategory
   ) {
     return (
-      <div className="h-96 w-full">
+      <div className="h-screen w-full">
         <Loading />
       </div>
     );
   }
+
+  if (
+    !isSuccess ||
+    !isSuccessAllProducts ||
+    !isSuccessAllCategory ||
+    !isSuccessUserAddress
+  )
+    return;
 
   return (
     <>

@@ -9,6 +9,7 @@ const HomeLayout = () => {
   const { data: allCategory } = useAllCategory();
   const [widthDiff, setWidthDiff] = useState(null);
   const [index, setIndex] = useState(0);
+  const [optionIndex, setOptionIndex] = useState(null);
 
   useEffect(() => {
     if (ref.current) {
@@ -47,9 +48,9 @@ const HomeLayout = () => {
   return (
     <>
       <div className="flex items-center h-32 relative">
-        <div className="relative flex-1 flex items-center mx-14" ref={ref}>
+        <div className="relative flex-1 flex mx-14" ref={ref}>
           <div
-            className="absolute flex gap-10"
+            className="absolute h-full flex items-center gap-10 duration-500"
             style={{ transform: `translateX(${index}px)` }}
           >
             {allCategory.data.length > 0 ? (
@@ -57,11 +58,17 @@ const HomeLayout = () => {
                 const { _id, title } = category;
 
                 return (
-                  <div key={i} className="whitespace-nowrap">
-                    <Link to={`/category/${_id}`}>
-                      <p className="uppercase">{title}</p>
-                    </Link>
-                  </div>
+                  <Link to={`/category/${_id}`} key={i}>
+                    <p
+                      className={`${
+                        optionIndex === i && "border-b-2"
+                      }  uppercase whitespace-nowrap`}
+                      onMouseEnter={() => setOptionIndex(i)}
+                      onMouseLeave={() => setOptionIndex(null)}
+                    >
+                      {title}
+                    </p>
+                  </Link>
                 );
               })
             ) : (

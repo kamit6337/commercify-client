@@ -6,6 +6,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { postReq } from "../../utils/api/api";
 import Toastify from "../../lib/Toastify";
 import { addressState } from "../../redux/slice/addressSlice";
+import environment from "../../utils/environment";
 
 const Checkout = () => {
   const { cart } = useSelector(localStorageState);
@@ -16,14 +17,14 @@ const Checkout = () => {
 
   const makePayment = async () => {
     try {
-      const stripe = await loadStripe(
-        "pk_test_51OuirNSGG7QgSLfOM1J57EGui8wp5NWXgi2qaQo04Hp41ifrctCpag3FqotscdgHGwTo30QjZ6MNImWGwnPyOQvS00g5OAnYjr"
-      );
+      const stripe = await loadStripe(environment.STRIPE_PUBLISHABLE_KEY);
 
       const checkoutSession = await postReq("/payment", {
         products: cart,
         address: selectedAddress,
       });
+
+      console.log("checkoutSession", checkoutSession);
 
       stripe.redirectToCheckout({
         sessionId: checkoutSession.session.id,

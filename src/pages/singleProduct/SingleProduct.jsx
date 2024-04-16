@@ -3,11 +3,19 @@ import Loading from "../../containers/Loading";
 import useSingleProduct from "../../hooks/query/useSingleProduct";
 import ImagePart from "../../components/ImagePart";
 import { Helmet } from "react-helmet";
+import { useEffect } from "react";
 
 const SingleProduct = () => {
   const { id } = useParams();
 
   const { isLoading, error, data } = useSingleProduct(id);
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "instant",
+    });
+  }, [id]);
 
   if (isLoading) {
     return (
