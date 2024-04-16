@@ -48,7 +48,7 @@ const HomeLayout = () => {
   return (
     <>
       <div className="flex items-center h-32 relative">
-        <div className="relative flex-1 flex mx-14" ref={ref}>
+        <div className="relative flex-1 flex mx-20" ref={ref}>
           <div
             className="absolute h-full flex items-center gap-10 duration-500"
             style={{ transform: `translateX(${index}px)` }}

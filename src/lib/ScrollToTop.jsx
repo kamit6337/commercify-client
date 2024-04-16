@@ -31,7 +31,7 @@ const ScrollToTop = () => {
     <div className="fixed z-40 right-0 bottom-0 mr-10 mb-10">
       {isVisible && (
         <p
-          className="text-xl border border-black rounded-md"
+          className="text-2xl border border-white text-white rounded-full p-3 bg-slate-800 cursor-pointer"
           onClick={scrollToTop}
         >
           <Icons.upArrow />
