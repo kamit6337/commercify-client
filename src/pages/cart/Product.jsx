@@ -9,9 +9,12 @@ import {
   updateWishlist,
 } from "../../redux/slice/localStorageSlice";
 import { Icons } from "../../assets/icons";
+import { currencyState } from "../../redux/slice/currencySlice";
 
 const Product = ({ product, wishlist: isWishlist = true }) => {
   const dispatch = useDispatch();
+  const { symbol, exchangeRate } = useSelector(currencyState);
+
   const { wishlist, cart } = useSelector(localStorageState);
   const [isAddedToWishlist, setIsAddedToWishlist] = useState(false);
   const [showRemoveFromCart, setShowRemoveFromCart] = useState(false);
@@ -61,10 +64,10 @@ const Product = ({ product, wishlist: isWishlist = true }) => {
     dispatch(updateCart({ id, add: false }));
   };
 
+  const exchangeRatePrice = Math.round(price * exchangeRate);
   const roundDiscountPercent = Math.round(discountPercentage);
-
   const discountedPrice = Math.round(
-    (price * (100 - roundDiscountPercent)) / 100
+    (exchangeRatePrice * (100 - roundDiscountPercent)) / 100
   );
 
   return (
@@ -108,9 +111,13 @@ const Product = ({ product, wishlist: isWishlist = true }) => {
 
           <div className="flex gap-2 items-center">
             <p className="text-2xl font-semibold tracking-wide">
-              ${discountedPrice}
+              {symbol}
+              {discountedPrice}
             </p>
-            <p className="line-through">${price}</p>
+            <p className="line-through">
+              {symbol}
+              {exchangeRatePrice}
+            </p>
             <p className="text-xs">{roundDiscountPercent}% Off</p>
           </div>
         </div>

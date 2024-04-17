@@ -7,10 +7,12 @@ import { postReq } from "../../utils/api/api";
 import Toastify from "../../lib/Toastify";
 import { addressState } from "../../redux/slice/addressSlice";
 import environment from "../../utils/environment";
+import { currencyState } from "../../redux/slice/currencySlice";
 
 const Checkout = () => {
   const { cart } = useSelector(localStorageState);
   const { selectedAddress } = useSelector(addressState);
+  const { code, exchangeRate } = useSelector(currencyState);
 
   const cartIds = cart.map((obj) => obj.id);
   const { ToastContainer, showErrorMessage } = Toastify();
@@ -22,6 +24,8 @@ const Checkout = () => {
       const checkoutSession = await postReq("/payment", {
         products: cart,
         address: selectedAddress,
+        code,
+        exchangeRate,
       });
 
       console.log("checkoutSession", checkoutSession);

@@ -4,9 +4,12 @@ import useSingleProduct from "../../hooks/query/useSingleProduct";
 import ImagePart from "../../components/ImagePart";
 import { Helmet } from "react-helmet";
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { currencyState } from "../../redux/slice/currencySlice";
 
 const SingleProduct = () => {
   const { id } = useParams();
+  const { symbol, exchangeRate } = useSelector(currencyState);
 
   const { isLoading, error, data } = useSingleProduct(id);
 
@@ -36,10 +39,10 @@ const SingleProduct = () => {
   const { title, description, price, category, images, discountPercentage } =
     data.data;
 
+  const exchangeRatePrice = Math.round(price * exchangeRate);
   const roundDiscountPercent = Math.round(discountPercentage);
-
   const discountedPrice = Math.round(
-    (price * (100 - roundDiscountPercent)) / 100
+    (exchangeRatePrice * (100 - roundDiscountPercent)) / 100
   );
 
   return (
@@ -70,9 +73,13 @@ const SingleProduct = () => {
             </p>
             <div className="flex gap-2 items-center">
               <p className="text-2xl font-semibold tracking-wide">
-                ${discountedPrice}
+                {symbol}
+                {discountedPrice}
               </p>
-              <p className="line-through">${price}</p>
+              <p className="line-through">
+                {symbol}
+                {exchangeRatePrice}
+              </p>
               <p className="text-xs">{roundDiscountPercent}% Off</p>
             </div>
           </div>

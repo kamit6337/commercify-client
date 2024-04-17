@@ -8,9 +8,11 @@ import {
   updateCart,
   updateWishlist,
 } from "../../redux/slice/localStorageSlice";
+import { currencyState } from "../../redux/slice/currencySlice";
 
 const Product = ({ product }) => {
   const { cart } = useSelector(localStorageState);
+  const { symbol, exchangeRate } = useSelector(currencyState);
   const dispatch = useDispatch();
   const [isAddedToCart, setIsAddedToCart] = useState(false);
   const [showRemoveFromWatchlist, setShowRemoveFromWatchlist] = useState(false);
@@ -21,9 +23,6 @@ const Product = ({ product }) => {
     description,
     price,
     discountPercentage,
-    stock,
-    brand,
-    category,
     thumbnail,
   } = product;
 
@@ -47,9 +46,11 @@ const Product = ({ product }) => {
     dispatch(updateWishlist({ id, add: false }));
   };
 
+  const exchangeRatePrice = Math.round(price * exchangeRate);
+
   const roundDiscountPercent = Math.round(discountPercentage);
   const discountedPrice = Math.round(
-    (price * (100 - roundDiscountPercent)) / 100
+    (exchangeRatePrice * (100 - roundDiscountPercent)) / 100
   );
 
   return (
@@ -72,9 +73,13 @@ const Product = ({ product }) => {
         </div>
         <div className="flex gap-2 items-center">
           <p className="text-2xl font-semibold tracking-wide">
-            ${discountedPrice}
+            {symbol}
+            {discountedPrice}
           </p>
-          <p className="line-through">${price}</p>
+          <p className="line-through">
+            {symbol}
+            {exchangeRatePrice}
+          </p>
           <p className="text-xs">{roundDiscountPercent}% Off</p>
         </div>
       </div>

@@ -4,6 +4,7 @@ import { toggleReducer } from "./slice/toggleSlice";
 import { localStorageReducer } from "./slice/localStorageSlice";
 import { addressReducer } from "./slice/addressSlice";
 import environment from "../utils/environment";
+import { currencyReducer } from "./slice/currencySlice";
 
 const PRODUCTION = "production";
 
@@ -12,6 +13,7 @@ export const store = configureStore({
     toggle: toggleReducer,
     localStorage: localStorageReducer,
     address: addressReducer,
+    currency: currencyReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

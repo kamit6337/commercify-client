@@ -10,6 +10,7 @@ import Loading from "../containers/Loading";
 import Footer from "../containers/Footer";
 import useAllProducts from "../hooks/query/useAllProducts";
 import useAllCategory from "../hooks/query/useAllCategory";
+import useFindCountryAndExchangeRate from "../hooks/query/useFindCountryAndExchangeRate";
 
 const RootLayout = () => {
   const navigate = useNavigate();
@@ -35,6 +36,9 @@ const RootLayout = () => {
     isSuccess: isSuccessUserAddress,
   } = useUserAddress(isSuccess);
 
+  const { isLoading: isLoadingFindCountry, error: errorFindCountry } =
+    useFindCountryAndExchangeRate(isSuccess);
+
   useEffect(() => {
     if (addressData) {
       dispatch(initialAddressData(addressData));
@@ -42,26 +46,41 @@ const RootLayout = () => {
   }, [addressData, dispatch]);
 
   useEffect(() => {
-    if (error || addressError || errorAllProducts || errorAllCategory) {
+    if (
+      error ||
+      addressError ||
+      errorAllProducts ||
+      errorAllCategory ||
+      errorFindCountry
+    ) {
       navigate(
         `/login?msg=${
           error.message ||
           addressError.message ||
           errorAllProducts.message ||
-          errorAllCategory.message
+          errorAllCategory.message ||
+          errorFindCountry.message
         }`,
         {
           state: { msg: error.message || addressError.message },
         }
       );
     }
-  }, [error, navigate, addressError, errorAllProducts, errorAllCategory]);
+  }, [
+    error,
+    navigate,
+    addressError,
+    errorAllProducts,
+    errorAllCategory,
+    errorFindCountry,
+  ]);
 
   if (
     isLoadingLoginCheck ||
     isLoading ||
     isLoadingAllProducts ||
-    isLoadingAllCategory
+    isLoadingAllCategory ||
+    isLoadingFindCountry
   ) {
     return (
       <div className="h-screen w-full">

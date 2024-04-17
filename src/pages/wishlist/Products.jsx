@@ -7,7 +7,11 @@ const Products = ({ list }) => {
   const { data, isLoading, error } = useProductsFromIDs(list);
 
   if (isLoading) {
-    return <Loading />;
+    return (
+      <div className="h-96 w-full">
+        <Loading />
+      </div>
+    );
   }
 
   if (error) {

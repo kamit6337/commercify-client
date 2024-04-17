@@ -1,7 +1,11 @@
 /* eslint-disable react/prop-types */
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { currencyState } from "../redux/slice/currencySlice";
 
 const ProductCard = ({ product }) => {
+  const { symbol, exchangeRate } = useSelector(currencyState);
+
   const {
     _id,
     title,
@@ -12,10 +16,10 @@ const ProductCard = ({ product }) => {
     thumbnail,
   } = product;
 
+  const exchangeRatePrice = Math.round(price * exchangeRate);
   const roundDiscountPercent = Math.round(discountPercentage);
-
   const discountedPrice = Math.round(
-    (price * (100 - roundDiscountPercent)) / 100
+    (exchangeRatePrice * (100 - roundDiscountPercent)) / 100
   );
 
   return (
@@ -41,7 +45,10 @@ const ProductCard = ({ product }) => {
           <p>
             <Link to={`/category/${category._id}`}>{category.title}</Link>
           </p>
-          <p>${discountedPrice}</p>
+          <p>
+            {symbol}
+            {discountedPrice}
+          </p>
         </div>
       </div>
     </div>

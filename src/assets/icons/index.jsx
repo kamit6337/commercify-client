@@ -1,4 +1,4 @@
-import { IoIosArrowDown, IoIosEyeOff } from "react-icons/io";
+import { IoIosArrowDown, IoIosArrowUp, IoIosEyeOff } from "react-icons/io";
 import { IoHomeOutline, IoHomeSharp, IoCart, IoEye } from "react-icons/io5";
 import {
   PiNoteLight,
@@ -33,7 +33,6 @@ import { LiaDownloadSolid } from "react-icons/lia";
 import {
   MdKeyboardArrowLeft,
   MdKeyboardArrowRight,
-  MdKeyboardArrowUp,
   MdSubscriptions,
   MdOutlineSubscriptions,
   MdOutlineHistory,
@@ -79,7 +78,7 @@ export const Icons = {
   bellOff: BsBellSlash,
   leftArrow: MdKeyboardArrowLeft,
   rightArrow: MdKeyboardArrowRight,
-  upArrow: MdKeyboardArrowUp,
+  upArrow: IoIosArrowUp,
   likeIcon: BiLike,
   solidLikeIcon: BiSolidLike,
   dislikeIcon: BiDislike,

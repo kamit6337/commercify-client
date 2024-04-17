@@ -2,10 +2,12 @@ import { useSelector } from "react-redux";
 import { localStorageState } from "../redux/slice/localStorageSlice";
 import useProductsFromIDs from "../hooks/query/useProductsFromIDs";
 import Loading from "../containers/Loading";
+import { currencyState } from "../redux/slice/currencySlice";
 
 const PriceList = () => {
   const { cart } = useSelector(localStorageState);
   const cartIds = cart.map((obj) => obj.id);
+  const { symbol, exchangeRate } = useSelector(currencyState);
 
   const { data, isLoading, error } = useProductsFromIDs(cartIds);
 
@@ -20,20 +22,24 @@ const PriceList = () => {
   const productPrice = data.reduce((prev, current) => {
     const findProduct = cart.find((obj) => obj.id === current._id);
 
-    return prev + findProduct.quantity * current.price;
+    return (
+      prev + findProduct.quantity * Math.round(current.price * exchangeRate)
+    );
   }, 0);
 
   const productDiscount = data.reduce((prev, current) => {
     const discount = Math.round(
-      (current.price * Math.round(current.discountPercentage)) / 100
+      (Math.round(current.price * exchangeRate) *
+        Math.round(current.discountPercentage)) /
+        100
     );
 
     const findProduct = cart.find((obj) => obj.id === current._id);
-
     return prev + findProduct.quantity * discount;
   }, 0);
 
-  const deliveryCharges = 40;
+  const deliveryCharges = Math.round(data.length * exchangeRate); // 4 dollars
+
   const productSellingPrice = productPrice - productDiscount + deliveryCharges;
   return (
     <div className="">
@@ -44,25 +50,38 @@ const PriceList = () => {
         <p>
           Price <span>({data.length} item)</span>
         </p>
-        <p>&#x20B9;{productPrice}</p>
+        <p>
+          {symbol}
+          {productPrice}
+        </p>
       </div>
       <div className="p-4 flex justify-between">
         <p>Discount</p>
         <p>
           <span className="mx-1">-</span>
-          &#x20B9;{productDiscount}
+          {symbol}
+          {productDiscount}
         </p>
       </div>
       <div className="p-4 flex justify-between">
-        <p>Delivery Charges</p>
-        <p>&#x20B9;{deliveryCharges}</p>
+        <p>
+          Delivery Charges <span>({data.length} item)</span>
+        </p>
+        <p>
+          {symbol}
+          {deliveryCharges}
+        </p>
       </div>
       <div className="border-t p-4 flex justify-between">
         <p className="font-semibold">Total Amount</p>
-        <p>&#x20B9;{productSellingPrice}</p>
+        <p>
+          {symbol}
+          {productSellingPrice}
+        </p>
       </div>
       <p className="border-t p-4 text-sm text-green-600 font-semibold tracking-wide">
-        You are saving &#x20B9;{productDiscount} on this order
+        You are saving {symbol}
+        {productDiscount} on this order
       </p>
     </div>
   );

@@ -125,7 +125,11 @@ const Navbar = () => {
           >
             <p>{user.name.split(" ")[0]}</p>
             <p className="text-xs">
-              {showUserInfo ? <Icons.upArrow /> : <Icons.downArrow />}
+              {showUserInfo ? (
+                <Icons.upArrow className="" />
+              ) : (
+                <Icons.downArrow />
+              )}
             </p>
           </div>
           {showUserInfo && (

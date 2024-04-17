@@ -1,10 +1,11 @@
-const findMaxPrice = (products) => {
+const findMaxPrice = (products, exchangeRate) => {
   let maxPrice = 0;
 
   for (const product of products) {
+    const exchangeRatePrice = Math.round(product.price * exchangeRate);
     const roundDiscountPercent = Math.round(product.discountPercentage);
     const discountedPrice = Math.round(
-      (product.price * (100 - roundDiscountPercent)) / 100
+      (exchangeRatePrice * (100 - roundDiscountPercent)) / 100
     );
 
     if (discountedPrice >= maxPrice) {

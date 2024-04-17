@@ -4,11 +4,16 @@ import findMaxPrice from "../utils/javascript/findMaxPrice";
 import { useState } from "react";
 import useAllCategory from "../hooks/query/useAllCategory";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { currencyState } from "../redux/slice/currencySlice";
 
 const FilterSection = ({ products, filterProducts }) => {
   const { data: allCategory } = useAllCategory();
+  const { exchangeRate } = useSelector(currencyState);
 
-  const [maxPrice, setMaxprice] = useState(findMaxPrice(products));
+  const [maxPrice, setMaxprice] = useState(
+    findMaxPrice(products, exchangeRate)
+  );
   const [showClearAll, setShowClearAll] = useState(false);
 
   const handlePriceChange = (event, value) => {
@@ -19,9 +24,11 @@ const FilterSection = ({ products, filterProducts }) => {
     }
 
     const filter = products.filter((product) => {
+      const exchangeRatePrice = Math.round(product.price * exchangeRate);
+
       const roundDiscountPercent = Math.round(product.discountPercentage);
       const discountedPrice = Math.round(
-        (product.price * (100 - roundDiscountPercent)) / 100
+        (exchangeRatePrice * (100 - roundDiscountPercent)) / 100
       );
 
       return discountedPrice <= value;
