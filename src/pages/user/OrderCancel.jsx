@@ -6,12 +6,15 @@ import { useForm } from "react-hook-form";
 import SmallLoading from "../../containers/SmallLoading";
 import { patchReq } from "../../utils/api/api";
 import Toastify from "../../lib/Toastify";
+import { useSelector } from "react-redux";
+import { currencyState } from "../../redux/slice/currencySlice";
+import changePriceDiscountByExchangeRate from "../../utils/javascript/changePriceDiscountByExchangeRate";
 
 const OrderCancel = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { data, refetch } = useUserOrders();
-
+  const { symbol, exchangeRate } = useSelector(currencyState);
   const { ToastContainer, showErrorMessage } = Toastify();
 
   const {
@@ -64,6 +67,12 @@ const OrderCancel = () => {
     }
   };
 
+  const { exchangeRatePrice } = changePriceDiscountByExchangeRate(
+    price,
+    0,
+    exchangeRate
+  );
+
   return (
     <>
       <section className="bg-gray-100 p-5">
@@ -94,7 +103,8 @@ const OrderCancel = () => {
                   </div>
 
                   <p className="text-2xl font-semibold tracking-wide">
-                    ${price}
+                    {symbol}
+                    {exchangeRatePrice}
                   </p>
                   <div className="text-xs">Qty : {quantity}</div>
                 </section>

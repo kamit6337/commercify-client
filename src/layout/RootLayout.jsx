@@ -11,10 +11,18 @@ import Footer from "../containers/Footer";
 import useAllProducts from "../hooks/query/useAllProducts";
 import useAllCategory from "../hooks/query/useAllCategory";
 import useFindCountryAndExchangeRate from "../hooks/query/useFindCountryAndExchangeRate";
+import OfflineDetector from "../lib/OfflineDetector";
 
 const RootLayout = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const {
+    isLoading: isLoadingFindCountry,
+    error: errorFindCountry,
+    isSuccess: isSuccessFindCountry,
+  } = useFindCountryAndExchangeRate();
+
   const { error, isSuccess, isLoading: isLoadingLoginCheck } = useLoginCheck();
 
   const {
@@ -36,9 +44,6 @@ const RootLayout = () => {
     isSuccess: isSuccessUserAddress,
   } = useUserAddress(isSuccess);
 
-  const { isLoading: isLoadingFindCountry, error: errorFindCountry } =
-    useFindCountryAndExchangeRate(isSuccess);
-
   useEffect(() => {
     if (addressData) {
       dispatch(initialAddressData(addressData));
@@ -46,6 +51,15 @@ const RootLayout = () => {
   }, [addressData, dispatch]);
 
   useEffect(() => {
+    if (error) {
+      localStorage.removeItem("_cart");
+      localStorage.removeItem("_wishlist");
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (!isSuccessFindCountry) return;
+
     if (
       error ||
       addressError ||
@@ -67,6 +81,7 @@ const RootLayout = () => {
       );
     }
   }, [
+    isSuccessFindCountry,
     error,
     navigate,
     addressError,
@@ -99,6 +114,7 @@ const RootLayout = () => {
 
   return (
     <>
+      <OfflineDetector />
       <div className="h-20 w-full border-b-2 sticky top-0 z-10 bg-slate-800 text-white">
         <Navbar />
       </div>

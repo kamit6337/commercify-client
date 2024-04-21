@@ -1,5 +1,4 @@
 import { Outlet, NavLink, Link } from "react-router-dom";
-import CustomImages from "../assets/images";
 import useLoginCheck from "../hooks/auth/useLoginCheck";
 import { Icons } from "../assets/icons";
 
@@ -13,8 +12,9 @@ const UserLayout = () => {
         <div className="bg-white p-3 px-4 flex gap-5">
           <div className="w-14">
             <img
-              src={CustomImages.dummyProfile}
+              src={user.photo}
               alt="profile"
+              loading="lazy"
               className="w-full object-cover rounded-full"
             />
           </div>

@@ -8,6 +8,7 @@ import useLoginCheck from "../hooks/auth/useLoginCheck";
 import { getReq } from "../utils/api/api";
 import OnClickOutside from "../lib/OnClickOutside";
 import Toastify from "../lib/Toastify";
+import { QueryClient } from "@tanstack/react-query";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -17,6 +18,9 @@ const Navbar = () => {
   const { data } = useAllProducts();
   const [searchText, setSearchText] = useState("");
   const [showUserInfo, setShowUserInfo] = useState(false);
+  const [showClearAll, setShowClearAll] = useState(false);
+
+  const queryClient = new QueryClient();
 
   const { ToastContainer, showErrorMessage } = Toastify();
 
@@ -30,6 +34,10 @@ const Navbar = () => {
     try {
       await getReq("/auth/logout");
       navigate("/login");
+
+      localStorage.removeItem("_cart");
+      localStorage.removeItem("_wishlist");
+      queryClient.clear();
       window.location.reload();
     } catch (error) {
       showErrorMessage({ message: error.message });
@@ -55,9 +63,12 @@ const Navbar = () => {
 
     if (!value) {
       setSearchList([]);
+      setShowClearAll(false);
+
       return;
     }
 
+    setShowClearAll(true);
     const findProduct = data.data.filter((product) => {
       return product.title.toLowerCase().includes(value.toLowerCase());
     });
@@ -67,6 +78,7 @@ const Navbar = () => {
   const resetSearch = () => {
     setSearchText("");
     setSearchList([]);
+    setShowClearAll(false);
   };
 
   return (
@@ -89,12 +101,19 @@ const Navbar = () => {
             onChange={handleSearch}
             onKeyDown={handleKeyDown}
           />
-          <div
-            className="px-5 py-2 flex justify-center items-center cursor-pointer"
-            onClick={searchProducts}
-          >
-            <Icons.search className="text-xl" />
-          </div>
+
+          {showClearAll ? (
+            <p
+              className="px-5 py-2 flex justify-center items-center cursor-pointer whitespace-nowrap text-xs"
+              onClick={resetSearch}
+            >
+              Clear All
+            </p>
+          ) : (
+            <p className="px-5 py-2 flex justify-center items-center">
+              <Icons.search className="text-xl" />
+            </p>
+          )}
           {searchList.length > 0 && (
             <div className="absolute z-50 w-full top-full mt-1 bg-white text-black border border-black rounded-lg max-h-96 overflow-y-auto">
               {searchList.map((product, i, array) => {
@@ -123,6 +142,13 @@ const Navbar = () => {
             className="flex justify-center items-center gap-[6px] cursor-pointer"
             onClick={() => setShowUserInfo((prev) => !prev)}
           >
+            <p className="w-8">
+              <img
+                src={user.photo}
+                loading="lazy"
+                className="w-full rounded-full object-cover"
+              />
+            </p>
             <p>{user.name.split(" ")[0]}</p>
             <p className="text-xs">
               {showUserInfo ? (

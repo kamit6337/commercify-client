@@ -4,8 +4,12 @@ import { Link } from "react-router-dom";
 import makeDateDaysAfter from "../../utils/javascript/makeDateDaysAfter";
 import OrderStatus from "./OrderStatus";
 import { useEffect } from "react";
+import changePriceDiscountByExchangeRate from "../../utils/javascript/changePriceDiscountByExchangeRate";
+import { useSelector } from "react-redux";
+import { currencyState } from "../../redux/slice/currencySlice";
 const UserOrders = () => {
   const { isLoading, error, data } = useUserOrders();
+  const { symbol, exchangeRate } = useSelector(currencyState);
 
   useEffect(() => {
     window.scrollTo({
@@ -70,6 +74,12 @@ const UserOrders = () => {
 
           const { pinCode, district, state, address } = buyAddress;
 
+          const { exchangeRatePrice } = changePriceDiscountByExchangeRate(
+            price,
+            0,
+            exchangeRate
+          );
+
           return (
             <div key={i} className="border-b-2 last:border-none p-7 space-y-5">
               {/* MARK: UPPER PORTION */}
@@ -83,7 +93,7 @@ const UserOrders = () => {
                     />
                   </Link>
                 </div>
-                <section className="flex-1 flex flex-col justify-between">
+                <section className="flex-1 flex flex-col gap-2">
                   <div>
                     <Link to={`/products/${id}`}>
                       <p>{title}</p>
@@ -92,11 +102,12 @@ const UserOrders = () => {
                   </div>
 
                   <p className="text-2xl font-semibold tracking-wide">
-                    ${price}
+                    {symbol}
+                    {exchangeRatePrice}
                   </p>
                   <div className="text-xs">Qty : {quantity}</div>
                 </section>
-                <div className="space-y-5">
+                <div className="space-y-3">
                   <OrderStatus {...buy} />
                   <div className="flex items-center gap-3 text-sm">
                     <p>Ordered on:</p>
@@ -122,13 +133,22 @@ const UserOrders = () => {
                 </div>
 
                 {/* MARK: CANCEL ORDER */}
-                {isCancelled || isDelievered || (
-                  <Link to={`/orders/cancel/${_id}`}>
-                    <p className="cursor-pointer py-2 px-4 border rounded-md">
-                      Cancel Order
-                    </p>
-                  </Link>
-                )}
+                <div className="flex gap-2">
+                  {!isReturned && !isCancelled && isDelievered && (
+                    <Link to={`/orders/return/${_id}`}>
+                      <p className="cursor-pointer py-2 px-4 border rounded-md">
+                        Return Order
+                      </p>
+                    </Link>
+                  )}
+                  {!isCancelled && !isReturned && !isDelievered && (
+                    <Link to={`/orders/cancel/${_id}`}>
+                      <p className="cursor-pointer py-2 px-4 border rounded-md">
+                        Cancel Order
+                      </p>
+                    </Link>
+                  )}
+                </div>
               </div>
             </div>
           );

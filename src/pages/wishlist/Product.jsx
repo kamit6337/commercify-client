@@ -9,6 +9,7 @@ import {
   updateWishlist,
 } from "../../redux/slice/localStorageSlice";
 import { currencyState } from "../../redux/slice/currencySlice";
+import changePriceDiscountByExchangeRate from "../../utils/javascript/changePriceDiscountByExchangeRate";
 
 const Product = ({ product }) => {
   const { cart } = useSelector(localStorageState);
@@ -46,12 +47,8 @@ const Product = ({ product }) => {
     dispatch(updateWishlist({ id, add: false }));
   };
 
-  const exchangeRatePrice = Math.round(price * exchangeRate);
-
-  const roundDiscountPercent = Math.round(discountPercentage);
-  const discountedPrice = Math.round(
-    (exchangeRatePrice * (100 - roundDiscountPercent)) / 100
-  );
+  const { discountedPrice, exchangeRatePrice, roundDiscountPercent } =
+    changePriceDiscountByExchangeRate(price, discountPercentage, exchangeRate);
 
   return (
     <div className="w-full h-48 border-b-2 last:border-none p-7 flex gap-10">

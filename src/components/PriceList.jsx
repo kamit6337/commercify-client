@@ -38,7 +38,7 @@ const PriceList = () => {
     return prev + findProduct.quantity * discount;
   }, 0);
 
-  const deliveryCharges = Math.round(data.length * exchangeRate); // 4 dollars
+  const deliveryCharges = Math.round(data.length * exchangeRate * 0.48); //  dollars
 
   const productSellingPrice = productPrice - productDiscount + deliveryCharges;
   return (

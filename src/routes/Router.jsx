@@ -2,8 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import RootLayout from "../layout/RootLayout";
 import UserLayout from "../layout/UserLayout";
 import AdminLayout from "../layout/AdminLayout";
-import SignUp from "../pages/auth/SignUp";
-import Login from "../pages/auth/Login";
+import PhoneLogin from "../pages/auth/PhoneLogin";
 import Home from "../pages/home/Home";
 import CategoryProducts from "../pages/category/CategoryProducts";
 import SearchProducts from "../pages/search/SearchProducts";
@@ -13,7 +12,6 @@ import UserOrders from "../pages/user/UserOrders";
 import Admin from "../pages/admin/Admin";
 import AddProduct from "../pages/admin/AddProduct";
 import UpdateProduct from "../pages/admin/UpdateProduct";
-import ErrorPage from "../pages/error/ErrorPage";
 import Wishlist from "../pages/wishlist/Wishlist";
 import Cart from "../pages/cart/Cart";
 import CartLayout from "../layout/CartLayout";
@@ -25,16 +23,18 @@ import PaymentSuccess from "../pages/payment/PaymentSuccess";
 import PaymentCancel from "../pages/payment/PaymentCancel";
 import HomeLayout from "../layout/HomeLayout";
 import OrderCancel from "../pages/user/OrderCancel";
+import NotFound from "../pages/notFound/NotFound";
+import OrderReturn from "../pages/user/OrderReturn";
+import PhoneSignUp from "../pages/auth/PhoneSignUp";
+import VerifyOtp from "../pages/auth/VerifyOtp";
 
 const Router = () => {
   return (
     <Routes>
       {/* NOTE: AUTH ROUTES */}
-      <Route path="/signup" element={<SignUp />} />
-      <Route path="/login" element={<Login />} />
-
-      {/* NOTE: ERROR ROUTE */}
-      <Route path="/error" element={<ErrorPage />} />
+      <Route path="/signup" element={<PhoneSignUp />} />
+      <Route path="/login" element={<PhoneLogin />} />
+      <Route path="/verify" element={<VerifyOtp />} />
 
       {/* MARK: ROOT LAYOUT */}
       <Route path="/" element={<RootLayout />}>
@@ -69,6 +69,7 @@ const Router = () => {
 
         {/* NOTE: USER CANCEL ORDER */}
         <Route path="orders/cancel/:id" element={<OrderCancel />} />
+        <Route path="orders/return/:id" element={<OrderReturn />} />
 
         {/* NOTE: PROTECTED ADMIN ROUTES */}
         <Route path="admin" element={<AdminLayout />}>
@@ -77,6 +78,8 @@ const Router = () => {
           <Route path="update" element={<UpdateProduct />} />
         </Route>
       </Route>
+
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

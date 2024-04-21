@@ -9,10 +9,12 @@ import { initialCurrencyData } from "../../redux/slice/currencySlice";
 const GEO_API_URL = "https://api.geoapify.com/v1/geocode/reverse";
 const CURRENCY_EXCHANGE_URL = "https://api.freecurrencyapi.com/v1/latest";
 
-const useFindCountryAndExchangeRate = (toggle = false) => {
+const useFindCountryAndExchangeRate = () => {
   const dispatch = useDispatch();
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
+  const [ownIsLoading, setOwnIsLoading] = useState(true);
+  const [country, setCountry] = useState("");
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -38,7 +40,7 @@ const useFindCountryAndExchangeRate = (toggle = false) => {
       return response?.data;
     },
     staleTime: Infinity,
-    enabled: toggle && !!latitude && !!longitude,
+    enabled: !!latitude && !!longitude,
   });
 
   const queryCurrencyExchange = useQuery({
@@ -52,7 +54,6 @@ const useFindCountryAndExchangeRate = (toggle = false) => {
       return response?.data;
     },
     staleTime: Infinity,
-    enabled: toggle,
   });
 
   useEffect(() => {
@@ -68,6 +69,8 @@ const useFindCountryAndExchangeRate = (toggle = false) => {
 
       const obj = findCountryInfo.currency;
 
+      obj.country = country;
+      setCountry(country);
       if (queryCurrencyExchange.isSuccess) {
         const { data: currencyData } = queryCurrencyExchange.data;
 
@@ -77,12 +80,17 @@ const useFindCountryAndExchangeRate = (toggle = false) => {
       }
 
       dispatch(initialCurrencyData(obj));
+
+      setOwnIsLoading(false);
     }
   }, [queryGeoLoc, dispatch, queryCurrencyExchange]);
 
   return {
-    isLoading: queryGeoLoc.isLoading || queryCurrencyExchange.isLoading,
+    isLoading:
+      queryGeoLoc.isLoading || queryCurrencyExchange.isLoading || ownIsLoading,
     error: queryCurrencyExchange.error || queryGeoLoc.error,
+    isSuccess: queryGeoLoc.isSuccess && queryCurrencyExchange.isSuccess,
+    country,
   };
 };
 

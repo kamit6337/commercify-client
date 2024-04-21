@@ -73,7 +73,7 @@ const ImagePart = ({ images, title, id }) => {
         <div className="grid grid-cols-2 gap-4 mt-4 text-white text-lg">
           {isAddedToCart ? (
             <p
-              className=" border p-3 w-full rounded-md cursor-pointer  text-center bg-product_addToCart"
+              className=" border p-3 w-full rounded-md cursor-pointer  text-center bg-green-600"
               onClick={removeFromCart}
             >
               Added To Cart
