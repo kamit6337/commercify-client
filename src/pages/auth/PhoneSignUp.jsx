@@ -3,7 +3,6 @@ import Loading from "../../containers/Loading";
 import { Helmet } from "react-helmet";
 import { useForm } from "react-hook-form";
 import validator from "validator";
-import useFindCountryAndExchangeRate from "../../hooks/query/useFindCountryAndExchangeRate";
 import { useState } from "react";
 import { useRef } from "react";
 import { useEffect } from "react";
@@ -11,11 +10,11 @@ import countryDialCode from "../../data/countryDialCode";
 import { postAuthReq } from "../../utils/api/authApi";
 import Toastify from "../../lib/Toastify";
 import { Icons } from "../../assets/icons";
+import countries from "../../data/countries";
 
 const PhoneSignUp = () => {
   const navigate = useNavigate();
   const countryListRef = useRef(null);
-  const { error, isLoading, country } = useFindCountryAndExchangeRate();
   const [initialCountry, setInitialCountry] = useState("");
   const [openCountryList, setOpenCountryList] = useState(false);
   const { ToastContainer, showErrorMessage } = Toastify();
@@ -32,15 +31,6 @@ const PhoneSignUp = () => {
     },
   });
 
-  useEffect(() => {
-    if (country) {
-      const findCountryCode = countryDialCode.find(
-        (obj) => obj.name === country
-      );
-      setInitialCountry(findCountryCode);
-    }
-  }, [country]);
-
   // Scroll the country list to make the initial country visible when it changes
   useEffect(() => {
     if (openCountryList && countryListRef.current) {
@@ -54,16 +44,19 @@ const PhoneSignUp = () => {
     }
   }, [openCountryList, initialCountry]);
 
-  if (isLoading) {
-    return <Loading hScreen={true} />;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
+  const handleSelectCountry = (obj) => {
+    localStorage.setItem("_cou", obj.id);
+    setInitialCountry(obj);
+    setOpenCountryList(false);
+  };
 
   const onSubmit = async (data) => {
     let { name, email, mobile } = data;
+
+    if (!initialCountry) {
+      showErrorMessage({ message: "You have not selected Country Code" });
+      return;
+    }
 
     mobile = initialCountry.dial_code + mobile;
 
@@ -148,34 +141,37 @@ const PhoneSignUp = () => {
             <div className="flex gap-2">
               <div className="relative">
                 <div
-                  className="border py-1 rounded-md flex items-center justify-center gap-1 cursor-pointer w-20 h-11"
+                  className={`${
+                    initialCountry ? "w-20" : "w-32"
+                  }  border rounded-md flex items-center justify-center gap-1 cursor-pointer h-11 whitespace-nowrap text-xs duration-500`}
                   onClick={() => setOpenCountryList((prev) => !prev)}
                 >
                   <p>
                     {openCountryList ? (
-                      <Icons.downArrow className="text-sm text-gray-400" />
+                      <Icons.downArrow className=" text-gray-400" />
                     ) : (
-                      <Icons.upArrow className="text-sm text-gray-400" />
+                      <Icons.upArrow className=" text-gray-400" />
                     )}
                   </p>
-                  <p>{initialCountry?.dial_code}</p>
+                  {initialCountry ? (
+                    <p className="text-base">{initialCountry?.dial_code}</p>
+                  ) : (
+                    <p className="">Select Code</p>
+                  )}
                 </div>
                 {openCountryList && (
                   <div
                     className="absolute bg-white z-10 bottom-full left-0 overflow-y-auto max-h-60 mb-1 border rounded-md w-80"
                     ref={countryListRef}
                   >
-                    {countryDialCode.map((obj, i) => {
+                    {countries.map((obj, i) => {
                       const { name, dial_code } = obj;
 
                       return (
                         <div
                           key={i}
                           className="p-2  border-b last:border-none hover:bg-gray-50 cursor-pointer text-sm"
-                          onClick={() => {
-                            setInitialCountry(obj);
-                            setOpenCountryList(false);
-                          }}
+                          onClick={() => handleSelectCountry(obj)}
                         >
                           {name} ({dial_code})
                         </div>

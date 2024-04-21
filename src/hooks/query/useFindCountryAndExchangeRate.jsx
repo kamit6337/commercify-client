@@ -1,49 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import environment from "../../utils/environment";
 import countries from "../../data/countries";
 import { useDispatch } from "react-redux";
 import { initialCurrencyData } from "../../redux/slice/currencySlice";
+import { useNavigate } from "react-router-dom";
 
-const GEO_API_URL = "https://api.geoapify.com/v1/geocode/reverse";
 const CURRENCY_EXCHANGE_URL = "https://api.freecurrencyapi.com/v1/latest";
 
 const useFindCountryAndExchangeRate = () => {
   const dispatch = useDispatch();
-  const [latitude, setLatitude] = useState(null);
-  const [longitude, setLongitude] = useState(null);
-  const [ownIsLoading, setOwnIsLoading] = useState(true);
-  const [country, setCountry] = useState("");
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((data) => {
-        const { latitude, longitude } = data.coords;
-
-        setLatitude(latitude);
-        setLongitude(longitude);
-      });
-    }
-  }, []);
-
-  const queryGeoLoc = useQuery({
-    queryKey: ["find country based on lat and lon"],
-    queryFn: async () => {
-      const response = await axios.get(GEO_API_URL, {
-        params: {
-          lat: latitude,
-          lon: longitude,
-          apiKey: environment.GEO_API_KEY,
-        },
-      });
-      return response?.data;
-    },
-    staleTime: Infinity,
-    enabled: !!latitude && !!longitude,
-  });
-
-  const queryCurrencyExchange = useQuery({
+  const query = useQuery({
     queryKey: ["currency exchange"],
     queryFn: async () => {
       const response = await axios.get(CURRENCY_EXCHANGE_URL, {
@@ -57,41 +27,30 @@ const useFindCountryAndExchangeRate = () => {
   });
 
   useEffect(() => {
-    if (queryGeoLoc.isSuccess) {
-      const { features } = queryGeoLoc.data;
-      const {
-        properties: { country },
-      } = features[0];
+    if (query.isSuccess) {
+      const id = localStorage.getItem("_cou");
+
+      if (!id) {
+        navigate("/login");
+        return;
+      }
 
       const findCountryInfo = countries.find(
-        (nation) => nation.name === country
+        (nation) => nation.id === Number(id)
       );
 
       const obj = findCountryInfo.currency;
 
-      obj.country = country;
-      setCountry(country);
-      if (queryCurrencyExchange.isSuccess) {
-        const { data: currencyData } = queryCurrencyExchange.data;
+      const { data: currencyData } = query.data;
+      const exchangeValue = currencyData[findCountryInfo.currency.code];
 
-        const exchangeValue = currencyData[obj.code];
-
-        obj.exchangeRate = exchangeValue || 1;
-      }
+      obj.exchangeRate = exchangeValue;
 
       dispatch(initialCurrencyData(obj));
-
-      setOwnIsLoading(false);
     }
-  }, [queryGeoLoc, dispatch, queryCurrencyExchange]);
+  }, [dispatch, query, navigate]);
 
-  return {
-    isLoading:
-      queryGeoLoc.isLoading || queryCurrencyExchange.isLoading || ownIsLoading,
-    error: queryCurrencyExchange.error || queryGeoLoc.error,
-    isSuccess: queryGeoLoc.isSuccess && queryCurrencyExchange.isSuccess,
-    country,
-  };
+  return query;
 };
 
 export default useFindCountryAndExchangeRate;

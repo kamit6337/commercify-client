@@ -58,8 +58,6 @@ const RootLayout = () => {
   }, [error]);
 
   useEffect(() => {
-    if (!isSuccessFindCountry) return;
-
     if (
       error ||
       addressError ||
@@ -81,7 +79,6 @@ const RootLayout = () => {
       );
     }
   }, [
-    isSuccessFindCountry,
     error,
     navigate,
     addressError,
@@ -108,7 +105,8 @@ const RootLayout = () => {
     !isSuccess ||
     !isSuccessAllProducts ||
     !isSuccessAllCategory ||
-    !isSuccessUserAddress
+    !isSuccessUserAddress ||
+    !isSuccessFindCountry
   )
     return;
 
