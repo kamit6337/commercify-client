@@ -27,6 +27,7 @@ import NotFound from "../pages/notFound/NotFound";
 import OrderReturn from "../pages/user/OrderReturn";
 import PhoneSignUp from "../pages/auth/PhoneSignUp";
 import VerifyOtp from "../pages/auth/VerifyOtp";
+import RateProduct from "../pages/rating/RateProduct";
 
 const Router = () => {
   return (
@@ -47,6 +48,9 @@ const Router = () => {
 
         <Route path="products/:id" element={<SingleProduct />} />
         <Route path="wishlist" element={<Wishlist />} />
+
+        {/* NOTE: PRODUCT RATING */}
+        <Route path="ratings/:id" element={<RateProduct />} />
 
         {/* NOTE: CART ROUTES */}
         <Route path="cart" element={<CartLayout />}>

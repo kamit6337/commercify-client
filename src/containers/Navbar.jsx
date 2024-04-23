@@ -37,6 +37,7 @@ const Navbar = () => {
 
       localStorage.removeItem("_cart");
       localStorage.removeItem("_wishlist");
+      localStorage.removeItem("_cou");
       queryClient.clear();
       window.location.reload();
     } catch (error) {
@@ -83,7 +84,7 @@ const Navbar = () => {
 
   return (
     <>
-      <section className="w-full flex justify-center  items-center gap-10 px-8 h-full absolute z-10">
+      <section className="w-full flex justify-center  items-center gap-10 px-8 tablet:px-4 h-full absolute z-10">
         {/* MARK: APP LOGO */}
         <div className="cursor-pointer">
           <Link to={`/`}>Commercify</Link>

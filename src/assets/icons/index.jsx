@@ -42,8 +42,14 @@ import {
 import { MdFileDownloadDone } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { FiMinus } from "react-icons/fi";
+import { CiFilter } from "react-icons/ci";
+import { IoIosStar, IoIosStarHalf, IoIosStarOutline } from "react-icons/io";
 
 export const Icons = {
+  star: IoIosStar,
+  star_half: IoIosStarHalf,
+  star_empty: IoIosStarOutline,
+  filter: CiFilter,
   minus: FiMinus,
   eyeOn: IoEye,
   eyeOff: IoIosEyeOff,

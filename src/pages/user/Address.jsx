@@ -46,7 +46,7 @@ const Address = () => {
         <div className="border-2">
           {userAddress.length > 0 ? (
             userAddress.map((obj, i) => {
-              const { name, mobile, pinCode, district, state, address } = obj;
+              const { name, mobile, country, district, state, address } = obj;
 
               if (updateAddressIndex === i) {
                 return (
@@ -75,30 +75,29 @@ const Address = () => {
                       <p className="text-sm">{district},</p>
                       <p className="ml-2 text-sm">{state}</p>
                       <p className="mx-1">-</p>
-                      <p>{pinCode}</p>
+                      <p>{country}</p>
                     </div>
                   </div>
                   <div className="relative">
-                    {showAddressOptionIndex === i ? (
-                      <button
-                        className=""
-                        onClick={() => setShowAddressOptionIndex(null)}
-                      >
-                        <Icons.cancel />
-                      </button>
-                    ) : (
-                      <button
-                        className=""
-                        onClick={() => setShowAddressOptionIndex(i)}
-                      >
+                    <button
+                      className=""
+                      onClick={() =>
+                        showAddressOptionIndex === i
+                          ? setShowAddressOptionIndex(null)
+                          : setShowAddressOptionIndex(i)
+                      }
+                    >
+                      {showAddressOptionIndex === i ? (
+                        <Icons.cancel className="text-xl" />
+                      ) : (
                         <Icons.options />
-                      </button>
-                    )}
+                      )}
+                    </button>
 
                     {showAddressOptionIndex === i && (
-                      <div className="absolute z-10 top-full right-0 shadow-2xl border">
+                      <div className="absolute z-20 top-full w-32 right-0 shadow-2xl border ">
                         <p
-                          className="px-3 py-2 text-sm border-b cursor-pointer"
+                          className="py-3 text-sm border-b cursor-pointer text-center"
                           onClick={() => {
                             setUpdateAddressIndex(i);
                             setShowAddressOptionIndex(null);
@@ -106,7 +105,7 @@ const Address = () => {
                         >
                           Edit
                         </p>
-                        <p className="px-3 py-2 text-sm cursor-pointer">
+                        <p className="py-3 text-sm cursor-pointer text-center">
                           Delete
                         </p>
                       </div>

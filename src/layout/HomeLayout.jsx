@@ -4,9 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import { Icons } from "../assets/icons";
 
 const HomeLayout = () => {
+  const { data: allCategory } = useAllCategory();
   const scrollPixel = 500;
   const ref = useRef(null);
-  const { data: allCategory } = useAllCategory();
   const [widthDiff, setWidthDiff] = useState(null);
   const [index, setIndex] = useState(0);
   const [optionIndex, setOptionIndex] = useState(null);

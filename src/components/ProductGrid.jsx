@@ -58,7 +58,7 @@ const ProductGrid = ({ products }) => {
           Price - High to Low
         </p>
       </div>
-      <div className="py-10 w-full grid grid-cols-3 justify-items-center gap-y-8 ">
+      <div className="py-10 w-full grid grid-cols-3 justify-items-center gap-y-8 laptop:gap-y-6  ">
         {sortProducts.map((product) => {
           return <ProductCard key={product.id} product={product} />;
         })}

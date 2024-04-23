@@ -6,6 +6,7 @@ const useCategoryProducts = (id) => {
     queryKey: ["Category Products", id],
     queryFn: () => getReq("/products", { categoryId: id }),
     staleTime: Infinity,
+    enabled: !!id,
   });
 
   return query;

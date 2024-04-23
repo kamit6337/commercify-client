@@ -6,7 +6,6 @@ import validator from "validator";
 import { useState } from "react";
 import { useRef } from "react";
 import { useEffect } from "react";
-import countryDialCode from "../../data/countryDialCode";
 import { postAuthReq } from "../../utils/api/authApi";
 import Toastify from "../../lib/Toastify";
 import { Icons } from "../../assets/icons";
@@ -15,7 +14,12 @@ import countries from "../../data/countries";
 const PhoneSignUp = () => {
   const navigate = useNavigate();
   const countryListRef = useRef(null);
-  const [initialCountry, setInitialCountry] = useState("");
+  const [initialCountry, setInitialCountry] = useState(() => {
+    const id = localStorage.getItem("_cou");
+    if (!id) return "";
+    const findCountry = countries.find((obj) => obj.id === Number(id));
+    return findCountry;
+  });
   const [openCountryList, setOpenCountryList] = useState(false);
   const { ToastContainer, showErrorMessage } = Toastify();
 
@@ -34,8 +38,8 @@ const PhoneSignUp = () => {
   // Scroll the country list to make the initial country visible when it changes
   useEffect(() => {
     if (openCountryList && countryListRef.current) {
-      const initialCountryIndex = countryDialCode.findIndex(
-        (obj) => obj.name === initialCountry?.name
+      const initialCountryIndex = countries.findIndex(
+        (obj) => obj.id === initialCountry?.id
       );
       if (initialCountryIndex !== -1) {
         const listItem = countryListRef.current.children[initialCountryIndex];
@@ -171,7 +175,10 @@ const PhoneSignUp = () => {
                         <div
                           key={i}
                           className="p-2  border-b last:border-none hover:bg-gray-50 cursor-pointer text-sm"
-                          onClick={() => handleSelectCountry(obj)}
+                          onClick={() => {
+                            handleSelectCountry(obj);
+                            setOpenCountryList(false);
+                          }}
                         >
                           {name} ({dial_code})
                         </div>

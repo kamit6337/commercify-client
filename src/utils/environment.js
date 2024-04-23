@@ -4,6 +4,7 @@ const environment = {
   NODE_ENV: import.meta.env.VITE_APP_NODE_ENV,
   STRIPE_PUBLISHABLE_KEY: import.meta.env.VITE_APP_STRIPE_PUBLISHABLE_KEY,
   CURRENCY_EXCHANGE_KEY: import.meta.env.VITE_APP_CURRENCY_EXCHANGE_KEY,
+  COUNTRY_KEY: import.meta.env.VITE_APP_COUNTRY_KEY,
 };
 
 export default environment;

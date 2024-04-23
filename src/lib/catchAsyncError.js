@@ -3,12 +3,8 @@ const catchAsyncError = (func) => {
     try {
       return await func(...args);
     } catch (error) {
-      // Check if the error has a response
       if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-
-        // Extract the error message from the response data
+        console.log("Complete Error", error.response.data);
         const errorMessage =
           error.response.data.message || "An error occurred.";
         throw new Error(errorMessage);

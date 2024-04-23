@@ -13,7 +13,12 @@ import countries from "../../data/countries";
 const PhoneLogin = () => {
   const navigate = useNavigate();
   const countryListRef = useRef(null);
-  const [initialCountry, setInitialCountry] = useState("");
+  const [initialCountry, setInitialCountry] = useState(() => {
+    const id = localStorage.getItem("_cou");
+    if (!id) return "";
+    const findCountry = countries.find((obj) => obj.id === Number(id));
+    return findCountry;
+  });
   const [openCountryList, setOpenCountryList] = useState(false);
   const { ToastContainer, showErrorMessage } = Toastify();
 
@@ -126,7 +131,10 @@ const PhoneLogin = () => {
                         <div
                           key={i}
                           className="p-2  border-b last:border-none hover:bg-gray-50 cursor-pointer text-sm"
-                          onClick={() => handleSelectCountry(obj)}
+                          onClick={() => {
+                            handleSelectCountry(obj);
+                            setOpenCountryList(false);
+                          }}
                         >
                           {name} ({dial_code})
                         </div>

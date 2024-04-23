@@ -40,7 +40,7 @@ const AddressInCart = () => {
         <div className="flex flex-col ">
           {userAddress.length > 0 ? (
             userAddress.map((obj, i) => {
-              const { _id, name, mobile, pinCode, district, state, address } =
+              const { _id, name, mobile, district, state, address, country } =
                 obj;
 
               return (
@@ -68,12 +68,14 @@ const AddressInCart = () => {
                         <p className="text-sm">{district},</p>
                         <p className="ml-2 text-sm">{state}</p>
                         <p className="mx-1">-</p>
-                        <p>{pinCode}</p>
+                        <p>{country}</p>
                       </div>
                       {selectedAddress._id === _id && (
-                        <button className="mt-5 px-16 py-4 bg-orange-500 rounded-md w-max text-white font-semibold tracking-wide uppercase">
-                          <Link to={`/cart/checkout`}>Deliver Here</Link>
-                        </button>
+                        <Link to={`/cart/checkout`}>
+                          <button className="mt-5 px-16 py-4 bg-orange-500 rounded-md w-max text-white font-semibold tracking-wide uppercase">
+                            Deliver Here
+                          </button>
+                        </Link>
                       )}
                     </div>
                   </label>

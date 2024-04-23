@@ -25,9 +25,6 @@ const Product = ({ product, wishlist: isWishlist = true }) => {
     description,
     price,
     discountPercentage,
-    stock,
-    brand,
-    category,
     thumbnail,
   } = product;
 

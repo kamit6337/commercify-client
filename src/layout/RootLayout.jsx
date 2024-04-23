@@ -17,13 +17,13 @@ const RootLayout = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const { error, isSuccess, isLoading: isLoadingLoginCheck } = useLoginCheck();
+
   const {
     isLoading: isLoadingFindCountry,
     error: errorFindCountry,
     isSuccess: isSuccessFindCountry,
   } = useFindCountryAndExchangeRate();
-
-  const { error, isSuccess, isLoading: isLoadingLoginCheck } = useLoginCheck();
 
   const {
     isLoading: isLoadingAllProducts,
@@ -113,7 +113,7 @@ const RootLayout = () => {
   return (
     <>
       <OfflineDetector />
-      <div className="h-20 w-full border-b-2 sticky top-0 z-10 bg-slate-800 text-white">
+      <div className="h-20 w-full border-b-2 sticky top-0 z-20 bg-slate-800 text-white">
         <Navbar />
       </div>
       <Outlet />

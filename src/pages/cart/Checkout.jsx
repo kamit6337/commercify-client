@@ -1,13 +1,13 @@
 import { useSelector } from "react-redux";
 import { localStorageState } from "../../redux/slice/localStorageSlice";
 import { Helmet } from "react-helmet";
-import Products from "./Products";
 import { loadStripe } from "@stripe/stripe-js";
 import { postReq } from "../../utils/api/api";
 import Toastify from "../../lib/Toastify";
 import { addressState } from "../../redux/slice/addressSlice";
 import environment from "../../utils/environment";
 import { currencyState } from "../../redux/slice/currencySlice";
+import CheckoutProducts from "./CheckoutProducts";
 
 const Checkout = () => {
   const { cart } = useSelector(localStorageState);
@@ -53,7 +53,7 @@ const Checkout = () => {
         </p>
         {cartIds.length > 0 ? (
           <div>
-            <Products list={cartIds} wishlist={false} />
+            <CheckoutProducts list={cartIds} />
           </div>
         ) : (
           <div>No Cart</div>

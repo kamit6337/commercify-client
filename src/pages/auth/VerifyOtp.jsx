@@ -7,14 +7,12 @@ import { useEffect } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { postAuthReq } from "../../utils/api/authApi";
 import { patchReq } from "../../utils/api/api";
-import useLoginCheck from "../../hooks/auth/useLoginCheck";
 
 const VerifyOtp = () => {
+  const resendOtpSeconds = 45;
   const navigate = useNavigate();
-  const { refetch } = useLoginCheck();
-  const [resendOtpTime, setResendOtpTime] = useState(30);
+  const [resendOtpTime, setResendOtpTime] = useState(resendOtpSeconds);
   const token = useSearchParams()[0].get("token");
-  const callbackUrl = useSearchParams()[0].get("callbackUrl");
   const { state } = useLocation();
 
   const {
@@ -57,12 +55,15 @@ const VerifyOtp = () => {
 
     try {
       if (state?.login) {
-        await postAuthReq("/login/verify-otp", {
+        const response = await postAuthReq("/login/verify-otp", {
           mobileNumber: state.mobile,
           otp: otp,
           token,
         });
-        navigate(callbackUrl);
+
+        console.log("response", response);
+
+        navigate("/");
         return;
       }
 
@@ -72,20 +73,16 @@ const VerifyOtp = () => {
           otp: otp,
           token,
         });
-        navigate(callbackUrl);
+        navigate("/");
         return;
       }
 
-      if (state?.update) {
-        await patchReq("/user", {
-          mobileNumber: state.mobile,
-          otp: otp,
-          token,
-        });
-        refetch();
-        navigate(callbackUrl);
-        return;
-      }
+      await patchReq("/user", {
+        mobileNumber: state.mobile,
+        otp: otp,
+        token,
+      });
+      navigate("/");
     } catch (error) {
       showErrorMessage({ message: error.message });
     }
@@ -98,11 +95,11 @@ const VerifyOtp = () => {
           token,
         });
 
-        navigate(`/verify?token=${response.data}&callbackUrl=/`, {
+        navigate(`/verify?token=${response.data}`, {
           state: { mobile: state?.mobile, login: true },
         });
         showSuccessMessage({ message: "OTP send again" });
-        setResendOtpTime(30);
+        setResendOtpTime(resendOtpSeconds);
         return;
       }
 
@@ -111,11 +108,11 @@ const VerifyOtp = () => {
           token,
         });
 
-        navigate(`/verify?token=${response.data}&callbackUrl=/`, {
+        navigate(`/verify?token=${response.data}`, {
           state: { mobile: state?.mobile, signup: true },
         });
         showSuccessMessage({ message: "OTP send again" });
-        setResendOtpTime(30);
+        setResendOtpTime(resendOtpSeconds);
         return;
       }
 
@@ -124,11 +121,11 @@ const VerifyOtp = () => {
           token,
         });
 
-        navigate(`/verify?token=${response.data}&callbackUrl=${callbackUrl}`, {
+        navigate(`/verify?token=${response.data}`, {
           state: { mobile: state?.mobile, update: true },
         });
         showSuccessMessage({ message: "OTP send again" });
-        setResendOtpTime(30);
+        setResendOtpTime(resendOtpSeconds);
         return;
       }
     } catch (error) {

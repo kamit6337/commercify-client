@@ -5,6 +5,7 @@ import { localStorageReducer } from "./slice/localStorageSlice";
 import { addressReducer } from "./slice/addressSlice";
 import environment from "../utils/environment";
 import { currencyReducer } from "./slice/currencySlice";
+import { ratingReducer } from "./slice/ratingSlice";
 
 const PRODUCTION = "production";
 
@@ -14,6 +15,7 @@ export const store = configureStore({
     localStorage: localStorageReducer,
     address: addressReducer,
     currency: currencyReducer,
+    rating: ratingReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

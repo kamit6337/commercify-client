@@ -54,7 +54,7 @@ const ImagePart = ({ images, title, id }) => {
           return (
             <div
               key={i}
-              className="w-20 border p-2"
+              className="w-20 border p-2 tablet:w-12"
               onClick={() => setImageSelected(img)}
             >
               <img src={img} alt={i} className="w-full object-cover" />
@@ -70,17 +70,17 @@ const ImagePart = ({ images, title, id }) => {
             className="w-full object-cover"
           />
         </div>
-        <div className="grid grid-cols-2 gap-4 mt-4 text-white text-lg">
+        <div className="grid grid-cols-2 gap-4 mt-4 text-white text-lg sm_lap:text-base tablet:text-xs">
           {isAddedToCart ? (
             <p
-              className=" border p-3 w-full rounded-md cursor-pointer  text-center bg-green-600"
+              className=" border p-3 w-full  rounded-md cursor-pointer  text-center bg-green-600"
               onClick={removeFromCart}
             >
               Added To Cart
             </p>
           ) : (
             <p
-              className="border p-3 w-full rounded-md cursor-pointer text-center bg-product_addToCart"
+              className="border p-3 w-full  rounded-md cursor-pointer text-center bg-product_addToCart"
               onClick={addToCart}
             >
               Add to Cart
@@ -88,14 +88,14 @@ const ImagePart = ({ images, title, id }) => {
           )}
           {isAddedToWatchlist ? (
             <p
-              className="border p-3 w-full rounded-md cursor-pointer bg-gray-400 text-center"
+              className="border p-3 sm_lap:text-sm  tablet:text-[11px]  w-full rounded-md cursor-pointer bg-gray-400 text-center flex items-center justify-center "
               onClick={removeFromWatchlist}
             >
               Added To Watchlist
             </p>
           ) : (
             <p
-              className="border p-3 w-full rounded-md cursor-pointer text-center text-black "
+              className="  border p-3 sm_lap:text-sm tablet:text-[11px]   w-full rounded-md cursor-pointer text-center text-black flex items-center justify-center"
               onClick={addToWatchlist}
             >
               Add to Watchlist

@@ -17,7 +17,7 @@ const addressSlice = createSlice({
     },
     createNewAddress: (state, { payload }) => {
       const { data } = payload;
-      state.addresses = [data, ...state];
+      state.addresses = [data, ...state.addresses];
       return state;
     },
     updateAddressData: (state, { payload }) => {
