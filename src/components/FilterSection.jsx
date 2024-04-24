@@ -76,19 +76,26 @@ const FilterSection = ({ products, filterProducts }) => {
         </p>
         <div className="flex-1 relative">
           <div className="absolute z-10 top-0 w-full h-full">
-            <div className="h-full overflow-x-auto space-y-2">
+            <div className="h-full overflow-x-auto ">
               {allCategory.data.length > 0 ? (
-                allCategory.data.map((category, i) => {
-                  const { _id, title } = category;
+                <>
+                  <div className="cursor-pointer py-2">
+                    <Link to={`/`}>
+                      <p className="text-sm uppercase">All</p>
+                    </Link>
+                  </div>
+                  {allCategory.data.map((category, i) => {
+                    const { _id, title } = category;
 
-                  return (
-                    <div key={i} className="cursor-pointer">
-                      <Link to={`/category/${_id}`}>
-                        <p className="text-sm uppercase">{title}</p>
-                      </Link>
-                    </div>
-                  );
-                })
+                    return (
+                      <div key={i} className="cursor-pointer py-2 ">
+                        <Link to={`/category/${_id}`}>
+                          <p className="text-sm uppercase">{title}</p>
+                        </Link>
+                      </div>
+                    );
+                  })}
+                </>
               ) : (
                 <div>No Category available</div>
               )}

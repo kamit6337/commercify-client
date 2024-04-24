@@ -1,29 +1,37 @@
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { ratingState, updateRating } from "../../redux/slice/ratingSlice";
+import { useEffect, useMemo, useState } from "react";
 import useSingleProduct from "../../hooks/query/useSingleProduct";
 import Loading from "../../containers/Loading";
-import { useForm } from "react-hook-form";
 import Toastify from "../../lib/Toastify";
-import changePriceDiscountByExchangeRate from "../../utils/javascript/changePriceDiscountByExchangeRate";
-import { useDispatch, useSelector } from "react-redux";
 import { currencyState } from "../../redux/slice/currencySlice";
+import changePriceDiscountByExchangeRate from "../../utils/javascript/changePriceDiscountByExchangeRate";
+import { useForm } from "react-hook-form";
 import { Icons } from "../../assets/icons";
-import { useEffect, useState } from "react";
-import { postReq } from "../../utils/api/api";
-import { addUserRating } from "../../redux/slice/ratingSlice";
+import { patchReq } from "../../utils/api/api";
 
-const RateProduct = () => {
+const UpdateRatedProduct = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { id } = useParams();
+  const { id, productId } = useParams();
+  const { ratings } = useSelector(ratingState);
   const { symbol, exchangeRate } = useSelector(currencyState);
-  const { isLoading, error, data } = useSingleProduct(id);
-  const [starSelected, setStarSelected] = useState(0);
+
+  const { isLoading, error, data } = useSingleProduct(productId);
   const { ToastContainer, showErrorMessage, showAlertMessage } = Toastify();
+  const [starSelected, setStarSelected] = useState(0);
+
+  const rating = useMemo(() => {
+    const findRating = ratings.find((obj) => obj._id === id);
+    return findRating;
+  }, [id, ratings]);
 
   const {
     register,
     handleSubmit,
     getValues,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: {
@@ -33,11 +41,15 @@ const RateProduct = () => {
   });
 
   useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: "instant",
-    });
-  }, [id]);
+    if (rating) {
+      reset({
+        title: rating.title,
+        comment: rating.comment,
+      });
+
+      setStarSelected(rating.rate);
+    }
+  }, [rating, reset]);
 
   if (isLoading) {
     return (
@@ -55,30 +67,40 @@ const RateProduct = () => {
     );
   }
 
-  const { title, description, price, discountPercentage, thumbnail } =
-    data.data;
-
   const onSubmit = async (data) => {
-    if (starSelected === 0) {
-      showAlertMessage({ message: "Please select star to rate product" });
+    const { title, comment } = data;
+
+    if (
+      starSelected === rating.rate &&
+      title === rating.title &&
+      comment === rating.comment
+    ) {
+      showAlertMessage({ message: "Please update the rating to update" });
       return;
     }
 
-    const { title, comment } = data;
-
     try {
-      const response = await postReq("/ratings", {
+      const response = await patchReq("/ratings", {
         id,
         rate: starSelected,
         title,
         comment,
       });
-      dispatch(addUserRating(response.data));
-      navigate(`/products/${id}`);
+
+      dispatch(updateRating(response.data));
+      navigate(-1);
     } catch (error) {
       showErrorMessage({ message: error.message });
     }
   };
+
+  const {
+    title: productTitle,
+    description,
+    price,
+    discountPercentage,
+    thumbnail,
+  } = data.data;
 
   const { exchangeRatePrice, discountedPrice, roundDiscountPercent } =
     changePriceDiscountByExchangeRate(price, discountPercentage, exchangeRate);
@@ -88,7 +110,7 @@ const RateProduct = () => {
       <section className="bg-gray-100 p-5">
         <main className="bg-white ">
           <p className="border-b-2 text-xl font-semibold p-5">
-            Rate and Review the Order
+            Update the Rating
           </p>
 
           <div className="space-y-10">
@@ -99,7 +121,7 @@ const RateProduct = () => {
                   <Link to={`/products/${id}`}>
                     <img
                       src={thumbnail}
-                      alt={title}
+                      alt={productTitle}
                       className="h-full w-full object-cover"
                     />
                   </Link>
@@ -107,7 +129,7 @@ const RateProduct = () => {
                 <section className="flex-1 flex flex-col gap-4">
                   <div>
                     <Link to={`/products/${id}`}>
-                      <p>{title}</p>
+                      <p>{productTitle}</p>
                     </Link>
                     <p className="text-xs">{description}</p>
                   </div>
@@ -219,7 +241,7 @@ const RateProduct = () => {
                   type="submit"
                   className="rounded cursor-pointer py-3 px-20 bg-slate-600 text-white"
                 >
-                  {isSubmitting ? <Loading small={true} /> : "Submit"}
+                  {isSubmitting ? <Loading small={true} /> : "Update"}
                 </button>
               </div>
             </form>
@@ -231,4 +253,4 @@ const RateProduct = () => {
   );
 };
 
-export default RateProduct;
+export default UpdateRatedProduct;

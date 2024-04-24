@@ -50,27 +50,40 @@ const HomeLayout = () => {
       <div className="flex items-center h-32 relative">
         <div className="relative flex-1 flex mx-20" ref={ref}>
           <div
-            className="absolute h-full flex items-center gap-10 duration-500"
+            className="absolute h-full flex items-center gap-10 duration-700"
             style={{ transform: `translateX(${index}px)` }}
           >
             {allCategory.data.length > 0 ? (
-              allCategory.data.map((category, i) => {
-                const { _id, title } = category;
+              <>
+                <Link to={`/`}>
+                  <p
+                    className={`${
+                      optionIndex === 999 && "border-b-2"
+                    }  uppercase whitespace-nowrap`}
+                    onMouseEnter={() => setOptionIndex(999)}
+                    onMouseLeave={() => setOptionIndex(null)}
+                  >
+                    All
+                  </p>
+                </Link>
+                {allCategory.data.map((category, i) => {
+                  const { _id, title } = category;
 
-                return (
-                  <Link to={`/category/${_id}`} key={i}>
-                    <p
-                      className={`${
-                        optionIndex === i && "border-b-2"
-                      }  uppercase whitespace-nowrap`}
-                      onMouseEnter={() => setOptionIndex(i)}
-                      onMouseLeave={() => setOptionIndex(null)}
-                    >
-                      {title}
-                    </p>
-                  </Link>
-                );
-              })
+                  return (
+                    <Link to={`/category/${_id}`} key={i}>
+                      <p
+                        className={`${
+                          optionIndex === i && "border-b-2"
+                        }  uppercase whitespace-nowrap`}
+                        onMouseEnter={() => setOptionIndex(i)}
+                        onMouseLeave={() => setOptionIndex(null)}
+                      >
+                        {title}
+                      </p>
+                    </Link>
+                  );
+                })}
+              </>
             ) : (
               <div>No Category available</div>
             )}
