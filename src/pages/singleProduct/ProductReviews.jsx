@@ -82,8 +82,8 @@ const ProductReviews = ({ id }) => {
         <p className="text-2xl font-semibold tracking-wide capitalize">
           Ratings and Reviews
         </p>
-        <section className="flex mt-10 gap-10">
-          <div className="w-96 flex flex-col gap-2 items-center self-start sticky top-[100px] shadow-2xl py-10">
+        <section className="flex tablet:flex-col  mt-10 gap-10">
+          <div className="w-96 flex flex-col gap-2 items-center self-start tablet:self-center sticky tablet:static top-[100px] shadow-2xl py-10">
             {/* MARK: RATE AVERAGE VALUE */}
             <p className="text-3xl">{rateValue + fraction}</p>
 

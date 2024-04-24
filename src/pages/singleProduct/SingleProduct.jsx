@@ -58,7 +58,7 @@ const SingleProduct = () => {
       </Helmet>
 
       <main>
-        <section className="grid grid-cols-2 tablet:inline-flex gap-5 py-16 px-6 tablet:px-2">
+        <section className="grid grid-cols-2 tablet:inline-flex gap-5 py-16  px-6 tablet:px-2">
           <div className="tablet:w-3/5">
             <ImagePart images={images} title={title} id={id} />
           </div>

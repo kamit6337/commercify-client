@@ -31,7 +31,6 @@ const useFindCountryAndExchangeRate = () => {
       const id = localStorage.getItem("_cou");
 
       if (!id) {
-        navigate("/login?msg=Issue in finding currenct location");
         return;
       }
 

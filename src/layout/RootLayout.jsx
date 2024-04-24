@@ -12,6 +12,7 @@ import useAllProducts from "../hooks/query/useAllProducts";
 import useAllCategory from "../hooks/query/useAllCategory";
 import useFindCountryAndExchangeRate from "../hooks/query/useFindCountryAndExchangeRate";
 import OfflineDetector from "../lib/OfflineDetector";
+import useGetCountryKey from "../hooks/query/useGetCountryKey";
 
 const RootLayout = () => {
   const navigate = useNavigate();
@@ -19,11 +20,11 @@ const RootLayout = () => {
 
   const { error, isSuccess, isLoading: isLoadingLoginCheck } = useLoginCheck();
 
-  const {
-    isLoading: isLoadingFindCountry,
-    error: errorFindCountry,
-    isSuccess: isSuccessFindCountry,
-  } = useFindCountryAndExchangeRate();
+  const { isLoading: isLoadingFindCountry, error: errorFindCountry } =
+    useFindCountryAndExchangeRate();
+
+  const { isLoading: isLoadingCountryKey, error: errorCountryKey } =
+    useGetCountryKey();
 
   const {
     isLoading: isLoadingAllProducts,
@@ -63,7 +64,8 @@ const RootLayout = () => {
       addressError ||
       errorAllProducts ||
       errorAllCategory ||
-      errorFindCountry
+      errorFindCountry ||
+      errorCountryKey
     ) {
       navigate(
         `/login?msg=${
@@ -71,7 +73,8 @@ const RootLayout = () => {
           addressError.message ||
           errorAllProducts.message ||
           errorAllCategory.message ||
-          errorFindCountry.message
+          errorFindCountry.message ||
+          errorCountryKey.message
         }`,
         {
           state: { msg: error.message || addressError.message },
@@ -85,6 +88,7 @@ const RootLayout = () => {
     errorAllProducts,
     errorAllCategory,
     errorFindCountry,
+    errorCountryKey,
   ]);
 
   if (
@@ -92,7 +96,8 @@ const RootLayout = () => {
     isLoading ||
     isLoadingAllProducts ||
     isLoadingAllCategory ||
-    isLoadingFindCountry
+    isLoadingFindCountry ||
+    isLoadingCountryKey
   ) {
     return (
       <div className="h-screen w-full">
@@ -105,8 +110,7 @@ const RootLayout = () => {
     !isSuccess ||
     !isSuccessAllProducts ||
     !isSuccessAllCategory ||
-    !isSuccessUserAddress ||
-    !isSuccessFindCountry
+    !isSuccessUserAddress
   )
     return;
 

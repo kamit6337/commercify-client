@@ -6,8 +6,8 @@ const UserLayout = () => {
   const { data: user } = useLoginCheck();
 
   return (
-    <section className="bg-gray-100 px-10 py-5 flex items-start gap-5">
-      <div className=" w-72 flex flex-col gap-5 sticky top-[100px] ">
+    <section className="bg-gray-100 px-10 py-5 flex tablet:flex-col items-start tablet:items-stretch gap-5">
+      <div className=" w-72 flex flex-col gap-5 sticky tablet:static top-[100px] ">
         {/* MARK: PROFILE */}
         <div className="bg-white p-3 px-4 flex gap-5">
           <div className="w-14">

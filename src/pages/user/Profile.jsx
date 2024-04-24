@@ -7,18 +7,22 @@ import { postReq } from "../../utils/api/api";
 import Toastify from "../../lib/Toastify";
 import SmallLoading from "../../containers/SmallLoading";
 import { useRef } from "react";
-import useFindCountryAndExchangeRate from "../../hooks/query/useFindCountryAndExchangeRate";
 import { useEffect } from "react";
 import countryDialCode from "../../data/countryDialCode";
 import { useNavigate } from "react-router-dom";
+import countries from "../../data/countries";
 
 const Profile = () => {
   const navigate = useNavigate();
   const { data: user } = useLoginCheck();
   const [isEditable, setIsEditable] = useState(false);
   const countryListRef = useRef(null);
-  const { country } = useFindCountryAndExchangeRate();
-  const [initialCountry, setInitialCountry] = useState("");
+  const [initialCountry, setInitialCountry] = useState(() => {
+    const id = localStorage.getItem("_cou");
+    if (!id) return "";
+    const findCountry = countries.find((obj) => obj.id === Number(id));
+    return findCountry;
+  });
   const [openCountryList, setOpenCountryList] = useState(false);
   const { ToastContainer, showErrorMessage, showAlertMessage } = Toastify();
 
@@ -34,15 +38,6 @@ const Profile = () => {
       mobile: user.mobile,
     },
   });
-
-  useEffect(() => {
-    if (country) {
-      const findCountryCode = countryDialCode.find(
-        (obj) => obj.name === country
-      );
-      setInitialCountry(findCountryCode);
-    }
-  }, [country]);
 
   // Scroll the country list to make the initial country visible when it changes
   useEffect(() => {

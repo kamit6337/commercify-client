@@ -72,7 +72,7 @@ const CategoryProducts = ({ category }) => {
   const products = data.data;
 
   return (
-    <section className="my-20">
+    <section className="my-20 tablet:my-10">
       <p className="mx-10 text-xl ">
         Suggested Products from Category :{" "}
         <span className="text-2xl font-semibold tracking-wide capitalize">
@@ -80,7 +80,7 @@ const CategoryProducts = ({ category }) => {
         </span>
       </p>
       <div className="flex items-center h-[400px] my-10 relative">
-        <div className="relative flex-1 flex mx-10" ref={ref}>
+        <div className="relative flex-1 flex mx-10 tablet:mx-5" ref={ref}>
           <div
             className="absolute h-full flex items-center gap-5 duration-500"
             style={{ transform: `translateX(${index}px)` }}
@@ -144,13 +144,13 @@ const CategoryProducts = ({ category }) => {
           </div>
         </div>
         <p
-          className="absolute h-full left-0  hover:text-4xl duration-300 cursor-pointer  flex items-center px-1 text-slate-800 text-3xl"
+          className="absolute h-full left-0  hover:text-4xl duration-300 cursor-pointer  flex items-center px-1 tablet:px-0 text-slate-800 text-3xl"
           onClick={moveLeft}
         >
           <Icons.leftArrow />
         </p>
         <p
-          className="absolute h-full right-0 hover:text-4xl duration-300 cursor-pointer  flex items-center px-1 text-slate-800 text-3xl"
+          className="absolute h-full right-0 hover:text-4xl duration-300 cursor-pointer  flex items-center px-1 tablet:px-0 text-slate-800 text-3xl"
           onClick={moveRight}
         >
           <Icons.rightArrow />

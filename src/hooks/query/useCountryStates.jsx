@@ -1,10 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import environment from "../../utils/environment";
+import Cookies from "js-cookie";
 
 const URL = "https://www.universal-tutorial.com/api/states/";
 
 const useCountryStates = (country) => {
+  const key = Cookies.get("_ut");
+
   const query = useQuery({
     queryKey: ["Country States", country],
     queryFn: async () => {
@@ -12,12 +14,12 @@ const useCountryStates = (country) => {
 
       const response = await axios.get(addCountryToUrl, {
         headers: {
-          Authorization: `Bearer ${environment.COUNTRY_KEY}`,
+          Authorization: `Bearer ${key}`,
         },
       });
       return response?.data;
     },
-    enabled: !!country,
+    enabled: !!country && !!key,
     staleTime: Infinity,
   });
 

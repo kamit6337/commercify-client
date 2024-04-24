@@ -33,7 +33,7 @@ const CartLayout = () => {
 
   return (
     <section className="p-5 bg-gray-100">
-      <main className="flex gap-5">
+      <main className="flex tablet:flex-col gap-5">
         <div className="flex-1">
           <Outlet />
         </div>
