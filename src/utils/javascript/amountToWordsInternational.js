@@ -85,6 +85,3 @@ function amountToWordsInternational(amount) {
 }
 
 export default amountToWordsInternational;
-
-// Test the function
-console.log(amountToWordsInternational(162083)); // Output: "One Hundred Sixty Two Thousand Eighty Three"

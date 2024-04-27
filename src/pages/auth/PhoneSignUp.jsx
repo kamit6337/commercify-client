@@ -175,10 +175,7 @@ const PhoneSignUp = () => {
                         <div
                           key={i}
                           className="p-2  border-b last:border-none hover:bg-gray-50 cursor-pointer text-sm"
-                          onClick={() => {
-                            handleSelectCountry(obj);
-                            setOpenCountryList(false);
-                          }}
+                          onClick={() => handleSelectCountry(obj)}
                         >
                           {name} ({dial_code})
                         </div>

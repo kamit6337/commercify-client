@@ -9,6 +9,7 @@ import { getReq } from "../utils/api/api";
 import OnClickOutside from "../lib/OnClickOutside";
 import Toastify from "../lib/Toastify";
 import { QueryClient } from "@tanstack/react-query";
+import Cookies from "js-cookie";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -38,6 +39,7 @@ const Navbar = () => {
       localStorage.removeItem("_cart");
       localStorage.removeItem("_wishlist");
       localStorage.removeItem("_cou");
+      Cookies.remove("_ut");
       queryClient.clear();
       window.location.reload();
     } catch (error) {

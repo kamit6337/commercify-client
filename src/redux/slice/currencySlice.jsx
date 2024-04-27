@@ -1,11 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  code: null,
-  name: null,
-  symbol: null,
-  exchangeRate: null,
-  country: null,
+  code: "USD",
+  name: "Dollar",
+  symbol: "$",
+  exchangeRate: 1,
+  country: "United States",
 };
 
 const currencySlice = createSlice({
@@ -15,11 +15,11 @@ const currencySlice = createSlice({
     initialCurrencyData: (state, { payload }) => {
       const { code, name, symbol, exchangeRate, country } = payload;
 
-      state.code = code || "USD";
-      state.name = name || "Dollars";
-      state.symbol = symbol || "$";
-      state.exchangeRate = Math.trunc(exchangeRate) || 1;
-      state.country = country || "United States";
+      state.code = code;
+      state.name = name;
+      state.symbol = symbol;
+      state.exchangeRate = Math.trunc(exchangeRate);
+      state.country = country;
       return state;
     },
   },

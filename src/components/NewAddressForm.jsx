@@ -16,6 +16,7 @@ const NewAddressForm = ({ handleCancel }) => {
   const dispatch = useDispatch();
   const countryListRef = useRef(null);
   const [openCountryList, setOpenCountryList] = useState(false);
+
   const [initialCountry, setInitialCountry] = useState(() => {
     const id = localStorage.getItem("_cou");
     if (!id) return "";
@@ -29,10 +30,12 @@ const NewAddressForm = ({ handleCancel }) => {
     const findCountry = countries.find((obj) => obj.id === Number(countryId));
     return findCountry.name;
   });
+
   const [selectedState, setSelectedState] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
 
   const { isLoading, data, error } = useCountryStates(selectedCountry);
+
   const {
     isLoading: isLoadingStateCities,
     data: stateCities,
@@ -68,11 +71,11 @@ const NewAddressForm = ({ handleCancel }) => {
 
   useEffect(() => {
     if (error) {
-      showErrorMessage({ message: error.message });
+      showErrorMessage({ message: "Something went wrong. Please try later" });
       return;
     }
     if (errorStateCities) {
-      showErrorMessage({ message: errorStateCities.message });
+      showErrorMessage({ message: "Something went wrong. Please try later" });
       return;
     }
   }, [error, showErrorMessage, errorStateCities]);
@@ -247,7 +250,6 @@ const NewAddressForm = ({ handleCancel }) => {
             </div>
 
             {/* MARK: SELECT STATE */}
-
             {isLoading && <Loading hScreen={false} small={true} />}
             {data && (
               <div className="border border-black">

@@ -85,5 +85,4 @@ function rupeesToWords(amount) {
 
 export default rupeesToWords;
 
-// Test the function
-console.log(rupeesToWords(162083)); // Output: "One Lakh Sixty Two Thousand Eighty Three Rupees"
+

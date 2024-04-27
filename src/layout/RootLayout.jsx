@@ -20,11 +20,9 @@ const RootLayout = () => {
 
   const { error, isSuccess, isLoading: isLoadingLoginCheck } = useLoginCheck();
 
-  const { isLoading: isLoadingFindCountry, error: errorFindCountry } =
-    useFindCountryAndExchangeRate();
+  useFindCountryAndExchangeRate();
 
-  const { isLoading: isLoadingCountryKey, error: errorCountryKey } =
-    useGetCountryKey();
+  useGetCountryKey();
 
   const {
     isLoading: isLoadingAllProducts,
@@ -59,45 +57,26 @@ const RootLayout = () => {
   }, [error]);
 
   useEffect(() => {
-    if (
-      error ||
-      addressError ||
-      errorAllProducts ||
-      errorAllCategory ||
-      errorFindCountry ||
-      errorCountryKey
-    ) {
+    if (error || addressError || errorAllProducts || errorAllCategory) {
       navigate(
         `/login?msg=${
           error.message ||
           addressError.message ||
           errorAllProducts.message ||
-          errorAllCategory.message ||
-          errorFindCountry.message ||
-          errorCountryKey.message
+          errorAllCategory.message
         }`,
         {
           state: { msg: error.message || addressError.message },
         }
       );
     }
-  }, [
-    error,
-    navigate,
-    addressError,
-    errorAllProducts,
-    errorAllCategory,
-    errorFindCountry,
-    errorCountryKey,
-  ]);
+  }, [error, navigate, addressError, errorAllProducts, errorAllCategory]);
 
   if (
     isLoadingLoginCheck ||
     isLoading ||
     isLoadingAllProducts ||
-    isLoadingAllCategory ||
-    isLoadingFindCountry ||
-    isLoadingCountryKey
+    isLoadingAllCategory
   ) {
     return (
       <div className="h-screen w-full">

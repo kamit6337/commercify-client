@@ -21,6 +21,7 @@ const OrderStatus = ({
       </div>
     );
   }
+
   if (isCancelled) {
     return (
       <div>

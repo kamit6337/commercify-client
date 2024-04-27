@@ -80,7 +80,7 @@ const UserLayout = () => {
           </div>
         </div>
       </div>
-      <div className="bg-white flex-1">
+      <div className=" flex-1">
         <Outlet />
       </div>
     </section>
