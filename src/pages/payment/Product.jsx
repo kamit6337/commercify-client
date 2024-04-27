@@ -2,84 +2,75 @@
 import { Link, useSearchParams } from "react-router-dom";
 import { useMemo } from "react";
 import useBuyProducts from "../../hooks/query/useBuyProducts";
-import makeDateDaysAfter from "../../utils/javascript/makeDateDaysAfter";
 import { useSelector } from "react-redux";
 import { currencyState } from "../../redux/slice/currencySlice";
+import makeDateFromUTC from "../../utils/javascript/makeDateFromUTC";
+import changePriceDiscountByExchangeRate from "../../utils/javascript/changePriceDiscountByExchangeRate";
 
 const Product = ({ product }) => {
   const searchParams = useSearchParams()[0].get("token");
   const { data } = useBuyProducts(searchParams);
-  const { symbol, exchangeRate } = useSelector(currencyState);
+  const { symbol } = useSelector(currencyState);
 
-  const {
-    _id: id,
-    title,
-    description,
-    price,
-    discountPercentage,
-    thumbnail,
-  } = product;
+  const { _id: id, title, description, thumbnail } = product;
 
-  const [orderCreated, productQuantity] = useMemo(() => {
+  const buyProduct = useMemo(() => {
     if (!data) return null;
 
     const { products } = data;
     const findProduct = products.find((obj) => obj.product === id);
-    return [findProduct.createdAt, findProduct.quantity];
+    return findProduct;
   }, [data, id]);
 
-  const exchangeRatePrice = Math.round(price * exchangeRate);
+  const { price, exchangeRate, quantity, delieveredDate } = buyProduct;
 
-  const roundDiscountPercent = Math.round(discountPercentage);
+  const { country, district, state, address } = data.address;
 
-  const discountedPrice = Math.round(
-    (exchangeRatePrice * (100 - roundDiscountPercent)) / 100
+  const { exchangeRatePrice } = changePriceDiscountByExchangeRate(
+    price,
+    0,
+    exchangeRate
   );
 
-  const { pinCode, district, state, address } = data.address;
-
   return (
-    <div className="w-full border-b-2 last:border-none p-7 flex gap-10">
-      {/* MARK: IMAGE PART */}
-      <div className="h-full w-48">
-        <Link to={`/products/${id}`}>
-          <img
-            src={thumbnail}
-            alt={title}
-            className="h-full w-full object-cover"
-          />
-        </Link>
+    <div className="w-full border-b-2 last:border-none p-7 sm_lap:p-4 flex justify-between gap-10 sm_lap:gap-5 tablet:flex-col tablet:py-10">
+      <div className="flex gap-10 sm_lap:gap-5 ">
+        {/* MARK: IMAGE PART */}
+        <div className="h-full w-48">
+          <Link to={`/products/${id}`}>
+            <img
+              src={thumbnail}
+              alt={title}
+              className="h-full w-full object-cover"
+            />
+          </Link>
+        </div>
+
+        {/* MARK: DETAIL PART */}
+
+        <section className="flex-1 flex flex-col gap-3">
+          <div>
+            <Link to={`/products/${id}`}>
+              <p>{title}</p>
+            </Link>
+            <p className="text-xs">{description}</p>
+          </div>
+
+          <div className="flex gap-2 items-center">
+            <p className="text-2xl font-semibold tracking-wide">
+              {symbol}
+              {exchangeRatePrice}
+            </p>
+          </div>
+          <div className="text-xs">Qty : {quantity}</div>
+        </section>
       </div>
 
-      {/* MARK: DETAIL PART */}
-
-      <section className="flex-1 flex flex-col gap-3">
-        <div>
-          <Link to={`/products/${id}`}>
-            <p>{title}</p>
-          </Link>
-          <p className="text-xs">{description}</p>
-        </div>
-
-        <div className="flex gap-2 items-center">
-          <p className="text-2xl font-semibold tracking-wide">
-            {symbol}
-            {discountedPrice}
-          </p>
-          <p className="line-through">
-            {symbol}
-            {exchangeRatePrice}
-          </p>
-          <p className="text-xs">{roundDiscountPercent}% Off</p>
-        </div>
-        <div className="text-xs">Qty : {productQuantity}</div>
-      </section>
-
       {/* MARK: DELIVERY PART */}
-      <div className="w-96">
+      <div className="w-96 grow-0 shrink-0 sm_lap:w-72 tablet:w-full">
         <div className="flex items-center gap-3 text-sm">
           <p>Delievered By:</p>
-          <p className="text-base">{makeDateDaysAfter(orderCreated)}</p>
+          <p className="text-base">{makeDateFromUTC(delieveredDate)}</p>
         </div>
         <div className="flex mt-2 gap-3 text-sm">
           <p className="whitespace-nowrap">On Address:</p>
@@ -89,7 +80,7 @@ const Product = ({ product }) => {
               <p className="text-sm">{district},</p>
               <p className="ml-2 text-sm">{state}</p>
               <p className="mx-1">-</p>
-              <p>{pinCode}</p>
+              <p>{country}</p>
             </div>
           </div>
         </div>

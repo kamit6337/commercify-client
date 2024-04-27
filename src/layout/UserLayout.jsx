@@ -6,8 +6,8 @@ const UserLayout = () => {
   const { data: user } = useLoginCheck();
 
   return (
-    <section className="bg-gray-100 px-10 py-5 flex tablet:flex-col items-start tablet:items-stretch gap-5">
-      <div className=" w-72 flex flex-col gap-5 sticky tablet:static top-[100px] ">
+    <section className="bg-gray-100 px-10 tablet:px-4 py-5 flex tablet:flex-col items-start tablet:items-stretch gap-5">
+      <div className="w-72 tablet:w-full flex flex-col gap-5 sticky tablet:static top-[100px] ">
         {/* MARK: PROFILE */}
         <div className="bg-white p-3 px-4 flex gap-5">
           <div className="w-14">
@@ -26,15 +26,16 @@ const UserLayout = () => {
 
         {/* MARK: USER DATA */}
         <div className="bg-white">
-          <Link to={`/user/orders`}>
-            <div className="py-4 border-b flex items-center cursor-pointer">
-              <p className="text-2xl text-blue-500 w-16 flex justify-center">
-                <Icons.myOrders />
-              </p>
-              <p className="uppercase flex-1">My Orders</p>
-            </div>
-          </Link>
-
+          <div className="border-b">
+            <Link to={`/user/orders`}>
+              <div className="my-3 py-2 flex items-center cursor-pointer hover:bg-sky-200">
+                <p className="text-2xl text-blue-500 w-16 flex justify-center">
+                  <Icons.myOrders />
+                </p>
+                <p className="uppercase flex-1 ">My Orders</p>
+              </div>
+            </Link>
+          </div>
           <div className="border-b py-2">
             <div className="py-4 flex items-center">
               <p className="text-2xl text-blue-500 w-16 flex justify-center">

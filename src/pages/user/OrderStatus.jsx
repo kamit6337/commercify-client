@@ -1,4 +1,4 @@
-import makeDateDaysAfter from "../../utils/javascript/makeDateDaysAfter";
+import makeDateFromUTC from "../../utils/javascript/makeDateFromUTC";
 
 /* eslint-disable react/prop-types */
 const OrderStatus = ({
@@ -16,7 +16,7 @@ const OrderStatus = ({
         </div>
         <div className="flex items-center gap-3 text-sm mt-1">
           <p>On: </p>
-          <p>{makeDateDaysAfter(delieveredDate, 0)}</p>
+          <p>{makeDateFromUTC(delieveredDate)}</p>
         </div>
       </div>
     );
@@ -29,7 +29,7 @@ const OrderStatus = ({
         </div>
         <div className="flex items-center gap-3 text-sm mt-1">
           <p>On: </p>
-          <p>{makeDateDaysAfter(updatedAt, 0)}</p>
+          <p>{makeDateFromUTC(updatedAt)}</p>
         </div>
       </div>
     );
@@ -43,7 +43,7 @@ const OrderStatus = ({
         </div>
         <div className="flex items-center gap-3 text-sm mt-1">
           <p>On: </p>
-          <p>{makeDateDaysAfter(updatedAt, 0)}</p>
+          <p>{makeDateFromUTC(updatedAt)}</p>
         </div>
       </div>
     );
@@ -54,7 +54,7 @@ const OrderStatus = ({
       <div className="flex items-center gap-3 text-sm">
         <p>Delievered By:</p>
         <p className="text-base">
-          {makeDateDaysAfter(delieveredDate || updatedAt, 0)}
+          {makeDateFromUTC(delieveredDate || updatedAt)}
         </p>
       </div>
     );

@@ -54,7 +54,7 @@ const OrderCancel = () => {
   } = buyProduct;
 
   const { _id: productId, title, description, thumbnail } = product;
-  const { pinCode, district, state, address } = buyAddress;
+  const { country, district, state, address } = buyAddress;
 
   const onSubmit = async () => {
     try {
@@ -84,31 +84,34 @@ const OrderCancel = () => {
           <div className="space-y-10">
             <div className="p-7">
               {/* MARK: UPPER PORTION */}
-              <div className="w-full flex gap-10">
-                <div className="h-full w-48">
-                  <Link to={`/products/${id}`}>
-                    <img
-                      src={thumbnail}
-                      alt={title}
-                      className="h-full w-full object-cover"
-                    />
-                  </Link>
-                </div>
-                <section className="flex-1 flex flex-col justify-between">
-                  <div>
-                    <Link to={`/products/${productId}`}>
-                      <p>{title}</p>
+              <div className="w-full flex gap-10 tablet:flex-col">
+                <div className="flex gap-10">
+                  <div className="h-full w-48">
+                    <Link to={`/products/${id}`}>
+                      <img
+                        src={thumbnail}
+                        alt={title}
+                        className="h-full w-full object-cover"
+                      />
                     </Link>
-                    <p className="text-xs">{description}</p>
                   </div>
+                  <section className="flex-1 flex flex-col gap-2">
+                    <div>
+                      <Link to={`/products/${productId}`}>
+                        <p>{title}</p>
+                      </Link>
+                      <p className="text-xs">{description}</p>
+                    </div>
 
-                  <p className="text-2xl font-semibold tracking-wide">
-                    {symbol}
-                    {exchangeRatePrice}
-                  </p>
-                  <div className="text-xs">Qty : {quantity}</div>
-                </section>
-                <div className="">
+                    <p className="text-2xl font-semibold tracking-wide">
+                      {symbol}
+                      {exchangeRatePrice}
+                    </p>
+                    <div className="text-xs">Qty : {quantity}</div>
+                  </section>
+                </div>
+
+                <div className="w-60 grow-0 shrink-0">
                   {!isDelievered && (
                     <div className="flex items-center gap-3 text-sm">
                       <p>Delievered By:</p>
@@ -125,7 +128,7 @@ const OrderCancel = () => {
               </div>
 
               {/* MARK: LOWER PORTION */}
-              <div className="flex justify-between items-center mt-6 ml-6">
+              <div className="flex justify-between items-center mt-6">
                 {/* MARK: ADDRESS */}
                 <div className="flex mt-1 gap-3 text-sm">
                   <p>Address:</p>
@@ -135,7 +138,7 @@ const OrderCancel = () => {
                       <p className="text-sm">{district},</p>
                       <p className="ml-2 text-sm">{state}</p>
                       <p className="mx-1">-</p>
-                      <p>{pinCode}</p>
+                      <p>{country}</p>
                     </div>
                   </div>
                 </div>

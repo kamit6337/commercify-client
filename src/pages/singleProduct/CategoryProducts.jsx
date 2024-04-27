@@ -8,7 +8,7 @@ import { currencyState } from "../../redux/slice/currencySlice";
 import { Icons } from "../../assets/icons";
 import { useLayoutEffect, useRef, useState } from "react";
 
-const CategoryProducts = ({ category }) => {
+const CategoryProducts = ({ category, productId }) => {
   const { symbol, exchangeRate } = useSelector(currencyState);
   const { _id, title } = category;
 
@@ -69,7 +69,7 @@ const CategoryProducts = ({ category }) => {
     setWidthDiff((prev) => prev + positiveIndex);
   };
 
-  const products = data.data;
+  const products = data.data.filter((obj) => obj._id !== productId);
 
   return (
     <section className="my-20 tablet:my-10">

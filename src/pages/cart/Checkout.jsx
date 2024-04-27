@@ -28,8 +28,6 @@ const Checkout = () => {
         exchangeRate,
       });
 
-      console.log("checkoutSession", checkoutSession);
-
       stripe.redirectToCheckout({
         sessionId: checkoutSession.session.id,
       });

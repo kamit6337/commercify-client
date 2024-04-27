@@ -44,6 +44,7 @@ const useFindCountryAndExchangeRate = () => {
       const exchangeValue = currencyData[findCountryInfo.currency.code];
 
       obj.exchangeRate = exchangeValue;
+      obj.country = findCountryInfo.name;
 
       dispatch(initialCurrencyData(obj));
     }

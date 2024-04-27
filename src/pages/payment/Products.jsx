@@ -4,7 +4,7 @@ import Loading from "../../containers/Loading";
 import useProductsFromIDs from "../../hooks/query/useProductsFromIDs";
 import Product from "./Product";
 
-const Products = ({ list, wishlist }) => {
+const Products = ({ list }) => {
   const { data, isLoading, error } = useProductsFromIDs(list);
 
   if (isLoading) {
@@ -18,7 +18,7 @@ const Products = ({ list, wishlist }) => {
   return (
     <div className="flex flex-col ">
       {data.map((product, i) => {
-        return <Product key={i} product={product} wishlist={wishlist} />;
+        return <Product key={i} product={product} />;
       })}
     </div>
   );

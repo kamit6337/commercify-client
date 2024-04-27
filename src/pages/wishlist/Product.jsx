@@ -51,7 +51,7 @@ const Product = ({ product }) => {
     changePriceDiscountByExchangeRate(price, discountPercentage, exchangeRate);
 
   return (
-    <div className="w-full h-48 border-b-2 last:border-none p-7 flex gap-10">
+    <div className="w-full h-48 border-b-2 last:border-none p-7 flex gap-10 tablet:gap-5">
       <div className="h-full w-48">
         <Link to={`/products/${id}`}>
           <img
@@ -61,12 +61,14 @@ const Product = ({ product }) => {
           />
         </Link>
       </div>
-      <div className="flex-1 h-full mr-20 flex flex-col gap-3">
+      <div className="flex-1 h-full mr-20 sm_lap:mr-0 flex flex-col gap-3">
         <div>
           <Link to={`/products/${id}`}>
             <p>{title}</p>
           </Link>
-          <p className="text-sm">{description}</p>
+          <p className="text-sm tablet:text-xs tablet:line-clamp-2">
+            {description}
+          </p>
         </div>
         <div className="flex gap-2 items-center">
           <p className="text-2xl font-semibold tracking-wide">
@@ -110,14 +112,14 @@ const Product = ({ product }) => {
         </div>
         {isAddedToCart ? (
           <p
-            className="border p-3 w-max rounded-md cursor-pointer bg-gray-200"
+            className="border p-3 w-max rounded-md cursor-pointer bg-gray-200 tablet:text-sm tablet:p-1"
             onClick={removeFromCart}
           >
             Added To Cart
           </p>
         ) : (
           <p
-            className="border p-3 w-max rounded-md cursor-pointer"
+            className="border p-3 w-max rounded-md cursor-pointer tablet:text-sm tablet:p-1"
             onClick={addToCart}
           >
             Add to Cart

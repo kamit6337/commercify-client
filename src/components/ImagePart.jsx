@@ -16,6 +16,12 @@ const ImagePart = ({ images, title, id }) => {
   const { cart, wishlist } = useSelector(localStorageState);
 
   useEffect(() => {
+    if (!id || images.length === 0) return;
+
+    setImageSelected(images[0]);
+  }, [id, images]);
+
+  useEffect(() => {
     if (cart.find((obj) => obj.id === id)) {
       setIsAddedToCart(true);
     } else {

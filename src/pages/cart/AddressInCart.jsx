@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useLoginCheck from "../../hooks/auth/useLoginCheck";
 import { Link } from "react-router-dom";
 import { Icons } from "../../assets/icons";
@@ -15,6 +15,13 @@ const AddressInCart = () => {
   const { addresses: userAddress, selectedAddress } = useSelector(addressState);
 
   const [openNewAddressForm, setOpenNewAddressForm] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "instant",
+    });
+  }, []);
 
   const handleCancel = () => {
     setOpenNewAddressForm(false);
@@ -57,10 +64,11 @@ const AddressInCart = () => {
                   />
                   <label htmlFor={_id}>
                     <div className="cursor-pointer">
-                      <div className="flex items-center gap-10">
+                      <div className="flex items-center gap-2">
                         <p className="capitalize font-semibold tracking-wide">
                           {name}
                         </p>
+                        <p>-</p>
                         <p className="font-semibold tracking-wide">{mobile}</p>
                       </div>
                       <p className="mt-4 mb-2 text-sm">{address}</p>

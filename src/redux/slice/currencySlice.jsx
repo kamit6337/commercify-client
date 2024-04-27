@@ -5,6 +5,7 @@ const initialState = {
   name: null,
   symbol: null,
   exchangeRate: null,
+  country: null,
 };
 
 const currencySlice = createSlice({
@@ -12,12 +13,13 @@ const currencySlice = createSlice({
   initialState,
   reducers: {
     initialCurrencyData: (state, { payload }) => {
-      const { code, name, symbol, exchangeRate } = payload;
+      const { code, name, symbol, exchangeRate, country } = payload;
 
       state.code = code || "USD";
-      state.name = name;
+      state.name = name || "Dollars";
       state.symbol = symbol || "$";
-      state.exchangeRate = exchangeRate || 1;
+      state.exchangeRate = Math.trunc(exchangeRate) || 1;
+      state.country = country || "United States";
       return state;
     },
   },

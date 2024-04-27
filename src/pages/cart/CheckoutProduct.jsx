@@ -5,6 +5,8 @@ import { useSelector } from "react-redux";
 import { localStorageState } from "../../redux/slice/localStorageSlice";
 import { currencyState } from "../../redux/slice/currencySlice";
 import { addressState } from "../../redux/slice/addressSlice";
+import makeDateDaysAfter from "../../utils/javascript/makeDateDaysAfter";
+import changePriceDiscountByExchangeRate from "../../utils/javascript/changePriceDiscountByExchangeRate";
 
 const CheckoutProduct = ({ product }) => {
   const { symbol, exchangeRate } = useSelector(currencyState);
@@ -19,6 +21,7 @@ const CheckoutProduct = ({ product }) => {
     price,
     discountPercentage,
     thumbnail,
+    deliveredBy,
   } = product;
 
   const productQuantity = useMemo(() => {
@@ -28,11 +31,8 @@ const CheckoutProduct = ({ product }) => {
     return findProduct.quantity;
   }, [cart, id]);
 
-  const exchangeRatePrice = Math.round(price * exchangeRate);
-  const roundDiscountPercent = Math.round(discountPercentage);
-  const discountedPrice = Math.round(
-    (exchangeRatePrice * (100 - roundDiscountPercent)) / 100
-  );
+  const { discountedPrice, exchangeRatePrice, roundDiscountPercent } =
+    changePriceDiscountByExchangeRate(price, discountPercentage, exchangeRate);
 
   return (
     <div className="w-full border-b-2 last:border-none p-7 flex gap-10">
@@ -67,8 +67,13 @@ const CheckoutProduct = ({ product }) => {
           </p>
           <p className="text-xs">{roundDiscountPercent}% Off</p>
         </div>
-        <p className="text-sm">Qty: {productQuantity}</p>
-        <div className="flex gap-2 text-sm">
+        <p className="text-sm text-gray-500">Qty: {productQuantity}</p>
+        <div className="flex items-center gap-1 text-gray-500 text-sm">
+          <p>Delivery</p>
+          <p>-</p>
+          <p>{makeDateDaysAfter(deliveredBy)}</p>
+        </div>
+        <div className="flex gap-2 text-sm text-gray-500">
           <p>Address : </p>
           <div className="">
             <div className="flex items-center gap-2">

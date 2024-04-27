@@ -30,13 +30,13 @@ const PaymentSuccess = () => {
       <main className="bg-white">
         <div className="p-5 flex items-center justify-between">
           <div>
-            <p className="text-2xl font-semibold tracking-wide">
+            <p className="text-2xl tablet:text-lg font-semibold tracking-wide">
               Payment is successful
             </p>
-            <p>Your orders has been created</p>
+            <p className="tablet:text-xs">Your orders has been created</p>
           </div>
           <Link to={`/`}>
-            <div className="px-20 py-3 bg-orange-500 text-white rounded-md">
+            <div className="px-20 tablet:px-10 py-3 bg-orange-500 text-white rounded-md">
               Continue Shopping
             </div>
           </Link>

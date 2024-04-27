@@ -37,7 +37,7 @@ const CartLayout = () => {
         <div className="flex-1">
           <Outlet />
         </div>
-        <div className="bg-white w-96 h-96 sticky top-[100px]">
+        <div className="bg-white w-96 sm_lap:w-80 tablet:w-full h-96 sticky top-[100px]">
           <PriceList />
         </div>
       </main>

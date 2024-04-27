@@ -9,6 +9,8 @@ import { currencyState } from "../../redux/slice/currencySlice";
 import CategoryProducts from "./CategoryProducts";
 import ProductReviews from "./ProductReviews";
 import useProductRatings from "../../hooks/query/useProductRatings";
+import makeDateDaysAfter from "../../utils/javascript/makeDateDaysAfter";
+import changePriceDiscountByExchangeRate from "../../utils/javascript/changePriceDiscountByExchangeRate";
 
 const SingleProduct = () => {
   const { id } = useParams();
@@ -41,14 +43,18 @@ const SingleProduct = () => {
     );
   }
 
-  const { title, description, price, category, images, discountPercentage } =
-    data.data;
+  const {
+    title,
+    description,
+    price,
+    category,
+    images,
+    discountPercentage,
+    deliveredBy,
+  } = data.data;
 
-  const exchangeRatePrice = Math.round(price * exchangeRate);
-  const roundDiscountPercent = Math.round(discountPercentage);
-  const discountedPrice = Math.round(
-    (exchangeRatePrice * (100 - roundDiscountPercent)) / 100
-  );
+  const { discountedPrice, exchangeRatePrice, roundDiscountPercent } =
+    changePriceDiscountByExchangeRate(price, discountPercentage, exchangeRate);
 
   return (
     <>
@@ -68,7 +74,7 @@ const SingleProduct = () => {
               <p className="text-xl font-semibold">{title}</p>
               <p className="text-xs">{description}</p>
             </div>
-            <p className="text-sm">
+            <p className="text-sm text-gray-500">
               <Link to={`/category/${category._id}`}>
                 Category : {category.title}
               </Link>
@@ -89,9 +95,14 @@ const SingleProduct = () => {
                 <p className="text-xs">{roundDiscountPercent}% Off</p>
               </div>
             </div>
+            <div className="flex items-center gap-1 text-gray-500 text-sm">
+              <p>Delivery</p>
+              <p>-</p>
+              <p>{makeDateDaysAfter(deliveredBy)}</p>
+            </div>
           </div>
         </section>
-        <CategoryProducts category={category} />
+        <CategoryProducts category={category} productId={id} />
         <ProductReviews id={id} />
       </main>
     </>

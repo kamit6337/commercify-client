@@ -10,6 +10,8 @@ import {
 } from "../../redux/slice/localStorageSlice";
 import { Icons } from "../../assets/icons";
 import { currencyState } from "../../redux/slice/currencySlice";
+import makeDateDaysAfter from "../../utils/javascript/makeDateDaysAfter";
+import changePriceDiscountByExchangeRate from "../../utils/javascript/changePriceDiscountByExchangeRate";
 
 const Product = ({ product, wishlist: isWishlist = true }) => {
   const dispatch = useDispatch();
@@ -26,6 +28,7 @@ const Product = ({ product, wishlist: isWishlist = true }) => {
     price,
     discountPercentage,
     thumbnail,
+    deliveredBy,
   } = product;
 
   useEffect(() => {
@@ -61,11 +64,8 @@ const Product = ({ product, wishlist: isWishlist = true }) => {
     dispatch(updateCart({ id, add: false }));
   };
 
-  const exchangeRatePrice = Math.round(price * exchangeRate);
-  const roundDiscountPercent = Math.round(discountPercentage);
-  const discountedPrice = Math.round(
-    (exchangeRatePrice * (100 - roundDiscountPercent)) / 100
-  );
+  const { discountedPrice, exchangeRatePrice, roundDiscountPercent } =
+    changePriceDiscountByExchangeRate(price, discountPercentage, exchangeRate);
 
   return (
     <div className="w-full border-b-2 last:border-none p-7 flex gap-10">
@@ -103,7 +103,7 @@ const Product = ({ product, wishlist: isWishlist = true }) => {
             <Link to={`/products/${id}`}>
               <p>{title}</p>
             </Link>
-            <p className="text-xs mt-1">{description}</p>
+            <p className="text-xs mt-1 tablet:line-clamp-2">{description}</p>
           </div>
 
           <div className="flex gap-2 items-center">
@@ -117,9 +117,14 @@ const Product = ({ product, wishlist: isWishlist = true }) => {
             </p>
             <p className="text-xs">{roundDiscountPercent}% Off</p>
           </div>
+          <div className="flex items-center gap-1 text-gray-500 text-sm">
+            <p>Delivery</p>
+            <p>-</p>
+            <p>{makeDateDaysAfter(deliveredBy)}</p>
+          </div>
         </div>
 
-        <div className="flex gap-5 items-center">
+        <div className="flex gap-5 items-center mt-10">
           {isWishlist && isAddedToWishlist && (
             <p className="p-1 w-max rounded-md bg-gray-200">
               Saved To Wishlist
