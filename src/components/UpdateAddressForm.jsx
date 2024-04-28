@@ -151,7 +151,7 @@ const UpdateAddressForm = ({ handleCancel, data: givenAddress }) => {
                   <div
                     className={`${
                       initialCountry ? "w-20" : "w-32"
-                    }  border flex items-center justify-center gap-1 cursor-pointer h-12 whitespace-nowrap text-xs duration-500`}
+                    }  border border-black flex items-center justify-center gap-1 cursor-pointer h-12 whitespace-nowrap text-xs duration-500`}
                     onClick={() => setOpenCountryList((prev) => !prev)}
                   >
                     <p>
@@ -193,7 +193,7 @@ const UpdateAddressForm = ({ handleCancel, data: givenAddress }) => {
                 </div>
 
                 <div className="flex-1 flex flex-col ">
-                  <p className="w-full border h-12 flex items-center">
+                  <p className="w-full border h-12 flex items-center border-black">
                     <input
                       {...register("mobile", {
                         required: true,

@@ -13,6 +13,7 @@ import useAllCategory from "../hooks/query/useAllCategory";
 import useFindCountryAndExchangeRate from "../hooks/query/useFindCountryAndExchangeRate";
 import OfflineDetector from "../lib/OfflineDetector";
 import useGetCountryKey from "../hooks/query/useGetCountryKey";
+import useUserOrders from "../hooks/query/useUserOrders";
 
 const RootLayout = () => {
   const navigate = useNavigate();
@@ -43,6 +44,12 @@ const RootLayout = () => {
     isSuccess: isSuccessUserAddress,
   } = useUserAddress(isSuccess);
 
+  const {
+    isLoading: isLoadingUserOrders,
+    error: errorUserOrders,
+    isSuccess: isSuccessUserOrders,
+  } = useUserOrders(isSuccess);
+
   useEffect(() => {
     if (addressData) {
       dispatch(initialAddressData(addressData));
@@ -57,26 +64,42 @@ const RootLayout = () => {
   }, [error]);
 
   useEffect(() => {
-    if (error || addressError || errorAllProducts || errorAllCategory) {
-      navigate(
-        `/login?msg=${
-          error.message ||
-          addressError.message ||
-          errorAllProducts.message ||
-          errorAllCategory.message
-        }`,
-        {
-          state: { msg: error.message || addressError.message },
-        }
-      );
+    if (error) {
+      navigate(`/login?msg=${error.message}`);
+      return;
     }
-  }, [error, navigate, addressError, errorAllProducts, errorAllCategory]);
+
+    if (addressError) {
+      navigate(`/login?msg=${addressError.message}`);
+      return;
+    }
+    if (errorAllProducts) {
+      navigate(`/login?msg=${errorAllProducts.message}`);
+      return;
+    }
+    if (errorAllCategory) {
+      navigate(`/login?msg=${errorAllCategory.message}`);
+      return;
+    }
+    if (errorUserOrders) {
+      navigate(`/login?msg=${errorUserOrders.message}`);
+      return;
+    }
+  }, [
+    error,
+    navigate,
+    addressError,
+    errorAllProducts,
+    errorAllCategory,
+    errorUserOrders,
+  ]);
 
   if (
     isLoadingLoginCheck ||
     isLoading ||
     isLoadingAllProducts ||
-    isLoadingAllCategory
+    isLoadingAllCategory ||
+    isLoadingUserOrders
   ) {
     return (
       <div className="h-screen w-full">
@@ -89,7 +112,8 @@ const RootLayout = () => {
     !isSuccess ||
     !isSuccessAllProducts ||
     !isSuccessAllCategory ||
-    !isSuccessUserAddress
+    !isSuccessUserAddress ||
+    !isSuccessUserOrders
   )
     return;
 

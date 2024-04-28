@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Icons } from "../../assets/icons";
 import { useRef } from "react";
 import { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import Loading from "../../containers/Loading";
 import { useForm } from "react-hook-form";
 import { postAuthReq } from "../../utils/api/authApi";
@@ -13,6 +13,9 @@ import countries from "../../data/countries";
 const PhoneLogin = () => {
   const navigate = useNavigate();
   const countryListRef = useRef(null);
+
+  const msg = useSearchParams()[0].get("msg");
+
   const [initialCountry, setInitialCountry] = useState(() => {
     const id = localStorage.getItem("_cou");
     if (!id) return "";
@@ -32,6 +35,10 @@ const PhoneLogin = () => {
       mobile: "",
     },
   });
+
+  useEffect(() => {
+    showErrorMessage({ message: msg });
+  }, []);
 
   // Scroll the country list to make the initial country visible when it changes
   useEffect(() => {

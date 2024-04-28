@@ -6,6 +6,7 @@ import { addressReducer } from "./slice/addressSlice";
 import environment from "../utils/environment";
 import { currencyReducer } from "./slice/currencySlice";
 import { ratingReducer } from "./slice/ratingSlice";
+import { userOrdersReducer } from "./slice/userOrdersSlice";
 
 const PRODUCTION = "production";
 
@@ -16,6 +17,7 @@ export const store = configureStore({
     address: addressReducer,
     currency: currencyReducer,
     rating: ratingReducer,
+    orders: userOrdersReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

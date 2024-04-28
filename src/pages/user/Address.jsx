@@ -25,7 +25,7 @@ const Address = () => {
       <Helmet>
         <title>Manage Addresses</title>
       </Helmet>
-      <section className="p-5 flex flex-col gap-10">
+      <section className="p-5 flex flex-col gap-10 bg-white">
         <p className="text-lg">Manage Addresses</p>
 
         {openNewAddressForm ? (

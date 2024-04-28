@@ -110,7 +110,7 @@ const Profile = () => {
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="p-5 flex flex-col gap-10"
+        className="p-5 flex flex-col gap-10 bg-white"
       >
         {/* MARK: PERSONAL INFO */}
         <div className="flex flex-col">

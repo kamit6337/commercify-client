@@ -1,38 +1,48 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
-import useUserOrders from "../../hooks/query/useUserOrders";
-import { useMemo } from "react";
-import makeDateDaysAfter from "../../utils/javascript/makeDateDaysAfter";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import SmallLoading from "../../containers/SmallLoading";
 import { patchReq } from "../../utils/api/api";
 import Toastify from "../../lib/Toastify";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { currencyState } from "../../redux/slice/currencySlice";
 import changePriceDiscountByExchangeRate from "../../utils/javascript/changePriceDiscountByExchangeRate";
+import makeDateFromUTC from "../../utils/javascript/makeDateFromUTC";
+import {
+  cancelTheOrder,
+  userOrdersState,
+} from "../../redux/slice/userOrdersSlice";
 
 const OrderCancel = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
-  const { data, refetch } = useUserOrders();
+  const { orders } = useSelector(userOrdersState);
   const { symbol, exchangeRate } = useSelector(currencyState);
   const { ToastContainer, showErrorMessage } = Toastify();
 
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useForm({
     defaultValues: {
       reason: "",
     },
   });
 
-  const buyProduct = useMemo(() => {
-    if (!id || !data) return null;
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "instant",
+    });
+  }, [id]);
 
-    const buy = data.data.find((obj) => obj._id === id);
+  const buyProduct = useMemo(() => {
+    if (!id) return null;
+    const buy = orders.find((obj) => obj._id === id);
     return { ...buy };
-  }, [id, data]);
+  }, [id, orders]);
 
   if (!buyProduct) {
     return (
@@ -49,8 +59,8 @@ const OrderCancel = () => {
     quantity,
     address: buyAddress,
     isDelievered,
+    delieveredDate,
     createdAt,
-    updatedAt,
   } = buyProduct;
 
   const { _id: productId, title, description, thumbnail } = product;
@@ -59,8 +69,8 @@ const OrderCancel = () => {
   const onSubmit = async () => {
     try {
       const cancelOrder = await patchReq("/buy/cancel", { id: buyId });
-      console.log("cancelorder", cancelOrder);
-      refetch();
+      console.log("cancel order", cancelOrder);
+      dispatch(cancelTheOrder(cancelOrder.data));
       navigate("/user/orders");
     } catch (error) {
       showErrorMessage({ message: error.message });
@@ -116,13 +126,13 @@ const OrderCancel = () => {
                     <div className="flex items-center gap-3 text-sm">
                       <p>Delievered By:</p>
                       <p className="text-base">
-                        {makeDateDaysAfter(updatedAt, 8)}
+                        {makeDateFromUTC(delieveredDate)}
                       </p>
                     </div>
                   )}
                   <div className="flex items-center gap-3 text-sm">
                     <p>Ordered on:</p>
-                    <p className="">{makeDateDaysAfter(createdAt, 0)}</p>
+                    <p className="">{makeDateFromUTC(createdAt)}</p>
                   </div>
                 </div>
               </div>
@@ -150,22 +160,30 @@ const OrderCancel = () => {
               className="px-7 pb-7 space-y-10"
               onSubmit={handleSubmit(onSubmit)}
             >
-              <div className="border">
-                <textarea
-                  rows={5}
-                  {...register("reason", {
-                    required: true,
-                  })}
-                  placeholder="Why do you want to cancel the order. Give suggestion to improve our services"
-                  className="p-3 w-full"
-                />
+              <div>
+                <div className="border">
+                  <textarea
+                    rows={5}
+                    {...register("reason", {
+                      required:
+                        "Please write the reason for cancelling the order",
+                    })}
+                    placeholder="Why do you want to cancel the order. Give suggestion to improve our services"
+                    className="p-3 w-full"
+                  />
+                </div>
+                <p className="text-red-500 text-xs h-4 mt-1 ml-1">
+                  {errors.reason?.message}
+                </p>
               </div>
-              <div className="flex justify-end">
+              <div className="flex justify-end items-center gap-10">
+                <p>Cancel</p>
                 <button
                   type="submit"
+                  disabled={isSubmitting}
                   className="rounded cursor-pointer py-2 px-10 bg-slate-600 text-white"
                 >
-                  {isSubmitting ? <SmallLoading /> : "Cancel"}
+                  {isSubmitting ? <SmallLoading /> : "Submit"}
                 </button>
               </div>
             </form>

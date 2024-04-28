@@ -1,5 +1,3 @@
-import useUserOrders from "../../hooks/query/useUserOrders";
-import Loading from "../../containers/Loading";
 import { Link } from "react-router-dom";
 import OrderStatus from "./OrderStatus";
 import { useEffect, useState } from "react";
@@ -8,35 +6,32 @@ import { useSelector } from "react-redux";
 import { currencyState } from "../../redux/slice/currencySlice";
 import makeDateFromUTC from "../../utils/javascript/makeDateFromUTC";
 import { Pagination, Stack } from "@mui/material";
+import { userOrdersState } from "../../redux/slice/userOrdersSlice";
 
 const UserOrders = () => {
   const perPage = 5;
-  const { isLoading, error, data } = useUserOrders();
   const { symbol } = useSelector(currencyState);
+  const { orders } = useSelector(userOrdersState);
   const [page, setPage] = useState(1);
-  const [totaPage, setTotalPage] = useState(null);
+  const [totaPage, setTotalPage] = useState(0);
   const [buys, setBuys] = useState([]);
 
   useEffect(() => {
-    if (data) {
-      const buys = data.data;
+    const lengthOfBuys = orders.length;
 
-      const lengthOfBuys = buys.length;
-
-      let calculateTotalPages;
-      if (lengthOfBuys % perPage === 0) {
-        calculateTotalPages = lengthOfBuys / perPage;
-      } else {
-        calculateTotalPages = Math.trunc(lengthOfBuys / perPage) + 1;
-      }
-
-      if (page > calculateTotalPages) return;
-      const sliced = buys.slice((page - 1) * perPage, page * perPage);
-
-      setTotalPage(calculateTotalPages);
-      setBuys(sliced);
+    let calculateTotalPages;
+    if (lengthOfBuys % perPage === 0) {
+      calculateTotalPages = lengthOfBuys / perPage;
+    } else {
+      calculateTotalPages = Math.trunc(lengthOfBuys / perPage) + 1;
     }
-  }, [data, page]);
+
+    if (page > calculateTotalPages) return;
+    const sliced = orders.slice((page - 1) * perPage, page * perPage);
+
+    setTotalPage(calculateTotalPages);
+    setBuys(sliced);
+  }, [orders, page]);
 
   useEffect(() => {
     window.scrollTo({
@@ -44,22 +39,6 @@ const UserOrders = () => {
       behavior: "smooth",
     });
   }, [page]);
-
-  if (isLoading) {
-    return (
-      <div className="w-full h-96">
-        <Loading />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="w-full h-96">
-        <p>{error.message}</p>
-      </div>
-    );
-  }
 
   const handleChange = (event, value) => {
     setPage(value);
@@ -84,7 +63,7 @@ const UserOrders = () => {
   return (
     <>
       <section className="bg-white">
-        <p className="border-b-2 py-4 px-10">Orders ({data.data.length})</p>
+        <p className="border-b-2 py-4 px-10">Orders ({orders.length})</p>
         <main>
           {buys.map((buy, i) => {
             const {
