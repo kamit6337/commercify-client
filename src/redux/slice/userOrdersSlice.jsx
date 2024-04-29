@@ -10,7 +10,7 @@ const userOrdersSlice = createSlice({
   reducers: {
     fillInitialOrders: (state, { payload }) => {
       const orderList = payload;
-      state.orders = [...orderList];
+      state.orders = orderList;
       return state;
     },
     addNewOrders: (state, { payload }) => {
@@ -36,4 +36,4 @@ export const { fillInitialOrders, addNewOrders, cancelTheOrder } =
 
 export const userOrdersReducer = userOrdersSlice.reducer;
 
-export const userOrdersState = (state) => state.orders;
+export const userOrdersState = (state) => state.userOrders;

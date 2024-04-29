@@ -6,7 +6,6 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { postAuthReq } from "../../utils/api/authApi";
-import { patchReq } from "../../utils/api/api";
 
 const VerifyOtp = () => {
   const resendOtpSeconds = 45;
@@ -54,19 +53,6 @@ const VerifyOtp = () => {
     const { otp } = data;
 
     try {
-      if (state?.login) {
-        const response = await postAuthReq("/login/verify-otp", {
-          mobileNumber: state.mobile,
-          otp: otp,
-          token,
-        });
-
-        console.log("response", response);
-
-        navigate("/");
-        return;
-      }
-
       if (state?.signup) {
         await postAuthReq("/signup/verify-otp", {
           mobileNumber: state.mobile,
@@ -77,12 +63,21 @@ const VerifyOtp = () => {
         return;
       }
 
-      await patchReq("/user", {
+      const response = await postAuthReq("/login/verify-otp", {
         mobileNumber: state.mobile,
         otp: otp,
         token,
       });
+
+      console.log("response", response);
+
       navigate("/");
+      // await patchReq("/user", {
+      //   mobileNumber: state.mobile,
+      //   otp: otp,
+      //   token,
+      // });
+      // navigate("/");
     } catch (error) {
       showErrorMessage({ message: error.message });
     }

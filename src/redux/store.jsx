@@ -17,7 +17,7 @@ export const store = configureStore({
     address: addressReducer,
     currency: currencyReducer,
     rating: ratingReducer,
-    orders: userOrdersReducer,
+    userOrders: userOrdersReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

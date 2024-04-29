@@ -14,6 +14,7 @@ import useFindCountryAndExchangeRate from "../hooks/query/useFindCountryAndExcha
 import OfflineDetector from "../lib/OfflineDetector";
 import useGetCountryKey from "../hooks/query/useGetCountryKey";
 import useUserOrders from "../hooks/query/useUserOrders";
+import { fillInitialOrders } from "../redux/slice/userOrdersSlice";
 
 const RootLayout = () => {
   const navigate = useNavigate();
@@ -45,10 +46,17 @@ const RootLayout = () => {
   } = useUserAddress(isSuccess);
 
   const {
+    data: userOrdersData,
     isLoading: isLoadingUserOrders,
     error: errorUserOrders,
     isSuccess: isSuccessUserOrders,
   } = useUserOrders(isSuccess);
+
+  useEffect(() => {
+    if (userOrdersData) {
+      dispatch(fillInitialOrders(userOrdersData.data));
+    }
+  }, [userOrdersData, dispatch]);
 
   useEffect(() => {
     if (addressData) {

@@ -72,7 +72,7 @@ const UserOrders = () => {
               price,
               quantity,
               address: buyAddress,
-              isDelievered,
+              isDelivered,
               isCancelled,
               isReturned,
               createdAt,
@@ -122,7 +122,7 @@ const UserOrders = () => {
                     </section>
                   </div>
 
-                  <div className="space-y-3 tablet:space-y-1 whitespace-nowrap w-60 grow-0 shrink-0">
+                  <div className="space-y-2 tablet:space-y-1 whitespace-nowrap w-60 grow-0 shrink-0">
                     <OrderStatus {...buy} />
                     <div className="flex items-center gap-3 text-sm">
                       <p>Ordered on:</p>
@@ -149,14 +149,14 @@ const UserOrders = () => {
 
                   {/* MARK: CANCEL ORDER */}
                   <div className="flex gap-2">
-                    {!isReturned && !isCancelled && isDelievered && (
+                    {!isReturned && !isCancelled && isDelivered && (
                       <Link to={`/orders/return/${_id}`}>
                         <p className="cursor-pointer py-2 px-4 border rounded-md">
                           Return Order
                         </p>
                       </Link>
                     )}
-                    {!isCancelled && !isReturned && !isDelievered && (
+                    {!isCancelled && !isReturned && !isDelivered && (
                       <Link to={`/orders/cancel/${_id}`}>
                         <p className="cursor-pointer py-2 px-4 border rounded-md">
                           Cancel Order

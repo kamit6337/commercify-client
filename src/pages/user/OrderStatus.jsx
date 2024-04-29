@@ -2,13 +2,13 @@ import makeDateFromUTC from "../../utils/javascript/makeDateFromUTC";
 
 /* eslint-disable react/prop-types */
 const OrderStatus = ({
-  isDelievered,
+  isDelivered,
   isCancelled,
   isReturned,
-  delieveredDate,
+  deliveredDate,
   updatedAt,
 }) => {
-  if (isDelievered) {
+  if (isDelivered) {
     return (
       <div>
         <div className="border rounded bg-green-500 text-white py-2 px-5 text-center">
@@ -16,7 +16,7 @@ const OrderStatus = ({
         </div>
         <div className="flex items-center gap-3 text-sm mt-1">
           <p>On: </p>
-          <p>{makeDateFromUTC(delieveredDate)}</p>
+          <p>{makeDateFromUTC(deliveredDate)}</p>
         </div>
       </div>
     );
@@ -24,11 +24,11 @@ const OrderStatus = ({
 
   if (isCancelled) {
     return (
-      <div>
+      <div className="space-y-2">
         <div className="border rounded bg-red-500 text-white py-2 px-5 text-center">
           Cancelled
         </div>
-        <div className="flex items-center gap-3 text-sm mt-1">
+        <div className="flex items-center gap-3 text-sm">
           <p>On: </p>
           <p>{makeDateFromUTC(updatedAt)}</p>
         </div>
@@ -50,13 +50,11 @@ const OrderStatus = ({
     );
   }
 
-  if (!isDelievered) {
+  if (!isDelivered) {
     return (
       <div className="flex items-center gap-3 text-sm">
         <p>Delievered By:</p>
-        <p className="text-base">
-          {makeDateFromUTC(delieveredDate || updatedAt)}
-        </p>
+        <p className="text-base">{makeDateFromUTC(deliveredDate)}</p>
       </div>
     );
   }

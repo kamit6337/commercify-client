@@ -69,7 +69,6 @@ const OrderCancel = () => {
   const onSubmit = async () => {
     try {
       const cancelOrder = await patchReq("/buy/cancel", { id: buyId });
-      console.log("cancel order", cancelOrder);
       dispatch(cancelTheOrder(cancelOrder.data));
       navigate("/user/orders");
     } catch (error) {

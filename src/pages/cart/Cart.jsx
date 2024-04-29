@@ -3,10 +3,18 @@ import { localStorageState } from "../../redux/slice/localStorageSlice";
 import Products from "./Products";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
 
 const Cart = () => {
   const { cart } = useSelector(localStorageState);
   const cartIds = cart.map((obj) => obj.id);
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "instant",
+    });
+  }, []);
 
   return (
     <>

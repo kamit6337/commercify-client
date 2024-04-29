@@ -1,30 +1,18 @@
 /* eslint-disable react/prop-types */
-import { Link, useSearchParams } from "react-router-dom";
-import { useMemo } from "react";
-import useBuyProducts from "../../hooks/query/useBuyProducts";
+import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { currencyState } from "../../redux/slice/currencySlice";
 import makeDateFromUTC from "../../utils/javascript/makeDateFromUTC";
 import changePriceDiscountByExchangeRate from "../../utils/javascript/changePriceDiscountByExchangeRate";
 
-const Product = ({ product }) => {
-  const searchParams = useSearchParams()[0].get("token");
-  const { data } = useBuyProducts(searchParams);
+const Product = ({ buyProduct }) => {
   const { symbol } = useSelector(currencyState);
 
-  const { _id: id, title, description, thumbnail } = product;
+  const { _id: id, title, description, thumbnail } = buyProduct.product;
 
-  const buyProduct = useMemo(() => {
-    if (!data) return null;
+  const { price, exchangeRate, quantity, deliveredDate } = buyProduct;
 
-    const { products } = data;
-    const findProduct = products.find((obj) => obj.product === id);
-    return findProduct;
-  }, [data, id]);
-
-  const { price, exchangeRate, quantity, delieveredDate } = buyProduct;
-
-  const { country, district, state, address } = data.address;
+  const { country, district, state, address } = buyProduct.address;
 
   const { exchangeRatePrice } = changePriceDiscountByExchangeRate(
     price,
@@ -70,7 +58,7 @@ const Product = ({ product }) => {
       <div className="w-96 grow-0 shrink-0 sm_lap:w-72 tablet:w-full">
         <div className="flex items-center gap-3 text-sm">
           <p>Delievered By:</p>
-          <p className="text-base">{makeDateFromUTC(delieveredDate)}</p>
+          <p className="text-base">{makeDateFromUTC(deliveredDate)}</p>
         </div>
         <div className="flex mt-2 gap-3 text-sm">
           <p className="whitespace-nowrap">On Address:</p>

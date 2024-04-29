@@ -16,6 +16,8 @@ const useBuyProducts = (token) => {
   useEffect(() => {
     if (query.isSuccess) {
       const newBuys = query.data.products;
+      console.log("new buys", newBuys);
+
       dispatch(addNewOrders(newBuys));
     }
   }, [query, dispatch]);

@@ -1,7 +1,7 @@
 import { Link, useSearchParams } from "react-router-dom";
 import useBuyProducts from "../../hooks/query/useBuyProducts";
 import Loading from "../../containers/Loading";
-import Products from "./Products";
+import Product from "./Product";
 
 const PaymentSuccess = () => {
   const searchParams = useSearchParams()[0].get("token");
@@ -23,7 +23,7 @@ const PaymentSuccess = () => {
     );
   }
 
-  const productIds = data.products.map((obj) => obj.product);
+  const { products: buyProducts } = data;
 
   return (
     <section className="bg-gray-100 p-5">
@@ -41,10 +41,14 @@ const PaymentSuccess = () => {
             </div>
           </Link>
         </div>
-        {productIds.length > 0 ? (
-          <div>
-            <Products list={productIds} />
-          </div>
+        {buyProducts.length > 0 ? (
+          buyProducts.map((buyProduct, i) => {
+            return (
+              <div key={i}>
+                <Product buyProduct={buyProduct} />
+              </div>
+            );
+          })
         ) : (
           <div>Error Occur.</div>
         )}
