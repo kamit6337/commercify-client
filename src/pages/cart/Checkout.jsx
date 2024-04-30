@@ -56,7 +56,7 @@ const Checkout = () => {
         ) : (
           <div>No Cart</div>
         )}
-        <div className="flex justify-end py-3 px-10 sticky bottom-0 place_order_box bg-white">
+        <div className="tablet:hidden flex justify-end py-3 px-10 sticky bottom-0 place_order_box bg-white">
           <button
             className="py-4 px-16 rounded-md bg-orange-400 text-white font-semibold tracking-wide cursor-pointer"
             onClick={makePayment}

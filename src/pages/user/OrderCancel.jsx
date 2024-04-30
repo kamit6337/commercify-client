@@ -169,6 +169,7 @@ const OrderCancel = () => {
                     })}
                     placeholder="Why do you want to cancel the order. Give suggestion to improve our services"
                     className="p-3 w-full"
+                    maxLength={200} // Add maxLength attribute
                   />
                 </div>
                 <p className="text-red-500 text-xs h-4 mt-1 ml-1">

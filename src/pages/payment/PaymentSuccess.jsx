@@ -28,7 +28,7 @@ const PaymentSuccess = () => {
   return (
     <section className="bg-gray-100 p-5">
       <main className="bg-white">
-        <div className="p-5 flex items-center justify-between">
+        <div className="p-5 flex items-center justify-between border-b">
           <div>
             <p className="text-2xl tablet:text-lg font-semibold tracking-wide">
               Payment is successful

@@ -21,7 +21,7 @@ const Product = ({ buyProduct }) => {
   );
 
   return (
-    <div className="w-full border-b-2 last:border-none p-7 sm_lap:p-4 flex justify-between gap-10 sm_lap:gap-5 tablet:flex-col tablet:py-10">
+    <div className="w-full border-b-2 p-7 sm_lap:p-4 flex justify-between gap-10 sm_lap:gap-5 tablet:flex-col tablet:py-10">
       <div className="flex gap-10 sm_lap:gap-5 ">
         {/* MARK: IMAGE PART */}
         <div className="h-full w-48">

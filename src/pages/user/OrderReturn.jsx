@@ -105,7 +105,7 @@ const OrderReturn = () => {
           </p>
 
           <div className="space-y-10">
-            <div className="px-16">
+            <div className="px-16 tablet:px-10">
               {/* MARK: UPPER PORTION */}
               <div className="w-full flex gap-10 tablet:flex-col">
                 <div className="flex gap-10">
@@ -171,7 +171,7 @@ const OrderReturn = () => {
             {/* MARK: OPTION FOR RETURNING */}
             <form
               onSubmit={handleSubmit(onSubmit)}
-              className="space-y-10 px-16 py-10 border-t"
+              className="space-y-10 px-16 py-10 border-t tablet:px-10"
             >
               <p className="text-lg font-semibold">
                 Select the reason for returning the order
@@ -205,8 +205,9 @@ const OrderReturn = () => {
                           required:
                             "Please write the reason for returning the order",
                         })}
-                        placeholder="Why do you want to return the order. Give issues related to product delivered"
+                        placeholder="Why do you want to return the order. Give issues related to product delivered."
                         className="p-3 w-full"
+                        maxLength={200} // Add maxLength attribute
                       />
                     </div>
                     <p className="text-red-500 text-xs h-4 mt-1 ml-1">
