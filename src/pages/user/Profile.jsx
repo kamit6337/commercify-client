@@ -117,14 +117,7 @@ const Profile = () => {
           <div className="flex items-center gap-10 mb-4">
             <p>Personal Information</p>
 
-            {isEditable ? (
-              <p
-                className="text-xs underline text-blue-500 cursor-pointer font-semibold tracking-wide"
-                onClick={handleCancel}
-              >
-                Cancel
-              </p>
-            ) : (
+            {!isEditable && (
               <p
                 className="text-xs underline text-blue-500 cursor-pointer font-semibold tracking-wide"
                 onClick={() => setIsEditable(true)}
@@ -255,12 +248,15 @@ const Profile = () => {
         </div>
 
         {isEditable && (
-          <div className="">
+          <div className="flex items-center gap-10">
             <button
               className="px-12 py-3 bg-green-400 rounded-md w-max font-semibold tracking-wide text-green-900 "
               type="submit"
             >
               {isSubmitting ? <SmallLoading /> : "Submit"}
+            </button>
+            <button className="" onClick={handleCancel}>
+              Cancel
             </button>
           </div>
         )}

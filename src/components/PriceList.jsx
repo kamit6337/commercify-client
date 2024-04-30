@@ -7,6 +7,7 @@ import rupeesToWords from "../utils/javascript/rupeesToWords";
 import amountToWordsInternational from "../utils/javascript/amountToWordsInternational";
 import changePriceDiscountByExchangeRate from "../utils/javascript/changePriceDiscountByExchangeRate";
 import { useMemo } from "react";
+import { Link } from "react-router-dom";
 
 const PriceList = () => {
   const { cart } = useSelector(localStorageState);
@@ -117,6 +118,13 @@ const PriceList = () => {
         You are saving {symbol}
         {productsDiscount} on this order
       </p>
+      <div className="hidden tablet:flex justify-end py-3 px-10 sticky bottom-0 place_order_box bg-white">
+        <Link to={`/cart/address`}>
+          <button className="py-4 px-16 rounded-md bg-orange-400 text-white font-semibold tracking-wide">
+            Placed Order
+          </button>
+        </Link>
+      </div>
     </div>
   );
 };

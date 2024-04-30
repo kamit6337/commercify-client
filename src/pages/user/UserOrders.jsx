@@ -92,12 +92,12 @@ const UserOrders = () => {
             return (
               <div
                 key={i}
-                className="border-b-2 last:border-none p-7 space-y-5"
+                className="border-b-2 last:border-none p-7 sm_lap:px-4 space-y-5"
               >
                 {/* MARK: UPPER PORTION */}
-                <div className="w-full flex gap-10 tablet:flex-col">
-                  <div className="flex gap-10">
-                    <div className="h-full w-48">
+                <div className="w-full flex gap-10 sm_lap:gap-6 tablet:flex-col">
+                  <div className="flex gap-10 sm_lap:gap-6">
+                    <div className="h-full w-48 sm_lap:w-40">
                       <Link to={`/products/${id}`}>
                         <img
                           src={thumbnail}
@@ -111,7 +111,7 @@ const UserOrders = () => {
                         <Link to={`/products/${id}`}>
                           <p>{title}</p>
                         </Link>
-                        <p className="text-xs">{description}</p>
+                        <p className="text-xs line-clamp-2">{description}</p>
                       </div>
 
                       <p className="text-2xl font-semibold tracking-wide">
@@ -122,7 +122,7 @@ const UserOrders = () => {
                     </section>
                   </div>
 
-                  <div className="space-y-2 tablet:space-y-1 whitespace-nowrap w-60 grow-0 shrink-0">
+                  <div className="space-y-2 tablet:space-y-1 whitespace-nowrap w-60 sm_lap:w-52 grow-0 shrink-0">
                     <OrderStatus {...buy} />
                     <div className="flex items-center gap-3 text-sm">
                       <p>Ordered on:</p>

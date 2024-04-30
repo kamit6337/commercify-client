@@ -15,6 +15,21 @@ const monthsList = [
   "December",
 ];
 
+const shortMonthList = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+
 const makeDateFromUTC = (UTC) => {
   const finalDate = new Date(UTC);
 
@@ -22,7 +37,7 @@ const makeDateFromUTC = (UTC) => {
   const month = finalDate.getMonth();
   const year = finalDate.getFullYear();
 
-  return `${addZeroToDigit(date)} ${monthsList[month]} ${year}`;
+  return `${addZeroToDigit(date)} ${shortMonthList[month]} ${year}`;
 };
 
 export default makeDateFromUTC;

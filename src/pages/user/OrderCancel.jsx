@@ -176,7 +176,7 @@ const OrderCancel = () => {
                 </p>
               </div>
               <div className="flex justify-end items-center gap-10">
-                <p>Cancel</p>
+                <button onClick={() => navigate(-1)}>Cancel</button>
                 <button
                   type="submit"
                   disabled={isSubmitting}

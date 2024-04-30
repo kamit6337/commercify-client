@@ -163,7 +163,7 @@ const NewAddressForm = ({ handleCancel }) => {
                   </div>
                   {openCountryList && (
                     <div
-                      className="absolute bg-white z-10 top-full left-0 overflow-y-auto max-h-48 mt-1 border w-80"
+                      className="absolute bg-white z-10 top-full left-0 overflow-y-auto max-h-48 mt-1 border w-80 tablet:w-60"
                       ref={countryListRef}
                     >
                       {countries.map((obj, i) => {

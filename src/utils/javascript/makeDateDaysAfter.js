@@ -15,6 +15,21 @@ const monthsList = [
   "December",
 ];
 
+const shortMonthList = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+
 const makeDateDaysAfter = (days) => {
   if (!days) return null;
 
@@ -30,7 +45,7 @@ const makeDateDaysAfter = (days) => {
   const month = finalDate.getMonth();
   const year = finalDate.getFullYear();
 
-  return `${addZeroToDigit(date)} ${monthsList[month]} ${year}`;
+  return `${addZeroToDigit(date)} ${shortMonthList[month]} ${year}`;
 };
 
 export default makeDateDaysAfter;

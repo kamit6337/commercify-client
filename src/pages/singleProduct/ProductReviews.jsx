@@ -188,7 +188,7 @@ const ProductReviews = ({ id }) => {
                               )}
                             </button>
                             {showOptions && (
-                              <div className="absolute top-full right-0 border">
+                              <div className="absolute top-full right-0 border bg-white">
                                 <p
                                   className="px-5 py-2 border-b cursor-pointer"
                                   onClick={() =>

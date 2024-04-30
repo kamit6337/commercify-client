@@ -52,7 +52,7 @@ const Product = ({ product }) => {
 
   return (
     <div className="w-full h-48 border-b-2 last:border-none p-7 flex gap-10 tablet:gap-5">
-      <div className="h-full w-48">
+      <div className="h-full w-48 sm_lap:w-40">
         <Link to={`/products/${id}`}>
           <img
             src={thumbnail}

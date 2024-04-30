@@ -68,9 +68,9 @@ const Product = ({ product, wishlist: isWishlist = true }) => {
     changePriceDiscountByExchangeRate(price, discountPercentage, exchangeRate);
 
   return (
-    <div className="w-full border-b-2 last:border-none p-7 flex gap-10">
+    <div className="w-full border-b-2 last:border-none p-7 sm_lap:px-4 flex gap-10 sm_lap:gap-5">
       <div className="flex flex-col gap-5">
-        <div className="h-full w-48">
+        <div className="h-full w-48 sm_lap:w-40">
           <Link to={`/products/${id}`}>
             <img
               src={thumbnail}
@@ -103,7 +103,7 @@ const Product = ({ product, wishlist: isWishlist = true }) => {
             <Link to={`/products/${id}`}>
               <p>{title}</p>
             </Link>
-            <p className="text-xs mt-1 tablet:line-clamp-2">{description}</p>
+            <p className="text-xs mt-1 sm_lap:line-clamp-2">{description}</p>
           </div>
 
           <div className="flex gap-2 items-center">

@@ -37,7 +37,7 @@ const SearchProducts = () => {
 
       <section className="w-full h-full flex gap-2 bg-gray-100 p-2 ">
         <div
-          className="w-64 border-r-2 sticky top-[88px] bg-white"
+          className="w-64 laptop:w-56 sm_lap:w-48 tablet:hidden border-r-2 sticky top-[88px] bg-white"
           style={{ height: "calc(100vh - 100px)" }}
         >
           <FilterSection products={data.data} filterProducts={filterProducts} />
