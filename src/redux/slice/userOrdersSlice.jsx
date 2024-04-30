@@ -28,11 +28,25 @@ const userOrdersSlice = createSlice({
       });
       return state;
     },
+    returnTheOrder: (state, { payload }) => {
+      const order = payload;
+      state.orders = state.orders.map((obj) => {
+        if (obj._id === order._id) {
+          return { ...obj, isReturned: true };
+        }
+        return obj;
+      });
+      return state;
+    },
   },
 });
 
-export const { fillInitialOrders, addNewOrders, cancelTheOrder } =
-  userOrdersSlice.actions;
+export const {
+  fillInitialOrders,
+  addNewOrders,
+  returnTheOrder,
+  cancelTheOrder,
+} = userOrdersSlice.actions;
 
 export const userOrdersReducer = userOrdersSlice.reducer;
 

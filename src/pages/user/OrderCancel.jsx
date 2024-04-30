@@ -58,8 +58,8 @@ const OrderCancel = () => {
     price,
     quantity,
     address: buyAddress,
-    isDelievered,
-    delieveredDate,
+    isDelivered,
+    deliveredDate,
     createdAt,
   } = buyProduct;
 
@@ -121,11 +121,11 @@ const OrderCancel = () => {
                 </div>
 
                 <div className="w-60 grow-0 shrink-0">
-                  {!isDelievered && (
+                  {!isDelivered && (
                     <div className="flex items-center gap-3 text-sm">
                       <p>Delievered By:</p>
                       <p className="text-base">
-                        {makeDateFromUTC(delieveredDate)}
+                        {makeDateFromUTC(deliveredDate)}
                       </p>
                     </div>
                   )}

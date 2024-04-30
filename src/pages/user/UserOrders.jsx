@@ -152,14 +152,14 @@ const UserOrders = () => {
                     {!isReturned && !isCancelled && isDelivered && (
                       <Link to={`/orders/return/${_id}`}>
                         <p className="cursor-pointer py-2 px-4 border rounded-md">
-                          Return Order
+                          Return The Order
                         </p>
                       </Link>
                     )}
                     {!isCancelled && !isReturned && !isDelivered && (
                       <Link to={`/orders/cancel/${_id}`}>
                         <p className="cursor-pointer py-2 px-4 border rounded-md">
-                          Cancel Order
+                          Cancel The Order
                         </p>
                       </Link>
                     )}
