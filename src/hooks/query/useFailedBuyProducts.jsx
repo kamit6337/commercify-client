@@ -1,14 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { getReq } from "../../utils/api/api";
 
-const useBuyProducts = () => {
+const useFailedBuyProducts = () => {
   const query = useQuery({
-    queryKey: ["Buy Products"],
-    queryFn: () => getReq("/payment/success"),
+    queryKey: ["Failed Buy Products"],
+    queryFn: () => getReq("/payment/failed"),
     staleTime: Infinity,
   });
 
   return query;
 };
 
-export default useBuyProducts;
+export default useFailedBuyProducts;

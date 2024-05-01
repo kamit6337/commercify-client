@@ -10,8 +10,8 @@ const ratingSlice = createSlice({
   initialState,
   reducers: {
     addNewRatings: (state, { payload }) => {
-      state.ratings = [...state.ratings, ...payload];
-      state.ratings = removeDuplicateId(state.ratings);
+      const newList = [...state.ratings, ...payload];
+      state.ratings = removeDuplicateId(newList);
       return state;
     },
     addUserRating: (state, { payload }) => {

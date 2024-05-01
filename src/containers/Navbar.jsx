@@ -39,6 +39,8 @@ const Navbar = () => {
       localStorage.removeItem("_cart");
       localStorage.removeItem("_wishlist");
       localStorage.removeItem("_cou");
+      localStorage.removeItem("_add");
+      localStorage.removeItem("_exra");
       Cookies.remove("_ut");
       queryClient.clear();
       window.location.reload();

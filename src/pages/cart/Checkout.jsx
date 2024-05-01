@@ -23,7 +23,7 @@ const Checkout = () => {
 
       const checkoutSession = await postReq("/payment", {
         products: cart,
-        address: selectedAddress,
+        address: selectedAddress._id,
         code,
         exchangeRate,
       });

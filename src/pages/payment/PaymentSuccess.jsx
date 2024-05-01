@@ -2,9 +2,30 @@ import { Link } from "react-router-dom";
 import useBuyProducts from "../../hooks/query/useBuyProducts";
 import Loading from "../../containers/Loading";
 import Product from "./Product";
+import { useSelector } from "react-redux";
+import { userOrdersState } from "../../redux/slice/userOrdersSlice";
+import { useMemo } from "react";
 
 const PaymentSuccess = () => {
+  const { orders } = useSelector(userOrdersState);
   const { isLoading, error, data } = useBuyProducts();
+
+  const buyProducts = useMemo(() => {
+    if (!data || orders.length === 0) return;
+
+    const buys = [];
+    data.data.forEach((buyId) => {
+      const findBuy = orders.find((order) => order._id === buyId);
+      buys.push(findBuy);
+    });
+
+    buys.sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+
+    return buys;
+  }, [data, orders]);
 
   if (isLoading) {
     return (
@@ -17,12 +38,14 @@ const PaymentSuccess = () => {
   if (error) {
     return (
       <div className="h-96 w-full flex justify-center items-center">
-        <p>{error}</p>
+        <p>{error.message}</p>
       </div>
     );
   }
 
-  const buyProducts = data.data;
+  if (buyProducts.length === 0) {
+    return <div>Error occur</div>;
+  }
 
   return (
     <section className="bg-gray-100 p-5">

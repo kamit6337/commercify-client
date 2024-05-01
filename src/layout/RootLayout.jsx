@@ -68,6 +68,7 @@ const RootLayout = () => {
     if (error) {
       localStorage.removeItem("_cart");
       localStorage.removeItem("_wishlist");
+      localStorage.removeItem("_add");
     }
   }, [error]);
 
