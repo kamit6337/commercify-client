@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import removeDuplicateId from "../../utils/javascript/removeDuplicateId";
 
 const initialState = {
   orders: [],
@@ -12,12 +11,6 @@ const userOrdersSlice = createSlice({
     fillInitialOrders: (state, { payload }) => {
       const orderList = payload;
       state.orders = orderList;
-      return state;
-    },
-    addNewOrders: (state, { payload }) => {
-      const newOrders = payload;
-      const newList = [...newOrders, ...state.orders];
-      state.orders = removeDuplicateId(newList);
       return state;
     },
     cancelTheOrder: (state, { payload }) => {
@@ -54,7 +47,6 @@ const userOrdersSlice = createSlice({
 
 export const {
   fillInitialOrders,
-  addNewOrders,
   returnTheOrder,
   cancelTheOrder,
   failedOrders,
