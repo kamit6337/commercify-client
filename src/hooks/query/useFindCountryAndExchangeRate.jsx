@@ -43,6 +43,8 @@ const useFindCountryAndExchangeRate = () => {
       const { data: currencyData } = query.data;
       const exchangeValue = currencyData[findCountryInfo.currency.code];
 
+      localStorage.setItem("_exra", Math.trunc(exchangeValue) || 1);
+
       obj.exchangeRate = exchangeValue;
       obj.country = findCountryInfo.name;
 

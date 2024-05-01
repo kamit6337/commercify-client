@@ -1,11 +1,10 @@
-import { Link, useSearchParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import useBuyProducts from "../../hooks/query/useBuyProducts";
 import Loading from "../../containers/Loading";
 import Product from "./Product";
 
 const PaymentSuccess = () => {
-  const searchParams = useSearchParams()[0].get("token");
-  const { isLoading, error, data } = useBuyProducts(searchParams);
+  const { isLoading, error, data } = useBuyProducts();
 
   if (isLoading) {
     return (
@@ -23,7 +22,7 @@ const PaymentSuccess = () => {
     );
   }
 
-  const { products: buyProducts } = data;
+  const buyProducts = data.data;
 
   return (
     <section className="bg-gray-100 p-5">

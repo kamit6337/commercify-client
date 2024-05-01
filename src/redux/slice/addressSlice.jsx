@@ -11,8 +11,11 @@ const addressSlice = createSlice({
   reducers: {
     initialAddressData: (state, { payload }) => {
       const { data } = payload;
+
+      const firstAddress = data[0];
       state.addresses = data;
-      state.selectedAddress = data[0];
+      state.selectedAddress = firstAddress;
+      localStorage.setItem("_add", firstAddress._id);
       return state;
     },
     createNewAddress: (state, { payload }) => {
@@ -32,6 +35,7 @@ const addressSlice = createSlice({
     updateSelectedAddress: (state, { payload }) => {
       const address = payload;
       state.selectedAddress = address;
+      localStorage.setItem("_add", address._id);
       return state;
     },
   },

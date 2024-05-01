@@ -4,18 +4,22 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { addNewOrders } from "../../redux/slice/userOrdersSlice";
 
-const useBuyProducts = (token) => {
+const useBuyProducts = () => {
   const dispatch = useDispatch();
   const query = useQuery({
     queryKey: ["Buy Products"],
-    queryFn: () => getReq("/payment/success", { token }),
+    queryFn: () =>
+      getReq("/payment/success", {
+        products: JSON.parse(localStorage.getItem("_cart")),
+        address: localStorage.getItem("_add"),
+        exchangeRate: localStorage.getItem("_exra"),
+      }),
     staleTime: Infinity,
-    enabled: !!token,
   });
 
   useEffect(() => {
     if (query.isSuccess) {
-      const newBuys = query.data.products;
+      const newBuys = query.data.data;
       console.log("new buys", newBuys);
 
       dispatch(addNewOrders(newBuys));
