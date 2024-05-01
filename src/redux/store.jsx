@@ -23,6 +23,5 @@ export const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: false, // Disable strict mode
     }),
-
-  devtools: environment.NODE_ENV === PRODUCTION ? true : false,
+  devtools: environment.NODE_ENV === PRODUCTION ? false : true,
 });
