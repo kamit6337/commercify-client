@@ -12,7 +12,6 @@
     @apply font-sans bg-white text-black950 cursor-default overflow-x-hidden;
   }
 
-  button,
   select {
     @apply outline-none border-none;
   }

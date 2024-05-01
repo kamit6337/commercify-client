@@ -38,6 +38,14 @@ const addressSlice = createSlice({
       localStorage.setItem("_add", address._id);
       return state;
     },
+    deleteAddress: (state, { payload }) => {
+      const addressId = payload;
+
+      state.addresses = state.addresses.filter(
+        (address) => address._id !== addressId
+      );
+      return state;
+    },
   },
 });
 
@@ -46,6 +54,7 @@ export const {
   updateAddressData,
   createNewAddress,
   updateSelectedAddress,
+  deleteAddress,
 } = addressSlice.actions;
 
 export const addressReducer = addressSlice.reducer;

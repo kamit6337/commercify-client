@@ -3,14 +3,21 @@ import { Icons } from "../../assets/icons";
 import { useState } from "react";
 import NewAddressForm from "../../components/NewAddressForm";
 import UpdateAddressForm from "../../components/UpdateAddressForm";
-import { useSelector } from "react-redux";
-import { addressState } from "../../redux/slice/addressSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { addressState, deleteAddress } from "../../redux/slice/addressSlice";
+import Toastify from "../../lib/Toastify";
+import { deleteReq } from "../../utils/api/api";
+import Loading from "../../containers/Loading";
 
 const Address = () => {
+  const dispatch = useDispatch();
   const { addresses: userAddress } = useSelector(addressState);
   const [openNewAddressForm, setOpenNewAddressForm] = useState(false);
   const [showAddressOptionIndex, setShowAddressOptionIndex] = useState(null);
   const [updateAddressIndex, setUpdateAddressIndex] = useState(null);
+  const [showDeleteOption, setShowDeleteOption] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const { ToastContainer, showErrorMessage } = Toastify();
 
   const handleCancel = () => {
     setOpenNewAddressForm(false);
@@ -18,6 +25,23 @@ const Address = () => {
 
   const handleCancelUpdateForm = () => {
     setUpdateAddressIndex(null);
+  };
+
+  const handleDelete = async (obj) => {
+    const { _id } = obj;
+
+    setIsLoading(true);
+
+    try {
+      await deleteReq("/address", { id: _id });
+      dispatch(deleteAddress(_id));
+      setShowAddressOptionIndex(null);
+      setShowDeleteOption(false);
+    } catch (error) {
+      showErrorMessage({ message: error.message });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -81,11 +105,15 @@ const Address = () => {
                   <div className="relative">
                     <button
                       className=""
-                      onClick={() =>
-                        showAddressOptionIndex === i
-                          ? setShowAddressOptionIndex(null)
-                          : setShowAddressOptionIndex(i)
-                      }
+                      onClick={() => {
+                        if (showAddressOptionIndex === i) {
+                          setShowAddressOptionIndex(null);
+                          setShowDeleteOption(false);
+                          return;
+                        }
+
+                        setShowAddressOptionIndex(i);
+                      }}
                     >
                       {showAddressOptionIndex === i ? (
                         <Icons.cancel className="text-xl" />
@@ -105,9 +133,35 @@ const Address = () => {
                         >
                           Edit
                         </p>
-                        <p className="py-3 text-sm cursor-pointer text-center">
+                        <p
+                          className="py-3 text-sm cursor-pointer text-center"
+                          onClick={() => setShowDeleteOption(true)}
+                        >
                           Delete
                         </p>
+                      </div>
+                    )}
+                    {showDeleteOption && showAddressOptionIndex === i && (
+                      <div className="absolute bg-white z-30 top-full px-4 right-0 shadow-2xl border whitespace-nowrap py-4 space-y-2 text-sm">
+                        <p>Are you sure to delete this Address</p>
+                        <div className="flex justify-between items-center gap-2">
+                          <p
+                            className="flex-1 text-center border rounded p-2 cursor-pointer"
+                            onClick={() => {
+                              setShowAddressOptionIndex(null);
+                              setShowDeleteOption(false);
+                            }}
+                          >
+                            Cancel
+                          </p>
+                          <button
+                            disabled={isLoading}
+                            className="flex-1 text-center border rounded p-2 cursor-pointer"
+                            onClick={() => handleDelete(obj)}
+                          >
+                            {isLoading ? <Loading small={true} /> : "Done"}
+                          </button>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -121,6 +175,7 @@ const Address = () => {
           )}
         </div>
       </section>
+      <ToastContainer />
     </>
   );
 };
