@@ -1,28 +1,28 @@
 /* eslint-disable react/prop-types */
 import { useMemo, useState } from "react";
 import { Icons } from "../../assets/icons";
-import { useDispatch, useSelector } from "react-redux";
-import { deleteRating, ratingState } from "../../redux/slice/ratingSlice";
 import { Link, useNavigate } from "react-router-dom";
 import useLoginCheck from "../../hooks/auth/useLoginCheck";
 import { deleteReq } from "../../utils/api/api";
 import Toastify from "../../lib/Toastify";
+import useProductRatings from "../../hooks/query/useProductRatings";
+import Loading from "../../containers/Loading";
 
 const ProductReviews = ({ id }) => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { ratings } = useSelector(ratingState);
   const { data: user } = useLoginCheck();
   const [showOptions, setShowOptions] = useState(false);
 
   const { ToastContainer, showErrorMessage } = Toastify();
 
-  const productRatings = useMemo(() => {
-    if (ratings.length === 0) return [];
+  const {
+    isLoading: isLoadingRatings,
+    error: errorRatings,
+    data,
+    refetch,
+  } = useProductRatings(id);
 
-    const filter = ratings.filter((obj) => obj.product === id);
-    return filter;
-  }, [id, ratings]);
+  const productRatings = data?.data;
 
   const [rate, reviews, rateValue, fraction] = useMemo(() => {
     let rateValueCount = null;
@@ -30,7 +30,7 @@ const ProductReviews = ({ id }) => {
     let reviewsCount = null;
     let fractionCount = null;
 
-    if (productRatings.length === 0) {
+    if (!productRatings || productRatings.length === 0) {
       rateCount = [];
       reviewsCount = [];
       rateValueCount = 0;
@@ -56,7 +56,7 @@ const ProductReviews = ({ id }) => {
   }, [productRatings]);
 
   const isUserRated = useMemo(() => {
-    if (productRatings.length === 0) {
+    if (!productRatings || productRatings.length === 0) {
       return false;
     }
 
@@ -67,10 +67,26 @@ const ProductReviews = ({ id }) => {
     return false;
   }, [productRatings, user]);
 
+  if (isLoadingRatings) {
+    return (
+      <div className="w-full h-96">
+        <Loading />
+      </div>
+    );
+  }
+
+  if (errorRatings) {
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        {errorRatings?.message}
+      </div>
+    );
+  }
+
   const handleDelete = async (id) => {
     try {
       await deleteReq("/ratings", { id });
-      dispatch(deleteRating(id));
+      refetch();
     } catch (error) {
       showErrorMessage({ message: error.message });
     }

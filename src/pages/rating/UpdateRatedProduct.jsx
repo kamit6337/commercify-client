@@ -1,7 +1,6 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ratingState, updateRating } from "../../redux/slice/ratingSlice";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import useSingleProduct from "../../hooks/query/useSingleProduct";
 import Loading from "../../containers/Loading";
 import Toastify from "../../lib/Toastify";
@@ -10,22 +9,20 @@ import changePriceDiscountByExchangeRate from "../../utils/javascript/changePric
 import { useForm } from "react-hook-form";
 import { Icons } from "../../assets/icons";
 import { patchReq } from "../../utils/api/api";
+import useProductRatings from "../../hooks/query/useProductRatings";
 
 const UpdateRatedProduct = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const { id, productId } = useParams();
-  const { ratings } = useSelector(ratingState);
   const { symbol, exchangeRate } = useSelector(currencyState);
 
   const { isLoading, error, data } = useSingleProduct(productId);
   const { ToastContainer, showErrorMessage, showAlertMessage } = Toastify();
   const [starSelected, setStarSelected] = useState(0);
 
-  const rating = useMemo(() => {
-    const findRating = ratings.find((obj) => obj._id === id);
-    return findRating;
-  }, [id, ratings]);
+  const { data: ratingData, refetch } = useProductRatings(productId);
+
+  const rating = ratingData?.data.find((obj) => obj._id === id);
 
   const {
     register,
@@ -80,14 +77,14 @@ const UpdateRatedProduct = () => {
     }
 
     try {
-      const response = await patchReq("/ratings", {
+      await patchReq("/ratings", {
         id,
         rate: starSelected,
         title,
         comment,
       });
 
-      dispatch(updateRating(response.data));
+      refetch();
       navigate(-1);
     } catch (error) {
       showErrorMessage({ message: error.message });

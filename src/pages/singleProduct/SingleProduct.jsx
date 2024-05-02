@@ -8,7 +8,6 @@ import { useSelector } from "react-redux";
 import { currencyState } from "../../redux/slice/currencySlice";
 import CategoryProducts from "./CategoryProducts";
 import ProductReviews from "./ProductReviews";
-import useProductRatings from "../../hooks/query/useProductRatings";
 import makeDateDaysAfter from "../../utils/javascript/makeDateDaysAfter";
 import changePriceDiscountByExchangeRate from "../../utils/javascript/changePriceDiscountByExchangeRate";
 
@@ -17,8 +16,6 @@ const SingleProduct = () => {
   const { symbol, exchangeRate } = useSelector(currencyState);
 
   const { isLoading, error, data } = useSingleProduct(id);
-  const { isLoading: isLoadingRatings, error: errorRatings } =
-    useProductRatings(id);
 
   useEffect(() => {
     window.scrollTo({
@@ -27,7 +24,7 @@ const SingleProduct = () => {
     });
   }, [id]);
 
-  if (isLoading || isLoadingRatings) {
+  if (isLoading) {
     return (
       <div className="w-full h-96">
         <Loading />
@@ -35,10 +32,10 @@ const SingleProduct = () => {
     );
   }
 
-  if (error || errorRatings) {
+  if (error) {
     return (
       <div className="w-full h-full flex justify-center items-center">
-        {error?.message || errorRatings?.message}
+        {error?.message}
       </div>
     );
   }

@@ -4,19 +4,19 @@ import Loading from "../../containers/Loading";
 import { useForm } from "react-hook-form";
 import Toastify from "../../lib/Toastify";
 import changePriceDiscountByExchangeRate from "../../utils/javascript/changePriceDiscountByExchangeRate";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { currencyState } from "../../redux/slice/currencySlice";
 import { Icons } from "../../assets/icons";
 import { useEffect, useState } from "react";
 import { postReq } from "../../utils/api/api";
-import { addUserRating } from "../../redux/slice/ratingSlice";
+import useProductRatings from "../../hooks/query/useProductRatings";
 
 const RateProduct = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const { id } = useParams();
   const { symbol, exchangeRate } = useSelector(currencyState);
   const { isLoading, error, data } = useSingleProduct(id);
+  const { refetch } = useProductRatings(id);
   const [starSelected, setStarSelected] = useState(0);
   const { ToastContainer, showErrorMessage, showAlertMessage } = Toastify();
 
@@ -67,13 +67,13 @@ const RateProduct = () => {
     const { title, comment } = data;
 
     try {
-      const response = await postReq("/ratings", {
+      await postReq("/ratings", {
         id,
         rate: starSelected,
         title,
         comment,
       });
-      dispatch(addUserRating(response.data));
+      refetch();
       navigate(`/products/${id}`);
     } catch (error) {
       showErrorMessage({ message: error.message });
