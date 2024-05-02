@@ -8,8 +8,6 @@ import { currencyReducer } from "./slice/currencySlice";
 import { ratingReducer } from "./slice/ratingSlice";
 import { userOrdersReducer } from "./slice/userOrdersSlice";
 
-const PRODUCTION = "production";
-
 export const store = configureStore({
   reducer: {
     toggle: toggleReducer,
@@ -23,5 +21,5 @@ export const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: false, // Disable strict mode
     }),
-  devtools: environment.NODE_ENV === PRODUCTION ? false : true,
+  devTools: environment.NODE_ENV === "production" ? false : true,
 });
