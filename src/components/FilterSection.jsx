@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Box, Slider } from "@mui/material";
 import findMaxPrice from "../utils/javascript/findMaxPrice";
-import { useState } from "react";
 import useAllCategory from "../hooks/query/useAllCategory";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -11,18 +10,9 @@ const FilterSection = ({ products, filterProducts }) => {
   const { data: allCategory } = useAllCategory();
   const { exchangeRate } = useSelector(currencyState);
 
-  const [maxPrice, setMaxprice] = useState(
-    findMaxPrice(products, exchangeRate)
-  );
-  const [showClearAll, setShowClearAll] = useState(false);
+  const maxPrice = findMaxPrice(products, exchangeRate);
 
   const handlePriceChange = (event, value) => {
-    if (value < maxPrice) {
-      setShowClearAll(true);
-    } else {
-      setShowClearAll(false);
-    }
-
     const filter = products.filter((product) => {
       const exchangeRatePrice = Math.round(product.price * exchangeRate);
 
@@ -44,14 +34,6 @@ const FilterSection = ({ products, filterProducts }) => {
       <div className="py-8 p-4 flex flex-col gap-2 border-b">
         <div className="uppercase tracking-wide text-sm flex justify-between items-center">
           <p>Price</p>
-          {showClearAll && (
-            <p
-              className="text-xs cursor-pointer"
-              onClick={() => setMaxprice(maxPrice)}
-            >
-              Clear All
-            </p>
-          )}
         </div>
 
         <div className="">
