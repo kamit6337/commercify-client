@@ -78,7 +78,7 @@ const PhoneLogin = () => {
         mobileNumber: mobile,
       });
 
-      navigate(`/verify?token=${response.data}&callbackUrl=/`, {
+      navigate(`/verify/login?token=${response.data}&callbackUrl=/`, {
         state: { mobile, login: true },
       });
     } catch (error) {

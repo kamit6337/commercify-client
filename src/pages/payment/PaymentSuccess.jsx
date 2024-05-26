@@ -10,8 +10,11 @@ const PaymentSuccess = () => {
   const { orders } = useSelector(userOrdersState);
   const { isLoading, error, data } = useBuyProducts();
 
+  console.log("orders", orders);
+  console.log("data", data);
+
   const buyProducts = useMemo(() => {
-    if (!data || orders.length === 0) return;
+    if (!data || orders?.length === 0) return;
 
     const buys = [];
     data.data.forEach((buyId) => {

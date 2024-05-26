@@ -26,9 +26,10 @@ import OrderCancel from "../pages/user/OrderCancel";
 import NotFound from "../pages/notFound/NotFound";
 import OrderReturn from "../pages/user/OrderReturn";
 import PhoneSignUp from "../pages/auth/PhoneSignUp";
-import VerifyOtp from "../pages/auth/VerifyOtp";
 import RateProduct from "../pages/rating/RateProduct";
 import UpdateRatedProduct from "../pages/rating/UpdateRatedProduct";
+import VerifyLoginOtp from "../pages/auth/VerifyLoginOtp";
+import VerifySignupOtp from "../pages/auth/VerifySignupOtp";
 
 const Router = () => {
   return (
@@ -36,7 +37,8 @@ const Router = () => {
       {/* NOTE: AUTH ROUTES */}
       <Route path="/signup" element={<PhoneSignUp />} />
       <Route path="/login" element={<PhoneLogin />} />
-      <Route path="/verify" element={<VerifyOtp />} />
+      <Route path="/verify/login" element={<VerifyLoginOtp />} />
+      <Route path="/verify/signup" element={<VerifySignupOtp />} />
 
       {/* MARK: ROOT LAYOUT */}
       <Route path="/" element={<RootLayout />}>

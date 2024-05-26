@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { postAuthReq } from "../../utils/api/authApi";
 
-const VerifyOtp = () => {
+const VerifyLoginOtp = () => {
   const resendOtpSeconds = 45;
   const navigate = useNavigate();
   const [resendOtpTime, setResendOtpTime] = useState(resendOtpSeconds);
@@ -53,31 +53,12 @@ const VerifyOtp = () => {
     const { otp } = data;
 
     try {
-      if (state?.signup) {
-        await postAuthReq("/signup/verify-otp", {
-          mobileNumber: state.mobile,
-          otp: otp,
-          token,
-        });
-        navigate("/");
-        return;
-      }
-
-      const response = await postAuthReq("/login/verify-otp", {
+      await postAuthReq("/login/verify-otp", {
         mobileNumber: state.mobile,
         otp: otp,
         token,
       });
-
-      console.log("response", response);
-
       navigate("/");
-      // await patchReq("/user", {
-      //   mobileNumber: state.mobile,
-      //   otp: otp,
-      //   token,
-      // });
-      // navigate("/");
     } catch (error) {
       showErrorMessage({ message: error.message });
     }
@@ -92,19 +73,6 @@ const VerifyOtp = () => {
 
         navigate(`/verify?token=${response.data}`, {
           state: { mobile: state?.mobile, login: true },
-        });
-        showSuccessMessage({ message: "OTP send again" });
-        setResendOtpTime(resendOtpSeconds);
-        return;
-      }
-
-      if (state?.signup) {
-        const response = await postAuthReq("/signup/send-otp", {
-          token,
-        });
-
-        navigate(`/verify?token=${response.data}`, {
-          state: { mobile: state?.mobile, signup: true },
         });
         showSuccessMessage({ message: "OTP send again" });
         setResendOtpTime(resendOtpSeconds);
@@ -239,4 +207,4 @@ const VerifyOtp = () => {
   );
 };
 
-export default VerifyOtp;
+export default VerifyLoginOtp;

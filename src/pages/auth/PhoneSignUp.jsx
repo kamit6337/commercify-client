@@ -71,7 +71,7 @@ const PhoneSignUp = () => {
         mobile,
       });
 
-      navigate(`/verify?token=${response.data}&callbackUrl=/`, {
+      navigate(`/verify/signup?token=${response.data}&callbackUrl=/`, {
         state: { mobile, signup: true },
       });
     } catch (error) {
