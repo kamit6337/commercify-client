@@ -2,6 +2,7 @@
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { currencyState } from "../redux/slice/currencySlice";
+import changePriceDiscountByExchangeRate from "../utils/javascript/changePriceDiscountByExchangeRate";
 
 const ProductCard = ({ product }) => {
   const { symbol, exchangeRate } = useSelector(currencyState);
@@ -16,10 +17,10 @@ const ProductCard = ({ product }) => {
     thumbnail,
   } = product;
 
-  const exchangeRatePrice = Math.round(price * exchangeRate);
-  const roundDiscountPercent = Math.round(discountPercentage);
-  const discountedPrice = Math.round(
-    (exchangeRatePrice * (100 - roundDiscountPercent)) / 100
+  const { discountedPrice } = changePriceDiscountByExchangeRate(
+    price,
+    discountPercentage,
+    exchangeRate
   );
 
   return (
