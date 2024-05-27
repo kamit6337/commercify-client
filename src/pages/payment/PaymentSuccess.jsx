@@ -49,6 +49,8 @@ const PaymentSuccess = () => {
     return <div>Error occur</div>;
   }
 
+  console.log("buyProducts", buyProducts);
+
   return (
     <section className="bg-gray-100 p-5">
       <main className="bg-white">
