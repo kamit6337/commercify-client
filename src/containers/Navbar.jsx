@@ -10,6 +10,7 @@ import OnClickOutside from "../lib/OnClickOutside";
 import Toastify from "../lib/Toastify";
 import { QueryClient } from "@tanstack/react-query";
 import Cookies from "js-cookie";
+import CustomImages from "../assets/images";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -90,9 +91,11 @@ const Navbar = () => {
     <>
       <section className="w-full flex justify-center  items-center gap-10 tablet:gap-5 px-8 tablet:px-4 h-full absolute z-10">
         {/* MARK: APP LOGO */}
-        <div className="cursor-pointer">
-          <Link to={`/`}>Commercify</Link>
-        </div>
+        <Link to={`/`}>
+          <div className="cursor-pointer w-40">
+            <img src={CustomImages.logo} className="w-full object-cover" />
+          </div>
+        </Link>
 
         {/* MARK: SEARCH BAR */}
         <div className="relative flex justify-between items-center border border-white  rounded-3xl w-1/2">
