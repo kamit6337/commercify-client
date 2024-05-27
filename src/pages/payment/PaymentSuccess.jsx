@@ -1,34 +1,28 @@
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import useBuyProducts from "../../hooks/query/useBuyProducts";
 import Loading from "../../containers/Loading";
 import Product from "./Product";
-import { useSelector } from "react-redux";
-import { userOrdersState } from "../../redux/slice/userOrdersSlice";
-import { useMemo } from "react";
 
 const PaymentSuccess = () => {
-  const { orders } = useSelector(userOrdersState);
-  const { isLoading, error, data } = useBuyProducts();
+  // const { orders } = useSelector(userOrdersState);
 
-  console.log("orders", orders);
-  console.log("data", data);
+  const sessionId = useSearchParams()[0].get("sessionId");
 
-  const buyProducts = useMemo(() => {
-    if (!data || orders?.length === 0) return;
+  const { isLoading, error, data } = useBuyProducts(sessionId);
 
-    const buys = [];
-    data.data.forEach((buyId) => {
-      const findBuy = orders.find((order) => order._id === buyId);
-      buys.push(findBuy);
-    });
+  // const buyProducts = useMemo(() => {
+  //   if (!data || orders?.length === 0) return;
 
-    buys.sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
+  //   const buys = [];
+  //   data.data.forEach((buyId) => {
+  //     const findBuy = orders.find((order) => order._id === buyId);
+  //     buys.push(findBuy);
+  //   });
 
-    return buys;
-  }, [data, orders]);
+  //
+
+  //   return buys;
+  // }, [data, orders]);
 
   if (isLoading) {
     return (
@@ -45,6 +39,11 @@ const PaymentSuccess = () => {
       </div>
     );
   }
+
+  const buyProducts = data.data;
+  buyProducts.sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
 
   if (buyProducts.length === 0) {
     return <div>Error occur</div>;

@@ -28,9 +28,13 @@ const Checkout = () => {
         exchangeRate,
       });
 
-      stripe.redirectToCheckout({
+      console.log("checkoutSession", checkoutSession);
+
+      const response = await stripe.redirectToCheckout({
         sessionId: checkoutSession.session.id,
       });
+
+      console.log("response", response);
     } catch (error) {
       showErrorMessage({
         message: error.message || "Issue in doing Payment. Try later...",
