@@ -1,9 +1,4 @@
 import { Link } from "react-router-dom";
-import useFailedBuyProducts from "../../hooks/query/useFailedBuyProducts";
-import Loading from "../../containers/Loading";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { failedOrders } from "../../redux/slice/userOrdersSlice";
 
 const PaymentCancel = () => {
   return (

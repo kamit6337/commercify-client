@@ -33,24 +33,11 @@ const userOrdersSlice = createSlice({
       });
       return state;
     },
-    failedOrders: (state, { payload }) => {
-      const buysId = payload;
-
-      buysId.forEach((id) => {
-        state.orders = state.orders.filter((order) => order._id !== id);
-      });
-
-      return state;
-    },
   },
 });
 
-export const {
-  fillInitialOrders,
-  returnTheOrder,
-  cancelTheOrder,
-  failedOrders,
-} = userOrdersSlice.actions;
+export const { fillInitialOrders, returnTheOrder, cancelTheOrder } =
+  userOrdersSlice.actions;
 
 export const userOrdersReducer = userOrdersSlice.reducer;
 

@@ -4,25 +4,9 @@ import Loading from "../../containers/Loading";
 import Product from "./Product";
 
 const PaymentSuccess = () => {
-  // const { orders } = useSelector(userOrdersState);
-
   const sessionId = useSearchParams()[0].get("sessionId");
 
   const { isLoading, error, data } = useBuyProducts(sessionId);
-
-  // const buyProducts = useMemo(() => {
-  //   if (!data || orders?.length === 0) return;
-
-  //   const buys = [];
-  //   data.data.forEach((buyId) => {
-  //     const findBuy = orders.find((order) => order._id === buyId);
-  //     buys.push(findBuy);
-  //   });
-
-  //
-
-  //   return buys;
-  // }, [data, orders]);
 
   if (isLoading) {
     return (
@@ -46,10 +30,13 @@ const PaymentSuccess = () => {
   );
 
   if (buyProducts.length === 0) {
-    return <div>Error occur</div>;
+    return (
+      <div className="h-96 w-full flex flex-col justify-center items-center">
+        <p>Error Occur</p>
+        <p>Try refresh the page</p>
+      </div>
+    );
   }
-
-  console.log("buyProducts", buyProducts);
 
   return (
     <section className="bg-gray-100 p-5">
