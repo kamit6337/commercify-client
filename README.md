@@ -1,7 +1,7 @@
 # Commercify
 
 <p>It's a Full Stack e-Commerce Web App build in MERN Satck where you can buy product with whole range of different category</p>
-<p><a href="https://commercify-client.onrender.com"><u>Live Website</u></a></p>
+<p><a href="https://commercify-client.onrender.com" target="_blank" rel="noreferrer"><u>Live Website</u></a></p>
 
 <h1>Tech used : </h1>
 <ul>
