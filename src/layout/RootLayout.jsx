@@ -69,29 +69,36 @@ const RootLayout = () => {
       localStorage.removeItem("_cart");
       localStorage.removeItem("_wishlist");
       localStorage.removeItem("_add");
+      navigate(`/login?msg=${error.message}`);
     }
-  }, [error]);
+  }, [error, navigate]);
 
   useEffect(() => {
-    if (error) {
-      navigate(`/login?msg=${error.message}`);
-      return;
-    }
-
     if (addressError) {
-      navigate(`/login?msg=${addressError.message}`);
+      console.log("error from addressError", addressError.message);
+      navigate(`/login?msg=${"Something went wrong. Please login again"}`);
+      // navigate(`/login?msg=${addressError.message}`);
       return;
     }
     if (errorAllProducts) {
-      navigate(`/login?msg=${errorAllProducts.message}`);
+      console.log("error from errorAllProducts", errorAllProducts.message);
+      navigate(`/login?msg=${"Something went wrong. Please login again"}`);
+
+      // navigate(`/login?msg=${errorAllProducts.message}`);
       return;
     }
     if (errorAllCategory) {
-      navigate(`/login?msg=${errorAllCategory.message}`);
+      console.log("error from errorAllCategory", errorAllCategory.message);
+      navigate(`/login?msg=${"Something went wrong. Please login again"}`);
+
+      // navigate(`/login?msg=${errorAllCategory.message}`);
       return;
     }
     if (errorUserOrders) {
-      navigate(`/login?msg=${errorUserOrders.message}`);
+      console.log("error from errorUserOrders", errorUserOrders.message);
+      navigate(`/login?msg=${"Something went wrong. Please login again"}`);
+
+      // navigate(`/login?msg=${errorUserOrders.message}`);
       return;
     }
   }, [
