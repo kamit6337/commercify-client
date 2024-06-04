@@ -74,35 +74,15 @@ const RootLayout = () => {
   }, [error, navigate]);
 
   useEffect(() => {
-    if (addressError) {
-      console.log("error from addressError", addressError.message);
+    if (
+      addressError ||
+      errorAllProducts ||
+      errorAllCategory ||
+      errorUserOrders
+    ) {
       navigate(`/login?msg=${"Something went wrong. Please login again"}`);
-      // navigate(`/login?msg=${addressError.message}`);
-      return;
-    }
-    if (errorAllProducts) {
-      console.log("error from errorAllProducts", errorAllProducts.message);
-      navigate(`/login?msg=${"Something went wrong. Please login again"}`);
-
-      // navigate(`/login?msg=${errorAllProducts.message}`);
-      return;
-    }
-    if (errorAllCategory) {
-      console.log("error from errorAllCategory", errorAllCategory.message);
-      navigate(`/login?msg=${"Something went wrong. Please login again"}`);
-
-      // navigate(`/login?msg=${errorAllCategory.message}`);
-      return;
-    }
-    if (errorUserOrders) {
-      console.log("error from errorUserOrders", errorUserOrders.message);
-      navigate(`/login?msg=${"Something went wrong. Please login again"}`);
-
-      // navigate(`/login?msg=${errorUserOrders.message}`);
-      return;
     }
   }, [
-    error,
     navigate,
     addressError,
     errorAllProducts,

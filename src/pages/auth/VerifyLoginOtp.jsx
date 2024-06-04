@@ -6,10 +6,8 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { postAuthReq } from "../../utils/api/authApi";
-import { QueryClient } from "@tanstack/react-query";
 
 const VerifyLoginOtp = () => {
-  const queryClient = new QueryClient();
   const resendOtpSeconds = 45;
   const navigate = useNavigate();
   const [resendOtpTime, setResendOtpTime] = useState(resendOtpSeconds);
@@ -60,12 +58,6 @@ const VerifyLoginOtp = () => {
         otp: otp,
         token,
       });
-
-      queryClient.invalidateQueries({
-        queryKey: ["checkAuth"],
-        exact: true,
-      });
-
       navigate("/");
     } catch (error) {
       showErrorMessage({ message: error.message });
