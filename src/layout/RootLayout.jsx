@@ -19,6 +19,7 @@ import { fillInitialOrders } from "../redux/slice/userOrdersSlice";
 const RootLayout = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const isErrorOccur = localStorage.getItem("err");
 
   const { error, isSuccess, isLoading: isLoadingLoginCheck } = useLoginCheck();
 
@@ -65,13 +66,20 @@ const RootLayout = () => {
   }, [addressData, dispatch]);
 
   useEffect(() => {
-    if (error) {
+    if (error && !isErrorOccur) {
       localStorage.removeItem("_cart");
       localStorage.removeItem("_wishlist");
       localStorage.removeItem("_add");
+      localStorage.setItem("err", "tru");
       navigate(`/login?msg=${error.message}`);
     }
   }, [error, navigate]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      localStorage.removeItem("err");
+    }
+  }, [isSuccess]);
 
   useEffect(() => {
     if (

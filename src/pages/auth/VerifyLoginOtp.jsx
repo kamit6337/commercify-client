@@ -58,6 +58,7 @@ const VerifyLoginOtp = () => {
         otp: otp,
         token,
       });
+
       navigate("/");
     } catch (error) {
       showErrorMessage({ message: error.message });

@@ -10,7 +10,7 @@ const useLoginCheck = () => {
     retry: 2,
   });
 
-  return query;
+  return { ...query };
 };
 
 export default useLoginCheck;
