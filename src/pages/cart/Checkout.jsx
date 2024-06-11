@@ -12,7 +12,7 @@ import CheckoutProducts from "./CheckoutProducts";
 const Checkout = () => {
   const { cart } = useSelector(localStorageState);
   const { selectedAddress } = useSelector(addressState);
-  const { code, exchangeRate } = useSelector(currencyState);
+  const { code, exchangeRate, symbol } = useSelector(currencyState);
 
   const cartIds = cart.map((obj) => obj.id);
   const { ToastContainer, showErrorMessage } = Toastify();
@@ -26,15 +26,12 @@ const Checkout = () => {
         address: selectedAddress._id,
         code,
         exchangeRate,
+        symbol,
       });
 
-      console.log("checkoutSession", checkoutSession);
-
-      const response = await stripe.redirectToCheckout({
+      await stripe.redirectToCheckout({
         sessionId: checkoutSession.session.id,
       });
-
-      console.log("response", response);
     } catch (error) {
       showErrorMessage({
         message: error.message || "Issue in doing Payment. Try later...",
