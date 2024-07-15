@@ -1,7 +1,17 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --category-text: #8a8888;
+  --category-arrow-div: #f1eeee;
+  --all-text: #8a8888;
+  --important-text: #000042;
+  --important-black: #6b6b6b;
+  --some-less-important-text: #6e6e6e;
+}
 
 @layer base {
   * {
@@ -9,7 +19,7 @@
   }
 
   body {
-    @apply font-sans bg-white text-black950 cursor-default overflow-x-hidden;
+    @apply font-sans bg-white text-all_text cursor-default overflow-x-hidden;
   }
 
   select {
@@ -19,5 +29,11 @@
   input,
   textarea {
     @apply outline-none border-none;
+  }
+}
+
+@layer utilities {
+  .section_padding {
+    @apply px-6;
   }
 }

@@ -61,19 +61,24 @@ const SingleProduct = () => {
       </Helmet>
 
       <main>
-        <section className="grid grid-cols-2 tablet:inline-flex gap-5 py-16  px-6 tablet:px-2">
-          <div className="tablet:w-3/5">
+        <section className="flex tablet:inline-flex mobile:flex-col gap-5 py-16 section_padding">
+          <div className="flex-1 tablet:w-3/5 mobile:w-full">
             <ImagePart images={images} title={title} id={id} />
           </div>
 
-          <div className="flex flex-col gap-4 tablet:w-2/5">
+          <div className="flex-1 flex flex-col gap-4">
             <div>
-              <p className="text-xl font-semibold">{title}</p>
+              <p className="text-xl font-semibold text-important_text">
+                {title}
+              </p>
               <p className="text-xs">{description}</p>
             </div>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-500 text-some_less_important_text capitalize">
               <Link to={`/category/${category._id}`}>
-                Category : {category.title}
+                Category :{" "}
+                <span className="font-semibold tracking-wider">
+                  {category.title}
+                </span>
               </Link>
             </p>
             <div>
@@ -81,7 +86,7 @@ const SingleProduct = () => {
                 Special Price
               </p>
               <div className="flex gap-2 items-center">
-                <p className="text-2xl font-semibold tracking-wide">
+                <p className="text-2xl font-semibold tracking-wide text-important_text">
                   {symbol}
                   {discountedPrice}
                 </p>
@@ -93,9 +98,11 @@ const SingleProduct = () => {
               </div>
             </div>
             <div className="flex items-center gap-1 text-gray-500 text-sm">
-              <p>Delivery</p>
+              <p>Delivery by </p>
               <p>-</p>
-              <p>{makeDateDaysAfter(deliveredBy)}</p>
+              <p className="text-important_text">
+                {makeDateDaysAfter(deliveredBy)}
+              </p>
             </div>
           </div>
         </section>

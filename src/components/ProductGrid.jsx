@@ -40,7 +40,7 @@ const ProductGrid = ({ products }) => {
   return (
     <section>
       <div className="w-full h-10 border-b px-4 text-sm  flex items-center gap-5">
-        <p className="font-semibold">Sort By</p>
+        <p className="font-semibold text-important_black">Sort By</p>
         <p
           className={`${
             defaultSort === 1 && "border-b-2 text-blue-600 border-blue-600"
@@ -58,7 +58,7 @@ const ProductGrid = ({ products }) => {
           Price - High to Low
         </p>
       </div>
-      <div className="py-10 w-full grid grid-cols-3 justify-items-center gap-y-8 laptop:gap-y-6  ">
+      <div className="py-10 w-full grid grid-cols-3 mobile:grid-cols-2 justify-items-center gap-y-8 laptop:gap-y-6  ">
         {sortProducts.map((product) => {
           return <ProductCard key={product.id} product={product} />;
         })}

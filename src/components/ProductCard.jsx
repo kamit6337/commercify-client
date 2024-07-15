@@ -37,18 +37,18 @@ const ProductCard = ({ product }) => {
       </div>
       <div className="flex-1 flex flex-col justify-between p-3 pb-4 pr-4">
         <div>
-          <p className="text-lg font-semibold tracking-wide truncate tablet:text-base">
+          <p className="text-lg font-semibold tracking-wide truncate tablet:text-base text-important_text capitalize">
             {title}
           </p>
-          <p className="text-[13px] line-clamp-2 mt-1 tablet:line-clamp-2 tablet:text-xs">
+          <p className="text-[13px] line-clamp-2 mt-1 tablet:line-clamp-2 tablet:text-xs ">
             {description}
           </p>
         </div>
         <div className="flex justify-between">
-          <p className="tablet:text-sm">
+          <p className="tablet:text-sm capitalize text-some_less_important_text font-semibold tracking-wider">
             <Link to={`/category/${category._id}`}>{category.title}</Link>
           </p>
-          <p>
+          <p className="text-important_text font-semibold tracking-wider">
             {symbol}
             {discountedPrice}
           </p>

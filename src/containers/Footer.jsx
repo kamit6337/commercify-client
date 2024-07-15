@@ -7,7 +7,7 @@ const Footer = () => {
         <p className="text-xs mt-2">an E-Commerce Web App</p>
       </div>
       <p className="absolute text-xs bottom-0 mb-2">
-        Copyright of Amit Kumar, &copy; {year}
+        Copyright &copy;{year} All Right Reserved
       </p>
     </div>
   );

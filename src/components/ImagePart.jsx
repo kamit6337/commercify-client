@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -54,7 +53,7 @@ const ImagePart = ({ images, title, id }) => {
   };
 
   return (
-    <div className="flex">
+    <div className="flex mobile:flex-row-reverse">
       <div className="flex flex-col">
         {images.map((img, i) => {
           return (
@@ -76,7 +75,7 @@ const ImagePart = ({ images, title, id }) => {
             className="w-full object-cover"
           />
         </div>
-        <div className="grid grid-cols-2 gap-4 mt-4 text-white text-lg sm_lap:text-base tablet:text-xs">
+        <div className="grid grid-cols-2 gap-4 mt-4 text-white text-lg sm_lap:text-base tablet:text-sm">
           {isAddedToCart ? (
             <p
               className=" border p-3 w-full  rounded-md cursor-pointer  text-center bg-green-600"
@@ -94,14 +93,14 @@ const ImagePart = ({ images, title, id }) => {
           )}
           {isAddedToWatchlist ? (
             <p
-              className="border p-3 sm_lap:text-sm  tablet:text-[11px]  w-full rounded-md cursor-pointer bg-gray-400 text-center flex items-center justify-center "
+              className="border p-3 sm_lap:text-sm  w-full rounded-md cursor-pointer bg-gray-400 text-center flex items-center justify-center "
               onClick={removeFromWatchlist}
             >
               Added To Watchlist
             </p>
           ) : (
             <p
-              className="  border p-3 sm_lap:text-sm tablet:text-[11px]   w-full rounded-md cursor-pointer text-center text-black flex items-center justify-center"
+              className="  border p-3 sm_lap:text-sm w-full rounded-md cursor-pointer text-center text-black flex items-center justify-center"
               onClick={addToWatchlist}
             >
               Add to Watchlist

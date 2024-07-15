@@ -5,7 +5,7 @@ import { Icons } from "../assets/icons";
 
 const HomeLayout = () => {
   const { data: allCategory } = useAllCategory();
-  const scrollPixel = 500;
+  const [scrollPixel, setScrollPixel] = useState(500);
   const ref = useRef(null);
   const [widthDiff, setWidthDiff] = useState(null);
   const [index, setIndex] = useState(0);
@@ -17,6 +17,24 @@ const HomeLayout = () => {
       const scrollWidth = ref.current.scrollWidth;
       setWidthDiff(scrollWidth - width);
     }
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 700) {
+        setScrollPixel(300);
+      } else {
+        setScrollPixel(500);
+      }
+    };
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   const moveRight = () => {
@@ -59,7 +77,7 @@ const HomeLayout = () => {
                   <p
                     className={`${
                       optionIndex === 999 && "border-b-2"
-                    }  uppercase whitespace-nowrap`}
+                    }  capitalize whitespace-nowrap text-category_text`}
                     onMouseEnter={() => setOptionIndex(999)}
                     onMouseLeave={() => setOptionIndex(null)}
                   >
@@ -74,7 +92,7 @@ const HomeLayout = () => {
                       <p
                         className={`${
                           optionIndex === i && "border-b-2"
-                        }  uppercase whitespace-nowrap`}
+                        }  capitalize whitespace-nowrap text-category_text`}
                         onMouseEnter={() => setOptionIndex(i)}
                         onMouseLeave={() => setOptionIndex(null)}
                       >
@@ -90,13 +108,17 @@ const HomeLayout = () => {
           </div>
         </div>
         <p
-          className="absolute h-full left-0  bg-slate-300 cursor-pointer  flex items-center px-1 text-slate-800 text-3xl"
+          className={`
+          ${index >= 0 && "hidden"}
+          absolute h-full left-0  bg-category_arrow_div cursor-pointer flex items-center px-1 text-3xl`}
           onClick={moveLeft}
         >
           <Icons.leftArrow />
         </p>
         <p
-          className="absolute h-full right-0 bg-slate-300 cursor-pointer  flex items-center px-1 text-slate-800 text-3xl"
+          className={`
+          ${(!widthDiff || widthDiff <= 0) && "hidden"}
+          absolute h-full right-0 bg-category_arrow_div cursor-pointer  flex items-center px-1 text-3xl`}
           onClick={moveRight}
         >
           <Icons.rightArrow />

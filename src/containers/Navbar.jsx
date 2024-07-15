@@ -89,16 +89,22 @@ const Navbar = () => {
 
   return (
     <>
-      <section className="w-full flex justify-center  items-center gap-10 tablet:gap-5 px-8 tablet:px-4 h-full absolute z-10">
+      <section className="w-full flex justify-between items-center px-40 gap-5 sm_lap:px-20 tablet:px-10 mobile:gap-3 mobile:px-2 h-full absolute z-10 ">
         {/* MARK: APP LOGO */}
-        <Link to={`/`}>
+        <Link to={`/`} className="tablet:hidden">
           <div className="cursor-pointer w-40">
             <img src={CustomImages.logo} className="w-full object-cover" />
           </div>
         </Link>
 
+        <Link to={`/`} className="hidden tablet:flex">
+          <div className="cursor-pointer w-10">
+            <img src={CustomImages.smallLogo} className="w-full object-cover" />
+          </div>
+        </Link>
+
         {/* MARK: SEARCH BAR */}
-        <div className="relative flex justify-between items-center border border-white  rounded-3xl w-1/2">
+        <div className="flex-1 relative flex justify-between items-center border border-white  rounded-3xl">
           <input
             type="text"
             value={searchText}
@@ -154,10 +160,10 @@ const Navbar = () => {
               <img
                 src={user.photo}
                 loading="lazy"
-                className="w-full rounded-full object-cover"
+                className="w-full rounded-full object-cover "
               />
             </p>
-            <p>{user.name.split(" ")[0]}</p>
+            <p className="mobile:hidden">{user.name.split(" ")[0]}</p>
             <p className="text-xs">
               {showUserInfo ? (
                 <Icons.upArrow className="" />

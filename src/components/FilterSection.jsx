@@ -28,7 +28,7 @@ const FilterSection = ({ products, filterProducts }) => {
 
   return (
     <section className="flex flex-col h-full">
-      <p className="border-b p-4 font-semibold tracking-wide  text-lg">
+      <p className="border-b p-4 font-semibold tracking-wide  text-lg  text-important_black">
         Filters
       </p>
       <div className="py-8 p-4 flex flex-col gap-2 border-b">
@@ -63,7 +63,7 @@ const FilterSection = ({ products, filterProducts }) => {
                 <>
                   <div className="cursor-pointer py-2">
                     <Link to={`/`}>
-                      <p className="text-sm uppercase">All</p>
+                      <p className="text-sm capitalize">All</p>
                     </Link>
                   </div>
                   {allCategory.data.map((category, i) => {
@@ -72,7 +72,7 @@ const FilterSection = ({ products, filterProducts }) => {
                     return (
                       <div key={i} className="cursor-pointer py-2 ">
                         <Link to={`/category/${_id}`}>
-                          <p className="text-sm uppercase">{title}</p>
+                          <p className="text-sm capitalize">{title}</p>
                         </Link>
                       </div>
                     );

@@ -11,6 +11,12 @@ export default {
         black900: "#0f172a",
         grap50: "#f9fafb",
         product_addToCart: "#ff9f00",
+        category_text: "var(--category-text)",
+        category_arrow_div: "var(--category-arrow-div)",
+        all_text: "var(--all-text)",
+        important_text: "var(--important-text)",
+        important_black: "var(--important-black)",
+        some_less_important_text: "var(--some-less-important-text)",
       },
     },
     screens: {
