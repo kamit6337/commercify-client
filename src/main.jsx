@@ -10,8 +10,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import environment from "./utils/environment.js";
 import { disableReactDevTools } from "@fvilers/disable-react-devtools";
+import ReactGA from "react-ga4";
 
 const PRODUCTION = "production";
+
+ReactGA.initialize(environment.GT4_MEASUREMENT_ID);
 
 if (environment.NODE_ENV === PRODUCTION) disableReactDevTools();
 

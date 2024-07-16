@@ -5,6 +5,7 @@ const environment = {
   CURRENCY_EXCHANGE_KEY: import.meta.env.VITE_APP_CURRENCY_EXCHANGE_KEY,
   COUNTRY_KEY: import.meta.env.VITE_APP_COUNTRY_KEY,
   COUNTRY_KEY_EMAIL: import.meta.env.VITE_APP_COUNTRY_KEY_EMAIL,
+  GT4_MEASUREMENT_ID: import.meta.env.VITE_APP_GT4_MEASUREMENT_ID,
 };
 
 export default environment;
