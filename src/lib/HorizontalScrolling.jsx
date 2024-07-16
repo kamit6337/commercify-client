@@ -72,7 +72,7 @@ const HorizontalScrolling = ({
       style={{ height: `${height}px` }}
     >
       <div
-        className={`relative flex-1 flex ${sideMargin}`}
+        className={`relative flex-1 flex`}
         ref={ref}
         style={{
           marginLeft: `${sideMargin}px`,

@@ -92,11 +92,8 @@ const PhoneLogin = () => {
         <title>Login</title>
         <meta name="description" content="Login page of Commercify" />
       </Helmet>
-      <section className="h-screen w-full flex flex-col justify-center items-center gap-2">
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="w-[600px] border rounded-xl flex flex-col justify-evenly p-8 shadow-lg"
-        >
+      <section className="h-screen w-full flex flex-col justify-center items-center gap-2 mobile:px-2">
+        <form onSubmit={handleSubmit(onSubmit)} className="auth_div">
           {/* MARK: HEADLINE*/}
           <p className="text-xl font-bold tracking-wide text-center">Login</p>
 
@@ -176,16 +173,14 @@ const PhoneLogin = () => {
           </div>
 
           {/* MARK: SUBMIT BUTTON*/}
-          <div className="flex flex-col gap-2">
-            <div className="border h-12 mt-8 rounded-lg bg-purple-300 font-semibold text-lg tracking-wide cursor-pointer w-full text-center ">
-              {/* <Loading hScreen={false} small={true} /> */}
-
+          <div className="flex flex-col gap-2 mt-5">
+            <div className="h-12 auth_button">
               {isSubmitting ? (
                 <Loading hScreen={false} small={true} />
               ) : (
                 <button
                   type="submit"
-                  className="w-full h-full cursor-pointer text-slate-600"
+                  className="w-full h-full cursor-pointer text-some_less_important_text"
                 >
                   Request OTP
                 </button>

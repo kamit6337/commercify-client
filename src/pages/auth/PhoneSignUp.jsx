@@ -86,16 +86,16 @@ const PhoneSignUp = () => {
         <meta name="description" content="Sign Up page of Commercify" />
       </Helmet>
 
-      <div className="h-screen w-full flex flex-col gap-2 justify-center items-center bg-color_2">
+      <div className="h-screen w-full flex flex-col gap-2 justify-center items-center bg-color_2 mobile:px-2">
         {/* NOTE: THE CENTER PAGE */}
-        <div className="w-[600px] border rounded-xl  justify-center items-center gap-8 shadow-lg   flex flex-col p-6">
+        <div className="auth_div">
           {/* MARK: FORM AND GO TO LOGIN BUTTON*/}
-          <p className="text-xl font-bold tracking-wide">Sign Up</p>
+          <p className="text-xl font-bold tracking-wide self-center">Sign Up</p>
 
           {/* MARK: SIGNUP FORM*/}
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="flex flex-col gap-4 w-full text-color_1"
+            className="flex flex-col gap-4 mobile:gap-2 w-full text-color_1"
           >
             {/* MARK: NAME FIELD*/}
             <div className="flex flex-col">
@@ -213,13 +213,13 @@ const PhoneSignUp = () => {
 
             {/* MARK: SUBMIT BUTTON*/}
             <div className="flex flex-col gap-2">
-              <div className="h-12  rounded-lg bg-purple-300 font-semibold text-lg tracking-wide cursor-pointer w-full text-color_1">
+              <div className="h-12 auth_button">
                 {isSubmitting ? (
                   <Loading hScreen={false} small={true} />
                 ) : (
                   <input
                     type="submit"
-                    className="w-full h-full cursor-pointer text-slate-600"
+                    className="w-full h-full cursor-pointer text-some_less_important_text"
                   />
                 )}
               </div>

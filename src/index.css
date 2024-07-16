@@ -11,6 +11,8 @@
   --important-text: #000042;
   --important-black: #6b6b6b;
   --some-less-important-text: #6e6e6e;
+  --auth-button-background: #dcdadd;
+  --auth-button-background-hover: #c8c7ca;
 }
 
 @layer base {
@@ -35,5 +37,13 @@
 @layer utilities {
   .section_padding {
     @apply px-6;
+  }
+
+  .auth_div {
+    @apply w-[600px] mobile:w-full border rounded-xl  mobile:p-4 shadow-lg   flex flex-col justify-evenly p-6 gap-5;
+  }
+
+  .auth_button {
+    @apply rounded-lg bg-auth_button_background hover:bg-auth_button_background_hover duration-300 text-lg tracking-wide cursor-pointer w-full;
   }
 }

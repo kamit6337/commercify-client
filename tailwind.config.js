@@ -16,6 +16,8 @@ export default {
         all_text: "var(--all-text)",
         important_text: "var(--important-text)",
         important_black: "var(--important-black)",
+        auth_button_background: "var(--auth-button-background)",
+        auth_button_background_hover: "var(--auth-button-background-hover)",
         some_less_important_text: "var(--some-less-important-text)",
       },
     },

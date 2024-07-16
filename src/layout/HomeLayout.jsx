@@ -12,7 +12,7 @@ const HomeLayout = () => {
       <HorizontalScrolling
         height={125}
         show_bg_color={true}
-        sideMargin={100}
+        sideMargin={50}
         inBetweenGap={50}
       >
         {allCategory.data.length > 0 ? (

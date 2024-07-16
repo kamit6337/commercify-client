@@ -173,7 +173,7 @@ const Navbar = () => {
             </p>
           </div>
           {showUserInfo && (
-            <div className="absolute z-10 top-full bg-white shadow-2xl shadow-slate-700 w-64 text-black">
+            <div className="mobile:self-end mobile:-mr-16 absolute z-10 top-full bg-white shadow-2xl shadow-slate-700 w-64 text-black">
               <Link to={`/user/orders`} onClick={() => setShowUserInfo(false)}>
                 <p className="py-3 border-b px-4 cursor-pointer">My Orders</p>
               </Link>

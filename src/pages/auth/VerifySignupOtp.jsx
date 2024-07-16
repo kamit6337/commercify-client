@@ -102,11 +102,8 @@ const VerifySignupOtp = () => {
         <title>Login</title>
         <meta name="description" content="Login page of Commercify" />
       </Helmet>
-      <section className="h-screen w-full flex flex-col justify-center items-center gap-2">
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="w-[600px]  border rounded-xl flex flex-col gap-10 justify-evenly p-6 shadow-lg"
-        >
+      <section className="h-screen w-full flex flex-col justify-center items-center gap-2 mobile:px-2">
+        <form onSubmit={handleSubmit(onSubmit)} className="auth_div">
           {/* MARK: HEADLINE*/}
           <p className="text-xl font-bold tracking-wide text-center">
             Verify Mobile Number
@@ -187,13 +184,13 @@ const VerifySignupOtp = () => {
 
           {/* MARK: SUBMIT BUTTON*/}
           <div className="flex flex-col gap-2">
-            <div className="border rounded-lg bg-purple-300 font-semibold text-lg tracking-wide cursor-pointer w-full text-center h-12 ">
+            <div className="auth_button h-12 ">
               {isSubmitting ? (
                 <Loading hScreen={false} small={true} />
               ) : (
                 <button
                   type="submit"
-                  className="w-full h-full cursor-pointer text-slate-600"
+                  className="w-full h-full cursor-pointer text-some_less_important_text"
                 >
                   Verify OTP
                 </button>
