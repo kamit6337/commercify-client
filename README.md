@@ -48,4 +48,3 @@ Here are the screenshots of my project:
 
 ![product 1](https://commercify-vercel.s3.ap-south-1.amazonaws.com/images/commercify1.png)
 ![product 2](https://commercify-vercel.s3.ap-south-1.amazonaws.com/images/commercify2.png)
-![product 3](https://commercify-vercel.s3.ap-south-1.amazonaws.com/images/commercify3.png)
