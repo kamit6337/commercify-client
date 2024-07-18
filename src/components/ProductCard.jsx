@@ -24,8 +24,8 @@ const ProductCard = ({ product }) => {
   );
 
   return (
-    <div className="w-80 laptop:w-64 sm_lap:w-52 tablet:w-52 h-96 laptop:h-80 flex flex-col rounded-xl hover:shadow-2xl duration-200">
-      <div className="w-full h-3/5">
+    <div className="w-80 laptop:w-64 sm_lap:w-52 tablet:w-52 h-[420px] laptop:h-80 flex flex-col rounded-xl hover:shadow-2xl duration-200">
+      <div className="w-full h-3/5 p-3">
         <Link to={`/products/${_id}`}>
           <img
             src={thumbnail}

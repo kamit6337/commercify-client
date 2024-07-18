@@ -45,9 +45,9 @@ const SingleProduct = () => {
     description,
     price,
     category,
-    images,
     discountPercentage,
     deliveredBy,
+    thumbnail,
   } = data.data;
 
   const { discountedPrice, exchangeRatePrice, roundDiscountPercent } =
@@ -63,7 +63,7 @@ const SingleProduct = () => {
       <main>
         <section className="flex tablet:inline-flex mobile:flex-col gap-5 py-16 section_padding">
           <div className="flex-1 tablet:w-3/5 mobile:w-full">
-            <ImagePart images={images} title={title} id={id} />
+            <ImagePart image={thumbnail} title={title} id={id} />
           </div>
 
           <div className="flex-1 flex flex-col gap-4">
@@ -71,7 +71,7 @@ const SingleProduct = () => {
               <p className="text-xl font-semibold text-important_text">
                 {title}
               </p>
-              <p className="text-xs">{description}</p>
+              <p className="text-xs mt-2">{description}</p>
             </div>
             <p className="text-sm text-gray-500 text-some_less_important_text capitalize">
               <Link to={`/category/${category._id}`}>

@@ -30,6 +30,7 @@ import RateProduct from "../pages/rating/RateProduct";
 import UpdateRatedProduct from "../pages/rating/UpdateRatedProduct";
 import VerifyLoginOtp from "../pages/auth/VerifyLoginOtp";
 import VerifySignupOtp from "../pages/auth/VerifySignupOtp";
+import VerifyUserUpdate from "../pages/auth/VerifyUserUpdate";
 
 const Router = () => {
   return (
@@ -39,6 +40,7 @@ const Router = () => {
       <Route path="/login" element={<PhoneLogin />} />
       <Route path="/verify/login" element={<VerifyLoginOtp />} />
       <Route path="/verify/signup" element={<VerifySignupOtp />} />
+      <Route path="/verify/update" element={<VerifyUserUpdate />} />
 
       {/* MARK: ROOT LAYOUT */}
       <Route path="/" element={<RootLayout />}>

@@ -35,7 +35,7 @@ const CategoryProducts = ({ category, productId }) => {
           {title}
         </span>
       </p>
-      <HorizontalScrolling height={400}>
+      <HorizontalScrolling height={450}>
         {products.map((product, i) => {
           return <ProductCard key={i} product={product} />;
         })}

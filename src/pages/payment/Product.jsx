@@ -35,13 +35,12 @@ const Product = ({ buyProduct }) => {
         </div>
 
         {/* MARK: DETAIL PART */}
-
         <section className="flex-1 flex flex-col gap-3">
           <div>
             <Link to={`/products/${id}`}>
               <p>{title}</p>
             </Link>
-            <p className="text-xs">{description}</p>
+            <p className="text-xs line-clamp-2 mt-2">{description}</p>
           </div>
 
           <div className="flex gap-2 items-center">

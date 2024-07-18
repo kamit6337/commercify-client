@@ -93,8 +93,8 @@ const Profile = () => {
     try {
       const updatedUser = await postReq("/user", formData);
       handleCancelOnSuccessfull();
-      navigate(`/verify?token=${updatedUser.data}&callbackUrl=/`, {
-        state: { mobile, update: true },
+      navigate(`/verify/update?token=${updatedUser.data}`, {
+        state: { mobile },
       });
     } catch (error) {
       showErrorMessage({ message: error.message || "Something went wrong" });
