@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { postAuthReq } from "../../utils/api/authApi";
+import trackAnalyticsEvent from "../../lib/trackAnalyticsEvent";
 
 const VerifySignupOtp = () => {
   const resendOtpSeconds = 45;
@@ -50,6 +51,11 @@ const VerifySignupOtp = () => {
   }, [resendOtpTime]);
 
   const onSubmit = async (data) => {
+    trackAnalyticsEvent({
+      action: "verifySignUp",
+      label: "Verify SignUp OTP",
+    });
+
     const { otp } = data;
 
     try {
