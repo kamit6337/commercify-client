@@ -25,11 +25,6 @@ function App() {
   const [redirect, setRedirect] = useState(false);
 
   useEffect(() => {
-    ReactGA.send({
-      hitType: "pageview",
-      page: location.pathname + location.search,
-    });
-
     const currentUrl = window.location.href;
 
     if (currentUrl.includes("localhost") || currentUrl.includes("vercel")) {
@@ -38,8 +33,13 @@ function App() {
       setRedirect(true);
       window.location.href = "https://commercify-client.vercel.app";
     }
+  }, []);
 
-    console.log("current", window.location.href);
+  useEffect(() => {
+    ReactGA.send({
+      hitType: "pageview",
+      page: location.pathname + location.search,
+    });
   }, [location]);
 
   if (redirect) {
