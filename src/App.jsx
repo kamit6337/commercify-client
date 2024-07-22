@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 import "./App.css";
 import Router from "./routes/Router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import ReactGA from "react-ga4";
 import * as Sentry from "@sentry/react";
 
@@ -22,13 +22,29 @@ Sentry.init({
 
 function App() {
   const location = useLocation();
+  const [redirect, setRedirect] = useState(false);
 
   useEffect(() => {
     ReactGA.send({
       hitType: "pageview",
       page: location.pathname + location.search,
     });
+
+    const currentUrl = window.location.href;
+
+    if (currentUrl.includes("localhost") || currentUrl.includes("vercel")) {
+      setRedirect(false);
+    } else {
+      setRedirect(true);
+      window.location.href = "https://commercify-client.vercel.app";
+    }
+
+    console.log("current", window.location.href);
   }, [location]);
+
+  if (redirect) {
+    return null;
+  }
 
   return (
     <>
