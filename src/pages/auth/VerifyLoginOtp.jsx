@@ -1,36 +1,32 @@
 import { Helmet } from "react-helmet";
 import Loading from "../../containers/Loading";
-import { useForm } from "react-hook-form";
 import Toastify from "../../lib/Toastify";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { postAuthReq } from "../../utils/api/authApi";
 import trackAnalyticsEvent from "../../lib/trackAnalyticsEvent";
+import OtpInput from "./OtpInput";
+import { postReq } from "../../utils/api/api";
+import useLoginCheck from "../../hooks/auth/useLoginCheck";
 
 const VerifyLoginOtp = () => {
   const resendOtpSeconds = 45;
   const navigate = useNavigate();
   const [resendOtpTime, setResendOtpTime] = useState(resendOtpSeconds);
   const token = useSearchParams()[0].get("token");
+  const page = useSearchParams()[0].get("page");
+  const [otp, setOtp] = useState(new Array(6).fill(""));
+  const [isLoading, setIsLoading] = useState(false);
+  const { refetch } = useLoginCheck();
+
   const { state } = useLocation();
-
   const {
-    register,
-    handleSubmit,
-    formState: { isSubmitting, errors },
-    setFocus,
-  } = useForm({
-    defaultValues: {
-      otp: "",
-    },
-  });
-
-  const { ToastContainer, showErrorMessage, showSuccessMessage } = Toastify();
-
-  useEffect(() => {
-    setFocus("otp");
-  }, [setFocus]);
+    ToastContainer,
+    showErrorMessage,
+    showSuccessMessage,
+    showAlertMessage,
+  } = Toastify();
 
   useEffect(() => {
     if (resendOtpTime === 0) return;
@@ -50,54 +46,80 @@ const VerifyLoginOtp = () => {
     };
   }, [resendOtpTime]);
 
-  const onSubmit = async (data) => {
-    trackAnalyticsEvent({
-      action: "verifyLogin",
-      label: "Verify Login OTP",
-    });
-
-    const { otp } = data;
-
+  const onSubmit = async () => {
     try {
-      await postAuthReq("/login/verify-otp", {
-        mobileNumber: state.mobile,
-        otp: otp,
-        token,
+      trackAnalyticsEvent({
+        action: "verifyLogin",
+        label: "Verify Login OTP",
       });
+
+      const modifyOtp = otp.join("");
+
+      if (modifyOtp.length < 6) {
+        showAlertMessage({ message: "Please fill OTP" });
+        return;
+      }
+      setIsLoading(true);
+
+      if (page === "login") {
+        await postAuthReq("/login/verify-otp", {
+          mobileNumber: state.mobile,
+          otp: modifyOtp,
+          token,
+        });
+      } else if (page === "signup") {
+        await postAuthReq("/signup/verify-otp", {
+          mobileNumber: state.mobile,
+          otp: otp,
+          token,
+        });
+      } else {
+        await postReq("/user/update/verify-otp", {
+          mobileNumber: state.mobile,
+          otp: otp,
+          token,
+        });
+        refetch();
+      }
 
       navigate("/");
     } catch (error) {
       showErrorMessage({ message: error.message });
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleResendOtp = async () => {
     try {
-      if (state?.login) {
-        const response = await postAuthReq("/login/send-otp", {
+      let response;
+      if (page === "login") {
+        response = await postAuthReq("/login/send-otp", {
           token,
         });
 
-        navigate(`/verify?token=${response.data}`, {
-          state: { mobile: state?.mobile, login: true },
+        navigate(`/verify?page=login&token=${response.data}`, {
+          state: { mobile: state?.mobile },
         });
-        showSuccessMessage({ message: "OTP send again" });
-        setResendOtpTime(resendOtpSeconds);
-        return;
-      }
-
-      if (state?.update) {
-        const response = await postAuthReq("/user", {
+      } else if (page === "signup") {
+        response = await postAuthReq("/signup/send-otp", {
           token,
         });
 
-        navigate(`/verify?token=${response.data}`, {
-          state: { mobile: state?.mobile, update: true },
+        navigate(`/verify?page=signup&token=${response.data}`, {
+          state: { mobile: state?.mobile },
         });
-        showSuccessMessage({ message: "OTP send again" });
-        setResendOtpTime(resendOtpSeconds);
-        return;
+      } else {
+        response = await postReq("/user", {
+          token,
+        });
+        navigate(`/verify?page=update&token=${response.data}`, {
+          state: { mobile: state?.mobile },
+        });
       }
+
+      showSuccessMessage({ message: "OTP send again" });
+      setResendOtpTime(resendOtpSeconds);
     } catch (error) {
       showErrorMessage({ message: error.message });
     }
@@ -110,14 +132,14 @@ const VerifyLoginOtp = () => {
         <meta name="description" content="Login page of Commercify" />
       </Helmet>
       <section className="h-screen w-full flex flex-col justify-center items-center gap-2 mobile:px-2">
-        <form onSubmit={handleSubmit(onSubmit)} className="auth_div">
+        <div className="auth_div">
           {/* MARK: HEADLINE*/}
           <p className="text-xl font-bold tracking-wide text-center">
             Verify Mobile Number
           </p>
 
           {/* MARK: MIDDLE */}
-          <div className="space-y-1">
+          <div className="space-y-3">
             <div className="flex justify-between items-center px-2 text-xs">
               <p className="">
                 OTP has send to mobile number ending with{" "}
@@ -133,41 +155,7 @@ const VerifyLoginOtp = () => {
               )}
             </div>
             {/* MARK: ENTER NUMBER */}
-            <div className="">
-              <p className="w-full border rounded-md h-9">
-                <input
-                  {...register("otp", {
-                    required: true,
-                    validate: (value) => {
-                      const numericPattern = /^[0-9]+$/;
-
-                      if (!numericPattern.test(value)) {
-                        return "Please enter your valid mobile number";
-                      }
-
-                      if (String(value).length > 6) {
-                        return "Please provide a valid 6 digit OTP";
-                      }
-
-                      return true;
-                    },
-                  })}
-                  className="w-full px-2 rounded-md h-full"
-                  placeholder="6-digit OTP"
-                  autoComplete="off"
-                  spellCheck="false"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault(); // Prevent form submission
-                      return;
-                    }
-                  }}
-                />
-              </p>
-              <p className="text-red-500 text-[10px] h-1 ml-1">
-                {errors?.otp?.message}
-              </p>
-            </div>
+            <OtpInput otp={otp} cb={(value) => setOtp(value)} />
 
             {/* MARK: RESEND OTP */}
             <div className="w-full">
@@ -191,20 +179,19 @@ const VerifyLoginOtp = () => {
 
           {/* MARK: SUBMIT BUTTON*/}
           <div className="flex flex-col gap-2">
-            <div className="auth_button h-12 ">
-              {isSubmitting ? (
+            <button
+              onClick={onSubmit}
+              disabled={isLoading}
+              className="auth_button"
+            >
+              {isLoading ? (
                 <Loading hScreen={false} small={true} />
               ) : (
-                <button
-                  type="submit"
-                  className="w-full h-full cursor-pointer text-some_less_important_text"
-                >
-                  Verify OTP
-                </button>
+                "Verify OTP"
               )}
-            </div>
+            </button>
           </div>
-        </form>
+        </div>
       </section>
       <ToastContainer />
     </>

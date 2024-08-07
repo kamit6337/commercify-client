@@ -44,6 +44,6 @@
   }
 
   .auth_button {
-    @apply rounded-lg bg-auth_button_background hover:bg-auth_button_background_hover duration-300 text-lg tracking-wide cursor-pointer w-full;
+    @apply h-12 rounded-lg bg-black hover:bg-slate-800 duration-300 text-lg tracking-wide cursor-pointer w-full text-white uppercase;
   }
 }

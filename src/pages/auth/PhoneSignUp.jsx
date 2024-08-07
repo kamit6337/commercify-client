@@ -77,8 +77,8 @@ const PhoneSignUp = () => {
         mobile,
       });
 
-      navigate(`/verify/signup?token=${response.data}&callbackUrl=/`, {
-        state: { mobile, signup: true },
+      navigate(`/verify?page=signup&token=${response.data}`, {
+        state: { mobile },
       });
     } catch (error) {
       showErrorMessage({ message: error.message });
@@ -219,16 +219,17 @@ const PhoneSignUp = () => {
 
             {/* MARK: SUBMIT BUTTON*/}
             <div className="flex flex-col gap-2">
-              <div className="h-12 auth_button">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="auth_button"
+              >
                 {isSubmitting ? (
                   <Loading hScreen={false} small={true} />
                 ) : (
-                  <input
-                    type="submit"
-                    className="w-full h-full cursor-pointer text-some_less_important_text"
-                  />
+                  "Submit"
                 )}
-              </div>
+              </button>
               <p className="text-sm ml-2 text-color_4">
                 Already had account
                 <span className="ml-2 underline">

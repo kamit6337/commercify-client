@@ -72,31 +72,15 @@ const VerifySignupOtp = () => {
 
   const handleResendOtp = async () => {
     try {
-      if (state?.signup) {
-        const response = await postAuthReq("/signup/send-otp", {
-          token,
-        });
+      const response = await postAuthReq("/signup/send-otp", {
+        token,
+      });
 
-        navigate(`/verify?token=${response.data}`, {
-          state: { mobile: state?.mobile, signup: true },
-        });
-        showSuccessMessage({ message: "OTP send again" });
-        setResendOtpTime(resendOtpSeconds);
-        return;
-      }
-
-      if (state?.update) {
-        const response = await postAuthReq("/user", {
-          token,
-        });
-
-        navigate(`/verify?token=${response.data}`, {
-          state: { mobile: state?.mobile, update: true },
-        });
-        showSuccessMessage({ message: "OTP send again" });
-        setResendOtpTime(resendOtpSeconds);
-        return;
-      }
+      navigate(`/verify?token=${response.data}`, {
+        state: { mobile: state?.mobile, signup: true },
+      });
+      showSuccessMessage({ message: "OTP send again" });
+      setResendOtpTime(resendOtpSeconds);
     } catch (error) {
       showErrorMessage({ message: error.message });
     }
@@ -190,18 +174,17 @@ const VerifySignupOtp = () => {
 
           {/* MARK: SUBMIT BUTTON*/}
           <div className="flex flex-col gap-2">
-            <div className="auth_button h-12 ">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="auth_button"
+            >
               {isSubmitting ? (
                 <Loading hScreen={false} small={true} />
               ) : (
-                <button
-                  type="submit"
-                  className="w-full h-full cursor-pointer text-some_less_important_text"
-                >
-                  Verify OTP
-                </button>
+                "Verify OTP"
               )}
-            </div>
+            </button>
           </div>
         </form>
       </section>

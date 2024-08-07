@@ -14,7 +14,6 @@ import trackAnalyticsEvent from "../../lib/trackAnalyticsEvent";
 const PhoneLogin = () => {
   const navigate = useNavigate();
   const countryListRef = useRef(null);
-
   const msg = useSearchParams()[0].get("msg");
 
   const [initialCountry, setInitialCountry] = useState(() => {
@@ -38,7 +37,9 @@ const PhoneLogin = () => {
   });
 
   useEffect(() => {
-    showErrorMessage({ message: msg });
+    if (msg) {
+      showErrorMessage({ message: msg });
+    }
   }, []);
 
   // Scroll the country list to make the initial country visible when it changes
@@ -84,8 +85,8 @@ const PhoneLogin = () => {
         mobileNumber: mobile,
       });
 
-      navigate(`/verify/login?token=${response.data}&callbackUrl=/`, {
-        state: { mobile, login: true },
+      navigate(`/verify?page=login&token=${response.data}`, {
+        state: { mobile },
       });
     } catch (error) {
       showErrorMessage({ message: error.message });
@@ -180,18 +181,17 @@ const PhoneLogin = () => {
 
           {/* MARK: SUBMIT BUTTON*/}
           <div className="flex flex-col gap-2 mt-5">
-            <div className="h-12 auth_button">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="auth_button"
+            >
               {isSubmitting ? (
                 <Loading hScreen={false} small={true} />
               ) : (
-                <button
-                  type="submit"
-                  className="w-full h-full cursor-pointer text-some_less_important_text"
-                >
-                  Request OTP
-                </button>
+                "Request OTP"
               )}
-            </div>
+            </button>
             <div className="text-color_4 text-sm flex justify-between items-center">
               <p>
                 Create an account

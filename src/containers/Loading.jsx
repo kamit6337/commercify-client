@@ -1,12 +1,29 @@
 /* eslint-disable react/prop-types */
 
-const Loading = ({ hScreen = false, small = false }) => {
+const Loading = ({
+  hScreen = false,
+  small = false,
+  width = small ? "20px" : "40px",
+  height = small ? "20px" : "40px",
+  borderWidth = small ? "2px" : "3px",
+  color = hScreen ? "black" : "white",
+}) => {
   return (
     <div
       className={`w-full flex justify-center items-center`}
       style={{ height: `${hScreen ? "100vh" : "100%"}` }}
     >
-      <div className={small ? "small_loading" : "loading"} />
+      <div
+        className="loading_spinner"
+        style={{
+          width,
+          height,
+          borderColor: color,
+          borderWidth: borderWidth,
+          borderRightColor: "transparent",
+          borderBottomColor: "transparent",
+        }}
+      />
     </div>
   );
 };

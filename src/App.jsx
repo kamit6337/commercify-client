@@ -4,6 +4,7 @@ import Router from "./routes/Router";
 import { useEffect, useState } from "react";
 import ReactGA from "react-ga4";
 import * as Sentry from "@sentry/react";
+import WorkInProgress from "./components/WorkInProgress";
 
 Sentry.init({
   dsn: "https://e41ccd741ee5cce9c89505daa6c14e27@o4507611013840896.ingest.us.sentry.io/4507611017379840",
@@ -48,7 +49,7 @@ function App() {
 
   return (
     <>
-      <Router />
+      <WorkInProgress />
     </>
   );
 }
