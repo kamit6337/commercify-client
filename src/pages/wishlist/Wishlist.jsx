@@ -39,13 +39,9 @@ const Wishlist = () => {
           <p className="py-5 px-10 text-xl">
             My Wishlist <span className="text-sm">({wishlist.length})</span>
           </p>
-          {wishlist.length > 0 ? (
-            <div>
-              <Products list={wishlist} />
-            </div>
-          ) : (
-            <div>No Wishlist</div>
-          )}
+          <div>
+            <Products list={wishlist} />
+          </div>
         </main>
       </section>
     </>

@@ -13,7 +13,6 @@ const VerifyOtp = () => {
   const resendOtpSeconds = 45;
   const navigate = useNavigate();
   const [resendOtpTime, setResendOtpTime] = useState(resendOtpSeconds);
-  const token = useSearchParams()[0].get("token");
   const page = useSearchParams()[0].get("page");
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const [isLoading, setIsLoading] = useState(false);
@@ -61,21 +60,18 @@ const VerifyOtp = () => {
 
       if (page === "login") {
         await postAuthReq("/login/verify-otp", {
-          mobileNumber: state.mobile,
+          mobile: state?.mobile,
           otp: modifyOtp,
-          token,
         });
       } else if (page === "signup") {
         await postAuthReq("/signup/verify-otp", {
-          mobileNumber: state.mobile,
+          mobile: state?.mobile,
           otp: otp,
-          token,
         });
       } else {
         await postReq("/user/update/verify-otp", {
-          mobileNumber: state.mobile,
+          mobile: state?.mobile,
           otp: otp,
-          token,
         });
       }
 
@@ -88,44 +84,18 @@ const VerifyOtp = () => {
   };
 
   const handleResendOtp = async () => {
-    try {
-      let response;
-      if (page === "login") {
-        response = await postAuthReq("/login/send-otp", {
-          token,
-        });
-
-        navigate(`/verify?page=login&token=${response.data}`, {
-          state: { mobile: state?.mobile },
-        });
-      } else if (page === "signup") {
-        response = await postAuthReq("/signup/send-otp", {
-          token,
-        });
-
-        navigate(`/verify?page=signup&token=${response.data}`, {
-          state: { mobile: state?.mobile },
-        });
-      } else {
-        response = await postReq("/user", {
-          token,
-        });
-        navigate(`/verify?page=update&token=${response.data}`, {
-          state: { mobile: state?.mobile },
-        });
-      }
-
-      showSuccessMessage({ message: "OTP send again" });
-      setResendOtpTime(resendOtpSeconds);
-    } catch (error) {
-      showErrorMessage({ message: error.message });
-    }
+    await postAuthReq("/resendOtp", {
+      mobile: state?.mobile,
+    });
+    showSuccessMessage({ message: "OTP send again" });
+    setResendOtpTime(resendOtpSeconds);
+    setOtp(new Array(6).fill(""));
   };
 
   return (
     <>
       <Helmet>
-        <title>Login</title>
+        <title>Verify</title>
         <meta name="description" content="Login page of Commercify" />
       </Helmet>
       <section className="h-screen w-full flex flex-col justify-center items-center gap-2 mobile:px-2">

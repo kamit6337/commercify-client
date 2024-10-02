@@ -1,14 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { getReq } from "../../utils/api/api";
 
-const useUserAddress = () => {
+const useUserBuysDetails = () => {
   const query = useQuery({
-    queryKey: ["user addresses"],
-    queryFn: () => getReq("/address"),
+    queryKey: ["buys count"],
+    queryFn: () => getReq("/buy/details"),
     staleTime: Infinity,
   });
 
   return query;
 };
 
-export default useUserAddress;
+export default useUserBuysDetails;

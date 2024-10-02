@@ -1,19 +1,15 @@
-/* eslint-disable react/prop-types */
 import { useEffect, useRef } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Toastify from "../lib/Toastify";
 import Loading from "../containers/Loading";
-import { postReq } from "../utils/api/api";
-import { useDispatch } from "react-redux";
-import { createNewAddress } from "../redux/slice/addressSlice";
 import countries from "../data/countries";
 import useCountryStates from "../hooks/query/useCountryStates";
 import useStateCities from "../hooks/query/useStateCities";
 import { Icons } from "../assets/icons";
+import useUserAddressCreated from "../hooks/mutation/useUserAddressCreated";
 
 const NewAddressForm = ({ handleCancel }) => {
-  const dispatch = useDispatch();
   const countryListRef = useRef(null);
   const [openCountryList, setOpenCountryList] = useState(false);
 
@@ -36,18 +32,25 @@ const NewAddressForm = ({ handleCancel }) => {
 
   const { isLoading, data, error } = useCountryStates(selectedCountry);
 
+  const { mutate, isPending, isSuccess } = useUserAddressCreated();
+
   const {
     isLoading: isLoadingStateCities,
     data: stateCities,
     error: errorStateCities,
   } = useStateCities(selectedState);
 
-  const { ToastContainer, showErrorMessage, showSuccessMessage } = Toastify();
+  const {
+    ToastContainer,
+    showErrorMessage,
+    showSuccessMessage,
+    showAlertMessage,
+  } = Toastify();
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm({
     defaultValues: {
       name: "",
@@ -55,6 +58,15 @@ const NewAddressForm = ({ handleCancel }) => {
       address: "",
     },
   });
+
+  useEffect(() => {
+    if (isSuccess) {
+      handleCancel();
+      showSuccessMessage({
+        message: "New Address Created",
+      });
+    }
+  }, [isSuccess, handleCancel, showSuccessMessage]);
 
   // Scroll the country list to make the initial country visible when it changes
   useEffect(() => {
@@ -87,28 +99,17 @@ const NewAddressForm = ({ handleCancel }) => {
       !selectedState ||
       !selectedDistrict
     ) {
-      showErrorMessage({ message: "Fill all the field" });
+      showAlertMessage({ message: "Fill all the field" });
       return;
     }
 
-    try {
-      const postData = { ...data };
-      postData.country = selectedCountry;
-      postData.state = selectedState;
-      postData.district = selectedDistrict;
-      postData.dial_code = initialCountry.dial_code;
+    const postData = { ...data };
+    postData.country = selectedCountry;
+    postData.state = selectedState;
+    postData.district = selectedDistrict;
+    postData.dial_code = initialCountry.dial_code;
 
-      const createdNewAddress = await postReq("/address", postData);
-      handleCancel();
-      dispatch(createNewAddress(createdNewAddress));
-      showSuccessMessage({
-        message: createdNewAddress.message || "New Address Created",
-      });
-    } catch (error) {
-      showErrorMessage({
-        message: error.message || "Issue in Add New Address. Try Later...",
-      });
-    }
+    mutate({ postData });
   };
 
   return (
@@ -299,10 +300,11 @@ const NewAddressForm = ({ handleCancel }) => {
 
           <div className="flex gap-10 items-center h-12">
             <button
+              disabled={isPending}
               className="h-full px-20 bg-sky-200 flex items-center rounded-md text-blue-700 font-semibold tracking-wide "
               type="submit"
             >
-              {isSubmitting ? <Loading small={true} /> : "Submit"}
+              {isPending ? <Loading small={true} /> : "Submit"}
             </button>
             <button onClick={handleCancel}>Cancel</button>
           </div>

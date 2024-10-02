@@ -1,12 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { getReq } from "../../utils/api/api";
 
-const useUserOrders = (toggle = false) => {
+const useUserOrders = (page) => {
   const query = useQuery({
-    queryKey: ["buy products of user"],
-    queryFn: () => getReq("/buy"),
+    queryKey: ["buy products of user", page],
+    queryFn: () => getReq("/buy", { page: page }),
     staleTime: Infinity,
-    enabled: toggle,
   });
 
   return query;

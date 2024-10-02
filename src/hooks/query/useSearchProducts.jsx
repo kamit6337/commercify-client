@@ -1,14 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { getReq } from "../../utils/api/api";
 
-const useUserAddress = () => {
+const useSearchProducts = (queryStr) => {
   const query = useQuery({
-    queryKey: ["user addresses"],
-    queryFn: () => getReq("/address"),
+    queryKey: ["search products", queryStr],
+    queryFn: () => getReq("/search", { q: queryStr }),
     staleTime: Infinity,
   });
 
   return query;
 };
 
-export default useUserAddress;
+export default useSearchProducts;

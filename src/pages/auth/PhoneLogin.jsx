@@ -15,7 +15,6 @@ const PhoneLogin = () => {
   const navigate = useNavigate();
   const countryListRef = useRef(null);
   const msg = useSearchParams()[0].get("msg");
-
   const [initialCountry, setInitialCountry] = useState(() => {
     const id = localStorage.getItem("_cou");
     if (!id) return "";
@@ -81,11 +80,11 @@ const PhoneLogin = () => {
     mobile = initialCountry.dial_code + mobile;
 
     try {
-      const response = await postAuthReq("/login/send-otp", {
-        mobileNumber: mobile,
+      await postAuthReq("/login/send-otp", {
+        mobile: mobile,
       });
 
-      navigate(`/verify?page=login&token=${response.data}`, {
+      navigate(`/verify?page=login`, {
         state: { mobile },
       });
     } catch (error) {

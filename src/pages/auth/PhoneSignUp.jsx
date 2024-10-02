@@ -71,13 +71,13 @@ const PhoneSignUp = () => {
     mobile = initialCountry.dial_code + mobile;
 
     try {
-      const response = await postAuthReq("/signup/send-otp", {
+      await postAuthReq("/signup/send-otp", {
         name,
         email,
         mobile,
       });
 
-      navigate(`/verify?page=signup&token=${response.data}`, {
+      navigate(`/verify?page=signup`, {
         state: { mobile },
       });
     } catch (error) {

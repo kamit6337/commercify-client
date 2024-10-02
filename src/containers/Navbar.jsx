@@ -1,7 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Icons } from "../assets/icons";
-import { useState } from "react";
-import useAllProducts from "../hooks/query/useAllProducts";
+import { useCallback, useState } from "react";
 import { useSelector } from "react-redux";
 import { localStorageState } from "../redux/slice/localStorageSlice";
 import useLoginCheck from "../hooks/auth/useLoginCheck";
@@ -11,18 +10,24 @@ import Toastify from "../lib/Toastify";
 import { QueryClient } from "@tanstack/react-query";
 import Cookies from "js-cookie";
 import CustomImages from "../assets/images";
+import { useForm } from "react-hook-form";
+import debounce from "../utils/javascript/debounce";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const { cart } = useSelector(localStorageState);
   const { data: user } = useLoginCheck();
   const [searchList, setSearchList] = useState([]);
-  const { data } = useAllProducts();
-  const [searchText, setSearchText] = useState("");
   const [showUserInfo, setShowUserInfo] = useState(false);
   const [showClearAll, setShowClearAll] = useState(false);
 
   const queryClient = new QueryClient();
+
+  const { register, reset } = useForm({
+    defaultValues: {
+      search: "",
+    },
+  });
 
   const { ToastContainer, showErrorMessage } = Toastify();
 
@@ -36,7 +41,6 @@ const Navbar = () => {
     try {
       await getReq("/auth/logout");
       navigate("/login");
-
       localStorage.removeItem("_cart");
       localStorage.removeItem("_wishlist");
       localStorage.removeItem("_cou");
@@ -50,41 +54,41 @@ const Navbar = () => {
     }
   };
 
-  const searchProducts = () => {
-    if (!searchText) return;
-    navigate(`/search?q=${searchText}`);
-    setSearchList([]);
-  };
+  const debouncedSearch = useCallback(
+    debounce(async (query) => {
+      try {
+        const products = await getReq("/search", { q: query });
+        setSearchList(products);
+      } catch (error) {
+        showErrorMessage({ message: error.message });
+      }
+    }, 1000),
+    []
+  );
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault(); // Prevent default form submission behavior
-      searchProducts();
+      const query = e.target.value;
+      navigate(`/search?q=${query}`);
+      setSearchList([]);
     }
   };
 
-  const handleSearch = (e) => {
-    const { value } = e.target;
-    setSearchText(value);
-
+  const handleChange = (value) => {
     if (!value) {
       setSearchList([]);
       setShowClearAll(false);
-
       return;
     }
-
     setShowClearAll(true);
-    const findProduct = data.data.filter((product) => {
-      return product.title.toLowerCase().includes(value.toLowerCase());
-    });
-    setSearchList(findProduct);
+    debouncedSearch(value);
   };
 
   const resetSearch = () => {
-    setSearchText("");
     setSearchList([]);
     setShowClearAll(false);
+    reset();
   };
 
   return (
@@ -104,15 +108,15 @@ const Navbar = () => {
         </Link>
 
         {/* MARK: SEARCH BAR */}
-        <div className="flex-1 relative flex justify-between items-center border border-white  rounded-3xl">
+        <form className="flex-1 relative flex justify-between items-center border border-white  rounded-3xl">
           <input
             type="text"
-            value={searchText}
+            {...register("search")}
             spellCheck="false"
             autoComplete="off"
             placeholder="Search Products"
             className="bg-inherit px-5 py-2 w-full"
-            onChange={handleSearch}
+            onChange={(e) => handleChange(e.target.value)}
             onKeyDown={handleKeyDown}
           />
 
@@ -147,7 +151,7 @@ const Navbar = () => {
               })}
             </div>
           )}
-        </div>
+        </form>
 
         {/* MARK: USER PROFILE */}
         <div className="h-full relative flex flex-col items-center justify-center">

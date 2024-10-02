@@ -3,11 +3,24 @@ import Loading from "../../containers/Loading";
 import useCategoryProducts from "../../hooks/query/useCategoryProducts";
 import ProductCard from "../../components/ProductCard";
 import HorizontalScrolling from "../../lib/HorizontalScrolling";
+import { useInView } from "react-intersection-observer";
+import { useEffect } from "react";
 
 const CategoryProducts = ({ category, productId }) => {
   const { _id, title } = category;
 
-  const { isLoading, error, data } = useCategoryProducts(_id);
+  const { isLoading, error, data, isFetching, fetchNextPage } =
+    useCategoryProducts(_id);
+
+  const { ref, inView } = useInView({
+    threshold: 0,
+  });
+
+  useEffect(() => {
+    if (inView && !isFetching) {
+      fetchNextPage();
+    }
+  }, [inView, fetchNextPage, isFetching]);
 
   if (isLoading) {
     return (
@@ -25,7 +38,9 @@ const CategoryProducts = ({ category, productId }) => {
     );
   }
 
-  const products = data.data.filter((obj) => obj._id !== productId);
+  const products = data.pages
+    .flat(Infinity)
+    .filter((obj) => obj._id !== productId);
 
   return (
     <section className="my-20 tablet:my-10">
@@ -36,9 +51,12 @@ const CategoryProducts = ({ category, productId }) => {
         </span>
       </p>
       <HorizontalScrolling height={450}>
-        {products.map((product, i) => {
-          return <ProductCard key={i} product={product} />;
-        })}
+        <>
+          {products.map((product, i) => {
+            return <ProductCard key={i} product={product} />;
+          })}
+          <div ref={ref} />
+        </>
       </HorizontalScrolling>
     </section>
   );

@@ -1,5 +1,6 @@
-const findMaxPrice = (products, exchangeRate) => {
+const findMinMaxPrice = (products, exchangeRate) => {
   let maxPrice = 0;
+  let minPrice = null;
 
   for (const product of products) {
     const exchangeRatePrice = Math.round(product.price * exchangeRate);
@@ -11,9 +12,13 @@ const findMaxPrice = (products, exchangeRate) => {
     if (discountedPrice >= maxPrice) {
       maxPrice = discountedPrice;
     }
+
+    if (minPrice === null || discountedPrice < minPrice) {
+      minPrice = discountedPrice;
+    }
   }
 
-  return maxPrice;
+  return { maxPrice, minPrice };
 };
 
-export default findMaxPrice;
+export default findMinMaxPrice;

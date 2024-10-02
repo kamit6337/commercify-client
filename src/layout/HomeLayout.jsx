@@ -2,10 +2,23 @@ import { Link, Outlet } from "react-router-dom";
 import useAllCategory from "../hooks/query/useAllCategory";
 import { useState } from "react";
 import HorizontalScrolling from "../lib/HorizontalScrolling";
+import Loading from "../containers/Loading";
 
 const HomeLayout = () => {
-  const { data: allCategory } = useAllCategory();
+  const { data: allCategory, isLoading, error } = useAllCategory();
   const [optionIndex, setOptionIndex] = useState(null);
+
+  if (isLoading) {
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div>{error.message}</div>;
+  }
 
   return (
     <>
@@ -15,7 +28,7 @@ const HomeLayout = () => {
         sideMargin={50}
         inBetweenGap={50}
       >
-        {allCategory.data.length > 0 ? (
+        {allCategory.length > 0 ? (
           <>
             <Link to={`/`}>
               <p
@@ -28,7 +41,7 @@ const HomeLayout = () => {
                 All
               </p>
             </Link>
-            {allCategory.data.map((category, i) => {
+            {allCategory.map((category, i) => {
               const { _id, title } = category;
 
               return (

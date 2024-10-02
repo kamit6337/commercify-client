@@ -23,18 +23,6 @@ Sentry.init({
 
 function App() {
   const location = useLocation();
-  const [redirect, setRedirect] = useState(false);
-
-  useEffect(() => {
-    const currentUrl = window.location.href;
-
-    if (currentUrl.includes("localhost") || currentUrl.includes("vercel")) {
-      setRedirect(false);
-    } else {
-      setRedirect(true);
-      window.location.href = "https://commercify-client.vercel.app";
-    }
-  }, []);
 
   useEffect(() => {
     ReactGA.send({
@@ -43,13 +31,9 @@ function App() {
     });
   }, [location]);
 
-  if (redirect) {
-    return null;
-  }
-
   return (
     <>
-      <WorkInProgress />
+      <Router />
     </>
   );
 }

@@ -14,7 +14,6 @@ import changePriceDiscountByExchangeRate from "../../utils/javascript/changePric
 const SingleProduct = () => {
   const { id } = useParams();
   const { symbol, exchangeRate } = useSelector(currencyState);
-
   const { isLoading, error, data } = useSingleProduct(id);
 
   useEffect(() => {
@@ -48,7 +47,7 @@ const SingleProduct = () => {
     discountPercentage,
     deliveredBy,
     thumbnail,
-  } = data.data;
+  } = data;
 
   const { discountedPrice, exchangeRatePrice, roundDiscountPercent } =
     changePriceDiscountByExchangeRate(price, discountPercentage, exchangeRate);
@@ -107,7 +106,7 @@ const SingleProduct = () => {
           </div>
         </section>
         <CategoryProducts category={category} productId={id} />
-        <ProductReviews id={id} />
+        <ProductReviews product={data} />
       </main>
     </>
   );

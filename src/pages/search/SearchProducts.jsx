@@ -1,32 +1,24 @@
 import { useSearchParams } from "react-router-dom";
-import useAllProducts from "../../hooks/query/useAllProducts";
-import ProductGrid from "../../components/ProductGrid";
-import { useState } from "react";
 import { Helmet } from "react-helmet";
-import FilterSection from "../../components/FilterSection";
-import { useEffect } from "react";
+import useSearchProducts from "../../hooks/query/useSearchProducts";
+import Loading from "../../containers/Loading";
+import MainProductsAndFilter from "../../components/MainProductsAndFilter";
 
 const SearchProducts = () => {
-  const [searchParams] = useSearchParams();
-  const queryString = searchParams.get("q");
-  const { data } = useAllProducts();
-  const [products, setProducts] = useState([]);
+  const queryString = useSearchParams()[0].get("q");
+  const { data, isLoading, error } = useSearchProducts(queryString);
 
-  useEffect(() => {
-    if (!queryString || !data) {
-      setProducts([]);
-      return;
-    }
-
-    const filterProducts = data.data.filter((product) =>
-      product.title.toLowerCase().includes(queryString.toLowerCase())
+  if (isLoading) {
+    return (
+      <div>
+        <Loading />
+      </div>
     );
-    setProducts(filterProducts);
-  }, [data, queryString]);
+  }
 
-  const filterProducts = (products) => {
-    setProducts(products);
-  };
+  if (error) {
+    return <div>{error.message}</div>;
+  }
 
   return (
     <>
@@ -35,23 +27,7 @@ const SearchProducts = () => {
         <meta name="description" content="An e-Commerce App" />
       </Helmet>
 
-      <section className="w-full h-full flex gap-2 bg-gray-100 p-2 ">
-        <div
-          className="w-64 laptop:w-56 sm_lap:w-48 tablet:hidden border-r-2 sticky top-[88px] bg-white"
-          style={{ height: "calc(100vh - 100px)" }}
-        >
-          <FilterSection products={data.data} filterProducts={filterProducts} />
-        </div>
-        <main className="flex-1 bg-white">
-          {products.length > 0 ? (
-            <ProductGrid products={products} />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-xl font-semibold">
-              Sorry, no product available
-            </div>
-          )}
-        </main>
-      </section>
+      <MainProductsAndFilter products={data} isPagination={false} />
     </>
   );
 };

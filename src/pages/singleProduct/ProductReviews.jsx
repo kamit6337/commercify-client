@@ -1,19 +1,24 @@
-/* eslint-disable react/prop-types */
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Icons } from "../../assets/icons";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useLoginCheck from "../../hooks/auth/useLoginCheck";
 import { deleteReq } from "../../utils/api/api";
 import Toastify from "../../lib/Toastify";
 import useProductRatings from "../../hooks/query/useProductRatings";
 import Loading from "../../containers/Loading";
 
-const ProductReviews = ({ id }) => {
+const ProductReviews = ({ product }) => {
   const navigate = useNavigate();
   const { data: user } = useLoginCheck();
   const [showOptions, setShowOptions] = useState(false);
 
   const { ToastContainer, showErrorMessage } = Toastify();
+
+  const { _id: id, rate, rateCount } = product;
+
+  const rateValue = Math.floor(rate);
+  let fraction = rate - rateValue;
+  fraction = parseFloat(fraction.toFixed(2));
 
   const {
     isLoading: isLoadingRatings,
@@ -21,51 +26,6 @@ const ProductReviews = ({ id }) => {
     data,
     refetch,
   } = useProductRatings(id);
-
-  const productRatings = data?.data;
-
-  const [rate, reviews, rateValue, fraction] = useMemo(() => {
-    let rateValueCount = null;
-    let rateCount = null;
-    let reviewsCount = null;
-    let fractionCount = null;
-
-    if (!productRatings || productRatings.length === 0) {
-      rateCount = [];
-      reviewsCount = [];
-      rateValueCount = 0;
-      fractionCount = 0;
-    } else {
-      rateCount = productRatings.filter((obj) => obj.rate);
-      reviewsCount = productRatings.filter((obj) => obj.title && obj.comment);
-
-      rateValueCount = rateCount.reduce((prev, current) => {
-        const { rate } = current;
-        return prev + rate;
-      }, 0);
-
-      const floatValue = parseFloat(
-        (rateValueCount / rateCount.length).toFixed(1)
-      );
-
-      rateValueCount = Math.floor(floatValue); // Extract integer part
-      fractionCount = floatValue - rateValueCount; // Calculate fractional part
-    }
-
-    return [rateCount, reviewsCount, rateValueCount, fractionCount];
-  }, [productRatings]);
-
-  const isUserRated = useMemo(() => {
-    if (!productRatings || productRatings.length === 0) {
-      return false;
-    }
-
-    const findUser = productRatings.find((obj) => obj.user._id === user._id);
-    if (findUser) {
-      return true;
-    }
-    return false;
-  }, [productRatings, user]);
 
   if (isLoadingRatings) {
     return (
@@ -82,6 +42,8 @@ const ProductReviews = ({ id }) => {
       </div>
     );
   }
+
+  const productRatings = data?.pages.flat(Infinity);
 
   const handleDelete = async (id) => {
     try {
@@ -106,9 +68,7 @@ const ProductReviews = ({ id }) => {
             {/* MARK: RATE AVERAGE VALUE STAR */}
             <div className="flex text-2xl h-10">
               {Array.from({ length: 5 }).map((value, i) => {
-                const newI = i + 1;
-
-                if (newI <= rateValue) {
+                if (i < rateValue) {
                   return (
                     <p key={i} className="w-8 flex items-center justify-center">
                       <Icons.star className="text-yellow-300" />
@@ -116,15 +76,7 @@ const ProductReviews = ({ id }) => {
                   );
                 }
 
-                if (fraction >= 0.7) {
-                  return (
-                    <p key={i} className="w-8 flex items-center justify-center">
-                      <Icons.star className="text-yellow-300" />
-                    </p>
-                  );
-                }
-
-                if (fraction >= 0.3) {
+                if (i === rateValue && fraction > 0) {
                   return (
                     <p key={i} className="w-8 flex items-center justify-center">
                       <Icons.star_half className="text-yellow-300" />
@@ -142,29 +94,20 @@ const ProductReviews = ({ id }) => {
 
             {/* MARK: RATE AND REVIEWS COUNT */}
             <div className="text-sm">
-              <p>{rate?.length} ratings &</p>
-              <p>{reviews?.length} reviews</p>
+              <p>{rateCount} ratings &</p>
+              <p>{productRatings.length} reviews</p>
             </div>
-
-            {/* MARK: LINK TO RATE PRODUCT */}
-            {!isUserRated && (
-              <Link to={`/ratings/${id}`}>
-                <button className="p-2 bg-gray-100 mt-5 rounded">
-                  Rate this Product
-                </button>
-              </Link>
-            )}
           </div>
 
           {/* MARK: USER RATINGS */}
           <main className="flex-1 border">
-            {reviews.length === 0 ? (
+            {productRatings.length === 0 ? (
               <div className="w-full h-96 flex justify-center items-center">
                 No Reviews yet
               </div>
             ) : (
               <div className="">
-                {reviews.map((review, i) => {
+                {productRatings.map((review, i) => {
                   const {
                     _id,
                     title,

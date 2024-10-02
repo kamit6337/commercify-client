@@ -53,12 +53,8 @@ const Product = ({ product }) => {
   return (
     <div className="w-full h-48 border-b-2 last:border-none p-7 flex gap-10 tablet:gap-5">
       <div className="h-full w-48 sm_lap:w-40">
-        <Link to={`/products/${id}`}>
-          <img
-            src={thumbnail}
-            alt={title}
-            className="h-full w-full object-cover"
-          />
+        <Link to={`/products/${id}`} className="flex justify-center h-full">
+          <img src={thumbnail} alt={title} className="h-full object-cover " />
         </Link>
       </div>
       <div className="flex-1 h-full mr-20 sm_lap:mr-0 flex flex-col gap-3">

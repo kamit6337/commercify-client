@@ -11,6 +11,12 @@ const OtpInput = ({ otp, cb }) => {
     }
   }, []);
 
+  useEffect(() => {
+    if (otp.every((item) => item === "")) {
+      inputRefs.current[0].focus();
+    }
+  }, [otp]);
+
   const handleChange = (e, index) => {
     const value = e.target.value;
     // a regular expression that matches a single digit (0-9) or ""

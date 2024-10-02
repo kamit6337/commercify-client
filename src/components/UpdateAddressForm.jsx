@@ -1,18 +1,14 @@
-/* eslint-disable react/prop-types */
 import { useEffect, useRef, useState } from "react";
 import Toastify from "../lib/Toastify";
 import { useForm } from "react-hook-form";
-import { patchReq } from "../utils/api/api";
 import Loading from "../containers/Loading";
-import { useDispatch } from "react-redux";
-import { updateAddressData } from "../redux/slice/addressSlice";
 import countries from "../data/countries";
 import useCountryStates from "../hooks/query/useCountryStates";
 import useStateCities from "../hooks/query/useStateCities";
 import { Icons } from "../assets/icons";
+import useUserAddressUpdate from "../hooks/mutation/useUserAddressUpdate";
 
 const UpdateAddressForm = ({ handleCancel, data: givenAddress }) => {
-  const dispatch = useDispatch();
   const { _id, name, mobile, country, district, state, address, dial_code } =
     givenAddress;
   const countryListRef = useRef(null);
@@ -34,10 +30,12 @@ const UpdateAddressForm = ({ handleCancel, data: givenAddress }) => {
     error: errorStateCities,
   } = useStateCities(selectedState);
 
+  const { mutate, isPending, isSuccess } = useUserAddressUpdate(_id);
+
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm({
     defaultValues: {
       name: name,
@@ -45,6 +43,15 @@ const UpdateAddressForm = ({ handleCancel, data: givenAddress }) => {
       address: address,
     },
   });
+
+  useEffect(() => {
+    if (isSuccess) {
+      handleCancel();
+      showSuccessMessage({
+        message: "Address updated",
+      });
+    }
+  }, [isSuccess, handleCancel, showSuccessMessage]);
 
   // Scroll the country list to make the initial country visible when it changes
   useEffect(() => {
@@ -96,25 +103,14 @@ const UpdateAddressForm = ({ handleCancel, data: givenAddress }) => {
       return;
     }
 
-    try {
-      const postData = { ...data };
-      postData.state = selectedState;
-      postData.district = selectedDistrict;
-      postData.country = selectedCountry;
-      postData.id = _id;
-      postData.dial_code = initialCountry.dial_code;
+    const postData = { ...data };
+    postData.state = selectedState;
+    postData.district = selectedDistrict;
+    postData.country = selectedCountry;
+    postData._id = _id;
+    postData.dial_code = initialCountry.dial_code;
 
-      const updatedAddress = await patchReq("/address", postData);
-      handleCancel();
-      dispatch(updateAddressData(updatedAddress));
-      showSuccessMessage({
-        message: updatedAddress.message || "Address updated",
-      });
-    } catch (error) {
-      showErrorMessage({
-        message: error.message || "Issue in Add New Address. Try Later...",
-      });
-    }
+    mutate({ postData });
   };
 
   return (
@@ -306,10 +302,11 @@ const UpdateAddressForm = ({ handleCancel, data: givenAddress }) => {
 
           <div className="flex gap-10 items-center h-12">
             <button
+              disabled={isPending}
               className="h-full px-20 bg-sky-200 flex items-center rounded-md text-blue-700 font-semibold tracking-wide "
               type="submit"
             >
-              {isSubmitting ? <Loading small={true} /> : "Submit"}
+              {isPending ? <Loading small={true} /> : "Submit"}
             </button>
             <button onClick={handleCancel}>Cancel</button>
           </div>

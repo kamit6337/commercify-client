@@ -1,9 +1,25 @@
 import { Outlet, NavLink, Link } from "react-router-dom";
 import useLoginCheck from "../hooks/auth/useLoginCheck";
 import { Icons } from "../assets/icons";
+import useUserBuysDetails from "../hooks/query/useUserBuysDetails";
+import Loading from "../containers/Loading";
 
 const UserLayout = () => {
   const { data: user } = useLoginCheck();
+
+  const { isLoading, error } = useUserBuysDetails();
+
+  if (isLoading) {
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div>{error.message}</div>;
+  }
 
   return (
     <section className="bg-gray-100 px-10 sm_lap:px-4 py-5 flex tablet:flex-col items-start tablet:items-stretch gap-5">

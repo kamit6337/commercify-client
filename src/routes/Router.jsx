@@ -28,24 +28,15 @@ import OrderReturn from "../pages/user/OrderReturn";
 import PhoneSignUp from "../pages/auth/PhoneSignUp";
 import RateProduct from "../pages/rating/RateProduct";
 import UpdateRatedProduct from "../pages/rating/UpdateRatedProduct";
-import VerifyLoginOtp from "../pages/auth/VerifyLoginOtp";
-import VerifySignupOtp from "../pages/auth/VerifySignupOtp";
-import VerifyUserUpdate from "../pages/auth/VerifyUserUpdate";
 import VerifyOtp from "../pages/auth/VerifyOtp";
-import AuthLayout from "../layout/AuthLayout";
 
 const Router = () => {
   return (
     <Routes>
-      <Route path="/" element={<AuthLayout />}>
-        {/* NOTE: AUTH ROUTES */}
-        <Route path="/signup" element={<PhoneSignUp />} />
-        <Route path="/login" element={<PhoneLogin />} />
-        <Route path="/verify" element={<VerifyOtp />} />
-        {/* <Route path="/verify/login" element={<VerifyLoginOtp />} />
-      <Route path="/verify/signup" element={<VerifySignupOtp />} />
-      <Route path="/verify/update" element={<VerifyUserUpdate />} /> */}
-      </Route>
+      {/* NOTE: AUTH ROUTES */}
+      <Route path="/signup" element={<PhoneSignUp />} />
+      <Route path="/login" element={<PhoneLogin />} />
+      <Route path="/verify" element={<VerifyOtp />} />
 
       {/* MARK: ROOT LAYOUT */}
       <Route path="/" element={<RootLayout />}>
