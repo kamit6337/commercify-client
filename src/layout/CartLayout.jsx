@@ -3,12 +3,30 @@ import PriceList from "../components/PriceList";
 import { useSelector } from "react-redux";
 import { localStorageState } from "../redux/slice/localStorageSlice";
 import { Helmet } from "react-helmet";
+import useProductsFromIDs from "../hooks/query/useProductsFromIDs";
+import Loading from "../containers/Loading";
+import useUserAddress from "../hooks/query/useUserAddress";
 
 const CartLayout = () => {
   const { cart } = useSelector(localStorageState);
   const cartIds = cart.map((obj) => obj.id);
+  const { isLoading, error } = useProductsFromIDs(cartIds);
+  const { isLoading: isLoadingUserAddress, error: errorUserAddress } =
+    useUserAddress();
 
-  if (cartIds.length === 0) {
+  if (isLoading || isLoadingUserAddress) {
+    return (
+      <div>
+        <Loading />
+      </div>
+    );
+  }
+
+  if (error || errorUserAddress) {
+    return <div>{error?.message || errorUserAddress?.message}</div>;
+  }
+
+  if (!cart || cart.length === 0) {
     return (
       <>
         <Helmet>

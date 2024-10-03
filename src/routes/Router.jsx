@@ -7,7 +7,6 @@ import Home from "../pages/home/Home";
 import CategoryProducts from "../pages/category/CategoryProducts";
 import SearchProducts from "../pages/search/SearchProducts";
 import SingleProduct from "../pages/singleProduct/SingleProduct";
-import UserUpdate from "../pages/user/UserUpdate";
 import UserOrders from "../pages/user/UserOrders";
 import Admin from "../pages/admin/Admin";
 import AddProduct from "../pages/admin/AddProduct";
@@ -72,7 +71,6 @@ const Router = () => {
         <Route path="user" element={<UserLayout />}>
           <Route index element={<Profile />} />
           <Route path="address" element={<Address />} />
-          <Route path="update" element={<UserUpdate />} />
           <Route path="orders" element={<UserOrders />} />
         </Route>
 

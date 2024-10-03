@@ -3,17 +3,20 @@ import useLoginCheck from "../../hooks/auth/useLoginCheck";
 import { Link } from "react-router-dom";
 import { Icons } from "../../assets/icons";
 import NewAddressForm from "../../components/NewAddressForm";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  addressState,
-  updateSelectedAddress,
-} from "../../redux/slice/addressSlice";
+import useUserAddress from "../../hooks/query/useUserAddress";
 
 const AddressInCart = () => {
-  const dispatch = useDispatch();
   const { data: user } = useLoginCheck();
-  const { addresses: userAddress, selectedAddress } = useSelector(addressState);
-
+  const { data: userAddress } = useUserAddress();
+  const [selectedAddress, setSelectedAddress] = useState(() => {
+    const addressIdFromLocal = localStorage.getItem("_address");
+    if (!addressIdFromLocal) return userAddress[0];
+    const findAddress = userAddress.find(
+      (address) => address._id === addressIdFromLocal
+    );
+    if (findAddress) return findAddress;
+    return userAddress[0];
+  });
   const [openNewAddressForm, setOpenNewAddressForm] = useState(false);
 
   useEffect(() => {
@@ -22,6 +25,11 @@ const AddressInCart = () => {
       behavior: "instant",
     });
   }, []);
+
+  const handleUpdateSelectedAddress = (obj) => {
+    setSelectedAddress(obj);
+    localStorage.setItem("_address", obj._id);
+  };
 
   const handleCancel = () => {
     setOpenNewAddressForm(false);
@@ -60,7 +68,7 @@ const AddressInCart = () => {
                     id={_id}
                     className="mx-1 my-[6px]"
                     checked={selectedAddress._id === _id}
-                    onChange={() => dispatch(updateSelectedAddress(obj))}
+                    onChange={() => handleUpdateSelectedAddress(obj)}
                   />
                   <label htmlFor={_id}>
                     <div className="cursor-pointer">

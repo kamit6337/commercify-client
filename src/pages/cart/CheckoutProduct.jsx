@@ -1,16 +1,25 @@
-/* eslint-disable react/prop-types */
 import { Link } from "react-router-dom";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { localStorageState } from "../../redux/slice/localStorageSlice";
 import { currencyState } from "../../redux/slice/currencySlice";
-import { addressState } from "../../redux/slice/addressSlice";
 import makeDateDaysAfter from "../../utils/javascript/makeDateDaysAfter";
 import changePriceDiscountByExchangeRate from "../../utils/javascript/changePriceDiscountByExchangeRate";
+import useUserAddress from "../../hooks/query/useUserAddress";
 
 const CheckoutProduct = ({ product }) => {
   const { symbol, exchangeRate } = useSelector(currencyState);
-  const { selectedAddress } = useSelector(addressState);
+  const { data: userAddress } = useUserAddress();
+
+  const selectedAddress = useMemo(() => {
+    const addressIdFromLocal = localStorage.getItem("_address");
+    if (!addressIdFromLocal) return userAddress[0];
+    const findAddress = userAddress.find(
+      (address) => address._id === addressIdFromLocal
+    );
+    if (findAddress) return findAddress;
+    return userAddress[0];
+  }, [userAddress]);
 
   const { cart } = useSelector(localStorageState);
   const { name, mobile, country, district, state, address } = selectedAddress;

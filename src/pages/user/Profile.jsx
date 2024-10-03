@@ -3,7 +3,7 @@ import useLoginCheck from "../../hooks/auth/useLoginCheck";
 import { useState } from "react";
 import { Icons } from "../../assets/icons";
 import { Helmet } from "react-helmet";
-import { postReq } from "../../utils/api/api";
+import { patchReq } from "../../utils/api/api";
 import Toastify from "../../lib/Toastify";
 import SmallLoading from "../../containers/SmallLoading";
 import { useRef } from "react";
@@ -34,7 +34,6 @@ const Profile = () => {
   } = useForm({
     defaultValues: {
       name: user.name,
-      email: user.email,
       mobile: user.mobile,
     },
   });
@@ -69,7 +68,6 @@ const Profile = () => {
     setIsEditable(false);
     reset({
       name: user.name,
-      email: user.email,
       mobile: user.mobile,
     });
   };
@@ -79,21 +77,21 @@ const Profile = () => {
   };
 
   const onSubmit = async (data) => {
-    let { name, email, mobile } = data;
+    let { name, mobile } = data;
 
     mobile = initialCountry.dial_code + mobile;
 
-    if (name === user.name && email === user.email && mobile === user.mobile) {
+    if (name === user.name && mobile === user.mobile) {
       showAlertMessage({ message: "Update Profile to Change" });
       return;
     }
 
-    const formData = { name, email, mobile };
+    const formData = { name, email: user.email, mobile };
 
     try {
-      const updatedUser = await postReq("/user", formData);
+      await patchReq("/user/send-otp", formData);
       handleCancelOnSuccessfull();
-      navigate(`/verify/update?token=${updatedUser.data}`, {
+      navigate(`/verify`, {
         state: { mobile },
       });
     } catch (error) {
@@ -148,19 +146,7 @@ const Profile = () => {
         {/* MARK: EMAIL */}
         <div className="">
           <p>Email Address</p>
-          <div className="border max-w-96 mt-4">
-            <input
-              type="email"
-              {...register("email")}
-              spellCheck="false"
-              autoComplete="off"
-              disabled={!isEditable}
-              className="p-4 text-sm w-full"
-            />
-          </div>
-          <p className="ml-1 h-4 text-xs text-red-500">
-            {errors.email?.message}
-          </p>
+          <p className="border max-w-96 mt-4 p-3 text-sm">{user.email}</p>
         </div>
 
         {/* MARK: MOBILE NUMBER */}

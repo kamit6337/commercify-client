@@ -4,7 +4,6 @@ import { Helmet } from "react-helmet";
 import { loadStripe } from "@stripe/stripe-js";
 import { postReq } from "../../utils/api/api";
 import Toastify from "../../lib/Toastify";
-import { addressState } from "../../redux/slice/addressSlice";
 import environment from "../../utils/environment";
 import { currencyState } from "../../redux/slice/currencySlice";
 import CheckoutProducts from "./CheckoutProducts";
@@ -12,7 +11,7 @@ import trackAnalyticsEvent from "../../lib/trackAnalyticsEvent";
 
 const Checkout = () => {
   const { cart } = useSelector(localStorageState);
-  const { selectedAddress } = useSelector(addressState);
+  const selectedAddressId = localStorage.getItem("_address");
   const { code, exchangeRate, symbol } = useSelector(currencyState);
 
   const cartIds = cart.map((obj) => obj.id);
@@ -29,7 +28,7 @@ const Checkout = () => {
 
       const checkoutSession = await postReq("/payment", {
         products: cart,
-        address: selectedAddress._id,
+        address: selectedAddressId,
         code,
         exchangeRate,
         symbol,

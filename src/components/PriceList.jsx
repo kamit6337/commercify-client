@@ -1,7 +1,6 @@
 import { useSelector } from "react-redux";
 import { localStorageState } from "../redux/slice/localStorageSlice";
 import useProductsFromIDs from "../hooks/query/useProductsFromIDs";
-import Loading from "../containers/Loading";
 import { currencyState } from "../redux/slice/currencySlice";
 import rupeesToWords from "../utils/javascript/rupeesToWords";
 import amountToWordsInternational from "../utils/javascript/amountToWordsInternational";
@@ -21,7 +20,7 @@ const PriceList = () => {
     useSelector(currencyState);
   const { pathname } = useLocation();
   const { selectedAddress } = useSelector(addressState);
-  const { data, isLoading, error } = useProductsFromIDs(cartIds);
+  const { data } = useProductsFromIDs(cartIds);
   const { ToastContainer, showErrorMessage } = Toastify();
 
   const { actualProductPrice, sellingPrice, productsDiscount } = useMemo(() => {
@@ -55,14 +54,6 @@ const PriceList = () => {
 
     return { actualProductPrice, sellingPrice, productsDiscount };
   }, [data, cart, exchangeRate]);
-
-  if (isLoading) {
-    return <Loading />;
-  }
-
-  if (error) {
-    return <div>{error.message}</div>;
-  }
 
   const makePayment = async () => {
     try {

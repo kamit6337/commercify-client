@@ -7,7 +7,8 @@ import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { postAuthReq } from "../../utils/api/authApi";
 import trackAnalyticsEvent from "../../lib/trackAnalyticsEvent";
 import OtpInput from "./OtpInput";
-import { postReq } from "../../utils/api/api";
+import { patchReq } from "../../utils/api/api";
+import useLoginCheck from "../../hooks/auth/useLoginCheck";
 
 const VerifyOtp = () => {
   const resendOtpSeconds = 45;
@@ -16,6 +17,7 @@ const VerifyOtp = () => {
   const page = useSearchParams()[0].get("page");
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const [isLoading, setIsLoading] = useState(false);
+  const { refetch } = useLoginCheck(false);
 
   const { state } = useLocation();
   const {
@@ -66,13 +68,14 @@ const VerifyOtp = () => {
       } else if (page === "signup") {
         await postAuthReq("/signup/verify-otp", {
           mobile: state?.mobile,
-          otp: otp,
+          otp: modifyOtp,
         });
       } else {
-        await postReq("/user/update/verify-otp", {
+        await patchReq("/user/verify-otp", {
           mobile: state?.mobile,
-          otp: otp,
+          otp: modifyOtp,
         });
+        refetch();
       }
 
       navigate("/");

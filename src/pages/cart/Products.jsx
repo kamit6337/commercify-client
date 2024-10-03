@@ -1,5 +1,3 @@
-/* eslint-disable react/prop-types */
-
 import Loading from "../../containers/Loading";
 import useProductsFromIDs from "../../hooks/query/useProductsFromIDs";
 import Product from "./Product";
