@@ -2,29 +2,28 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import SmallLoading from "../../containers/SmallLoading";
-import { patchReq } from "../../utils/api/api";
 import Toastify from "../../lib/Toastify";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { currencyState } from "../../redux/slice/currencySlice";
 import changePriceDiscountByExchangeRate from "../../utils/javascript/changePriceDiscountByExchangeRate";
 import makeDateFromUTC from "../../utils/javascript/makeDateFromUTC";
-import {
-  cancelTheOrder,
-  userOrdersState,
-} from "../../redux/slice/userOrdersSlice";
+import useOrderCancel from "../../hooks/mutation/orders/useOrderCancel";
+import { useQueryClient } from "@tanstack/react-query";
 
 const OrderCancel = () => {
-  const dispatch = useDispatch();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const { id } = useParams();
-  const { orders } = useSelector(userOrdersState);
+  const { buyId } = useParams();
   const { symbol, exchangeRate } = useSelector(currencyState);
-  const { ToastContainer, showErrorMessage } = Toastify();
+  const { ToastContainer } = Toastify();
+  const orders = queryClient.getQueryData(["buy products of user"]);
+
+  const { mutate, isPending, isSuccess } = useOrderCancel(buyId);
 
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting, errors },
+    formState: { errors },
   } = useForm({
     defaultValues: {
       reason: "",
@@ -36,13 +35,19 @@ const OrderCancel = () => {
       top: 0,
       behavior: "instant",
     });
-  }, [id]);
+  }, [buyId]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      navigate("/user/orders");
+    }
+  }, [isSuccess, navigate]);
 
   const buyProduct = useMemo(() => {
-    if (!id) return null;
-    const buy = orders.find((obj) => obj._id === id);
+    if (!buyId) return null;
+    const buy = orders.find((obj) => obj._id === buyId);
     return { ...buy };
-  }, [id, orders]);
+  }, [buyId, orders]);
 
   if (!buyProduct) {
     return (
@@ -53,7 +58,6 @@ const OrderCancel = () => {
   }
 
   const {
-    _id: buyId,
     product,
     price,
     quantity,
@@ -67,13 +71,7 @@ const OrderCancel = () => {
   const { country, district, state, address } = buyAddress;
 
   const onSubmit = async () => {
-    try {
-      const cancelOrder = await patchReq("/buy/cancel", { id: buyId });
-      dispatch(cancelTheOrder(cancelOrder.data));
-      navigate("/user/orders");
-    } catch (error) {
-      showErrorMessage({ message: error.message });
-    }
+    mutate();
   };
 
   const { exchangeRatePrice } = changePriceDiscountByExchangeRate(
@@ -96,7 +94,7 @@ const OrderCancel = () => {
               <div className="w-full flex gap-10 tablet:flex-col">
                 <div className="flex gap-10">
                   <div className="h-full w-48">
-                    <Link to={`/products/${id}`}>
+                    <Link to={`/products/${productId}`}>
                       <img
                         src={thumbnail}
                         alt={title}
@@ -177,13 +175,15 @@ const OrderCancel = () => {
                 </p>
               </div>
               <div className="flex justify-end items-center gap-10">
-                <button onClick={() => navigate(-1)}>Cancel</button>
+                <button type="button" onClick={() => navigate(-1)}>
+                  Cancel
+                </button>
                 <button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isPending}
                   className="rounded cursor-pointer py-2 px-10 bg-slate-600 text-white"
                 >
-                  {isSubmitting ? <SmallLoading /> : "Submit"}
+                  {isPending ? <SmallLoading /> : "Submit"}
                 </button>
               </div>
             </form>

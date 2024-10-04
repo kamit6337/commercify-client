@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useSingleProduct from "../../hooks/query/useSingleProduct";
 import Loading from "../../containers/Loading";
 import Toastify from "../../lib/Toastify";
@@ -8,28 +8,30 @@ import { currencyState } from "../../redux/slice/currencySlice";
 import changePriceDiscountByExchangeRate from "../../utils/javascript/changePriceDiscountByExchangeRate";
 import { useForm } from "react-hook-form";
 import { Icons } from "../../assets/icons";
-import { patchReq } from "../../utils/api/api";
 import useProductRatings from "../../hooks/query/useProductRatings";
+import useUpdateRating from "../../hooks/mutation/ratings/useUpdateRating";
 
 const UpdateRatedProduct = () => {
   const navigate = useNavigate();
-  const { id, productId } = useParams();
+  const { id: ratingId, productId } = useParams();
   const { symbol, exchangeRate } = useSelector(currencyState);
-
   const { isLoading, error, data } = useSingleProduct(productId);
-  const { ToastContainer, showErrorMessage, showAlertMessage } = Toastify();
+  const { ToastContainer, showAlertMessage } = Toastify();
   const [starSelected, setStarSelected] = useState(0);
+  const { data: ratingData } = useProductRatings(productId);
 
-  const { data: ratingData, refetch } = useProductRatings(productId);
+  const rating = useMemo(() => {
+    return ratingData.pages.flat().find((obj) => obj._id === ratingId);
+  }, [ratingData, ratingId]);
 
-  const rating = ratingData?.data.find((obj) => obj._id === id);
+  const { mutate, isPending, isSuccess } = useUpdateRating(productId, ratingId);
 
   const {
     register,
     handleSubmit,
     getValues,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm({
     defaultValues: {
       title: "",
@@ -47,6 +49,12 @@ const UpdateRatedProduct = () => {
       setStarSelected(rating.rate);
     }
   }, [rating, reset]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      navigate(-1);
+    }
+  }, [isSuccess, navigate]);
 
   if (isLoading) {
     return (
@@ -76,19 +84,15 @@ const UpdateRatedProduct = () => {
       return;
     }
 
-    try {
-      await patchReq("/ratings", {
-        id,
-        rate: starSelected,
-        title,
-        comment,
-      });
+    const obj = {
+      ...rating,
+      _id: ratingId,
+      rate: starSelected,
+      title,
+      comment,
+    };
 
-      refetch();
-      navigate(-1);
-    } catch (error) {
-      showErrorMessage({ message: error.message });
-    }
+    mutate(obj);
   };
 
   const {
@@ -97,7 +101,7 @@ const UpdateRatedProduct = () => {
     price,
     discountPercentage,
     thumbnail,
-  } = data.data;
+  } = data;
 
   const { exchangeRatePrice, discountedPrice, roundDiscountPercent } =
     changePriceDiscountByExchangeRate(price, discountPercentage, exchangeRate);
@@ -115,7 +119,7 @@ const UpdateRatedProduct = () => {
               {/* MARK: UPPER PORTION */}
               <div className="w-full flex gap-10">
                 <div className="h-full w-48">
-                  <Link to={`/products/${id}`}>
+                  <Link to={`/products/${productId}`}>
                     <img
                       src={thumbnail}
                       alt={productTitle}
@@ -125,7 +129,7 @@ const UpdateRatedProduct = () => {
                 </div>
                 <section className="flex-1 flex flex-col gap-4">
                   <div>
-                    <Link to={`/products/${id}`}>
+                    <Link to={`/products/${productId}`}>
                       <p>{productTitle}</p>
                     </Link>
                     <p className="text-xs">{description}</p>
@@ -231,14 +235,15 @@ const UpdateRatedProduct = () => {
 
               {/* MARK: SUBMIT AND CANCEL */}
               <div className="flex justify-end items-center gap-10">
-                <Link to={`/products/${id}`}>
+                <Link to={`/products/${productId}`}>
                   <button>Cancel</button>
                 </Link>
                 <button
+                  disabled={isPending}
                   type="submit"
                   className="rounded cursor-pointer py-3 px-20 bg-slate-600 text-white"
                 >
-                  {isSubmitting ? <Loading small={true} /> : "Update"}
+                  {isPending ? <Loading small={true} /> : "Update"}
                 </button>
               </div>
             </form>

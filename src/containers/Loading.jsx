@@ -1,12 +1,10 @@
-/* eslint-disable react/prop-types */
-
 const Loading = ({
   hScreen = false,
   small = false,
   width = small ? "20px" : "40px",
   height = small ? "20px" : "40px",
   borderWidth = small ? "2px" : "3px",
-  color = hScreen ? "black" : "white",
+  color = "black",
 }) => {
   return (
     <div

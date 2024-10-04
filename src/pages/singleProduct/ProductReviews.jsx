@@ -1,20 +1,17 @@
-import { useState } from "react";
 import { Icons } from "../../assets/icons";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import useLoginCheck from "../../hooks/auth/useLoginCheck";
-import { deleteReq } from "../../utils/api/api";
 import Toastify from "../../lib/Toastify";
 import useProductRatings from "../../hooks/query/useProductRatings";
 import Loading from "../../containers/Loading";
+import SingleRating from "./SingleRating";
 
 const ProductReviews = ({ product }) => {
-  const navigate = useNavigate();
   const { data: user } = useLoginCheck();
-  const [showOptions, setShowOptions] = useState(false);
 
-  const { ToastContainer, showErrorMessage } = Toastify();
+  const { ToastContainer } = Toastify();
 
-  const { _id: id, rate, rateCount } = product;
+  const { _id: productId, rate, rateCount } = product;
 
   const rateValue = Math.floor(rate);
   let fraction = rate - rateValue;
@@ -24,8 +21,7 @@ const ProductReviews = ({ product }) => {
     isLoading: isLoadingRatings,
     error: errorRatings,
     data,
-    refetch,
-  } = useProductRatings(id);
+  } = useProductRatings(productId);
 
   if (isLoadingRatings) {
     return (
@@ -43,16 +39,9 @@ const ProductReviews = ({ product }) => {
     );
   }
 
-  const productRatings = data?.pages.flat(Infinity);
+  const productRatings = data?.pages.flat();
 
-  const handleDelete = async (id) => {
-    try {
-      await deleteReq("/ratings", { id });
-      refetch();
-    } catch (error) {
-      showErrorMessage({ message: error.message });
-    }
-  };
+  const isUserRated = productRatings.find((obj) => obj?.user?._id === user._id);
 
   return (
     <>
@@ -97,6 +86,13 @@ const ProductReviews = ({ product }) => {
               <p>{rateCount} ratings &</p>
               <p>{productRatings.length} reviews</p>
             </div>
+            {!isUserRated && (
+              <Link to={`/ratings/${productId}`}>
+                <button className="p-2 bg-gray-100 mt-5 rounded">
+                  Rate this Product
+                </button>
+              </Link>
+            )}
           </div>
 
           {/* MARK: USER RATINGS */}
@@ -107,79 +103,13 @@ const ProductReviews = ({ product }) => {
               </div>
             ) : (
               <div className="">
-                {productRatings.map((review, i) => {
-                  const {
-                    _id,
-                    title,
-                    comment,
-                    rate,
-                    user: { _id: userId, name, photo },
-                  } = review;
-
+                {productRatings.map((review) => {
                   return (
-                    <div
-                      key={i}
-                      className="space-y-3 border-b last:border-none p-5"
-                    >
-                      {/* MARK: FIRST LINE */}
-                      <div className="flex justify-between items-center">
-                        <div className="flex gap-5 ">
-                          <div
-                            className={`${
-                              rate <= 2 ? "bg-red-500" : "bg-green-600"
-                            } flex items-center  text-white text-xs px-1 rounded`}
-                          >
-                            <p>{rate}</p>
-                            <Icons.star className="" />
-                          </div>
-                          <p>{title}</p>
-                        </div>
-                        {userId === user._id && (
-                          <div className="relative">
-                            <button
-                              className="p-2"
-                              onClick={() => setShowOptions((prev) => !prev)}
-                            >
-                              {showOptions ? (
-                                <Icons.cancel />
-                              ) : (
-                                <Icons.options />
-                              )}
-                            </button>
-                            {showOptions && (
-                              <div className="absolute top-full right-0 border bg-white">
-                                <p
-                                  className="px-5 py-2 border-b cursor-pointer"
-                                  onClick={() =>
-                                    navigate(`/ratings/update/${_id}/${id}`)
-                                  }
-                                >
-                                  Update
-                                </p>
-                                <p
-                                  className="px-5 py-2  cursor-pointer"
-                                  onClick={() => handleDelete(_id)}
-                                >
-                                  Delete
-                                </p>
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-
-                      <p>{comment}</p>
-                      <div className="flex items-center gap-2 pt-5 text-xs">
-                        <p className="w-6">
-                          <img
-                            src={photo}
-                            alt={name}
-                            className="w-full object-cover rounded-full"
-                          />
-                        </p>
-                        <p>{name}</p>
-                      </div>
-                    </div>
+                    <SingleRating
+                      key={review._id}
+                      review={review}
+                      productId={productId}
+                    />
                   );
                 })}
               </div>

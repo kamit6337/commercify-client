@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteReq } from "../../utils/api/api";
-import Toastify from "../../lib/Toastify";
+import { deleteReq } from "../../../utils/api/api";
+import Toastify from "../../../lib/Toastify";
 
 const useUserAddressDelete = (addressId) => {
   const queryClient = useQueryClient();

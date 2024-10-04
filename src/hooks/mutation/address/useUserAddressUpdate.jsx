@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import Toastify from "../../lib/Toastify";
-import { patchReq } from "../../utils/api/api";
+import Toastify from "../../../lib/Toastify";
+import { patchReq } from "../../../utils/api/api";
 
 const useUserAddressUpdate = (id) => {
   const queryClient = useQueryClient();

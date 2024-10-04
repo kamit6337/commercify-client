@@ -1,17 +1,14 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { currencyState } from "../../redux/slice/currencySlice";
 import Toastify from "../../lib/Toastify";
-import {
-  returnTheOrder,
-  userOrdersState,
-} from "../../redux/slice/userOrdersSlice";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { patchReq } from "../../utils/api/api";
 import changePriceDiscountByExchangeRate from "../../utils/javascript/changePriceDiscountByExchangeRate";
 import makeDateFromUTC from "../../utils/javascript/makeDateFromUTC";
 import Loading from "../../containers/Loading";
+import { useQueryClient } from "@tanstack/react-query";
+import useOrderReturn from "../../hooks/mutation/orders/useOrderReturn";
 
 const listOfResons = [
   "Product is defective or expired",
@@ -22,18 +19,20 @@ const listOfResons = [
 ];
 
 const OrderReturn = () => {
-  const dispatch = useDispatch();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const { id } = useParams();
-  const { orders } = useSelector(userOrdersState);
+  const { buyId } = useParams();
   const [optionSelected, setOptionSelected] = useState(null);
   const { symbol, exchangeRate } = useSelector(currencyState);
-  const { ToastContainer, showErrorMessage, showAlertMessage } = Toastify();
+  const { ToastContainer, showAlertMessage } = Toastify();
+  const orders = queryClient.getQueryData(["buy products of user"]);
+
+  const { mutate, isPending, isSuccess } = useOrderReturn(buyId);
 
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting, errors },
+    formState: { errors },
   } = useForm({
     defaultValues: {
       reason: "",
@@ -41,17 +40,23 @@ const OrderReturn = () => {
   });
 
   const buyProduct = useMemo(() => {
-    if (!id) return null;
-    const buy = orders.find((obj) => obj._id === id);
+    if (!buyId) return null;
+    const buy = orders.find((obj) => obj._id === buyId);
     return { ...buy };
-  }, [id, orders]);
+  }, [buyId, orders]);
 
   useEffect(() => {
     window.scrollTo({
       top: 0,
       behavior: "instant",
     });
-  }, [id]);
+  }, [buyId]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      navigate("/user/orders");
+    }
+  }, [isSuccess, navigate]);
 
   if (!buyProduct) {
     return (
@@ -62,7 +67,6 @@ const OrderReturn = () => {
   }
 
   const {
-    _id: buyId,
     product,
     price,
     quantity,
@@ -81,13 +85,7 @@ const OrderReturn = () => {
       return;
     }
 
-    try {
-      const cancelOrder = await patchReq("/buy/return", { id: buyId });
-      dispatch(returnTheOrder(cancelOrder.data));
-      navigate("/user/orders");
-    } catch (error) {
-      showErrorMessage({ message: error.message });
-    }
+    mutate();
   };
 
   const { exchangeRatePrice } = changePriceDiscountByExchangeRate(
@@ -110,7 +108,7 @@ const OrderReturn = () => {
               <div className="w-full flex gap-10 tablet:flex-col">
                 <div className="flex gap-10">
                   <div className="h-full w-48">
-                    <Link to={`/products/${id}`}>
+                    <Link to={`/products/${productId}`}>
                       <img
                         src={thumbnail}
                         alt={title}
@@ -217,13 +215,15 @@ const OrderReturn = () => {
                 </div>
               )}
               <div className="flex justify-end items-center gap-10">
-                <button onClick={() => navigate(-1)}>Cancel</button>
+                <button type="button" onClick={() => navigate(-1)}>
+                  Cancel
+                </button>
                 <button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isPending}
                   className="rounded cursor-pointer py-2 px-10 bg-slate-600 text-white"
                 >
-                  {isSubmitting ? <Loading small={true} /> : "Submit"}
+                  {isPending ? <Loading small={true} /> : "Submit"}
                 </button>
               </div>
             </form>

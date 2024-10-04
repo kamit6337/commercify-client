@@ -2,7 +2,7 @@ import { useState } from "react";
 import UpdateAddressForm from "../../components/UpdateAddressForm";
 import { Icons } from "../../assets/icons";
 import Loading from "../../containers/Loading";
-import useUserAddressDelete from "../../hooks/mutation/useUserAddressDelete";
+import useUserAddressDelete from "../../hooks/mutation/address/useUserAddressDelete";
 
 const SingleAddress = ({ singleAddress }) => {
   const [isUpdateAddress, setIsUpdateAddress] = useState(false);

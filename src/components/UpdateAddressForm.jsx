@@ -6,7 +6,7 @@ import countries from "../data/countries";
 import useCountryStates from "../hooks/query/useCountryStates";
 import useStateCities from "../hooks/query/useStateCities";
 import { Icons } from "../assets/icons";
-import useUserAddressUpdate from "../hooks/mutation/useUserAddressUpdate";
+import useUserAddressUpdate from "../hooks/mutation/address/useUserAddressUpdate";
 
 const UpdateAddressForm = ({ handleCancel, data: givenAddress }) => {
   const { _id, name, mobile, country, district, state, address, dial_code } =

@@ -7,7 +7,7 @@ import countries from "../data/countries";
 import useCountryStates from "../hooks/query/useCountryStates";
 import useStateCities from "../hooks/query/useStateCities";
 import { Icons } from "../assets/icons";
-import useUserAddressCreated from "../hooks/mutation/useUserAddressCreated";
+import useUserAddressCreated from "../hooks/mutation/address/useUserAddressCreated";
 
 const NewAddressForm = ({ handleCancel }) => {
   const countryListRef = useRef(null);

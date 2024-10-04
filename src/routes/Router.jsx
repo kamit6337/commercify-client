@@ -75,8 +75,8 @@ const Router = () => {
         </Route>
 
         {/* NOTE: USER CANCEL ORDER */}
-        <Route path="orders/cancel/:id" element={<OrderCancel />} />
-        <Route path="orders/return/:id" element={<OrderReturn />} />
+        <Route path="orders/cancel/:buyId" element={<OrderCancel />} />
+        <Route path="orders/return/:buyId" element={<OrderReturn />} />
 
         {/* NOTE: PROTECTED ADMIN ROUTES */}
         <Route path="admin" element={<AdminLayout />}>

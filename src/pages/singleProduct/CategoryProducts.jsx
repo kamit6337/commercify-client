@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import Loading from "../../containers/Loading";
 import useCategoryProducts from "../../hooks/query/useCategoryProducts";
 import ProductCard from "../../components/ProductCard";

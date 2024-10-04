@@ -1,4 +1,4 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import useSingleProduct from "../../hooks/query/useSingleProduct";
 import Loading from "../../containers/Loading";
 import { useForm } from "react-hook-form";
@@ -8,23 +8,24 @@ import { useSelector } from "react-redux";
 import { currencyState } from "../../redux/slice/currencySlice";
 import { Icons } from "../../assets/icons";
 import { useEffect, useState } from "react";
-import { postReq } from "../../utils/api/api";
-import useProductRatings from "../../hooks/query/useProductRatings";
+import useNewRating from "../../hooks/mutation/ratings/useNewRating";
+import useLoginCheck from "../../hooks/auth/useLoginCheck";
 
 const RateProduct = () => {
-  const navigate = useNavigate();
-  const { id } = useParams();
+  const { data: user } = useLoginCheck();
+
+  const { id: productId } = useParams();
   const { symbol, exchangeRate } = useSelector(currencyState);
-  const { isLoading, error, data } = useSingleProduct(id);
-  const { refetch } = useProductRatings(id);
+  const { isLoading, error, data } = useSingleProduct(productId);
   const [starSelected, setStarSelected] = useState(0);
-  const { ToastContainer, showErrorMessage, showAlertMessage } = Toastify();
+  const { ToastContainer, showAlertMessage } = Toastify();
+  const { mutate, isPending } = useNewRating(productId);
 
   const {
     register,
     handleSubmit,
     getValues,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm({
     defaultValues: {
       title: "",
@@ -37,7 +38,7 @@ const RateProduct = () => {
       top: 0,
       behavior: "instant",
     });
-  }, [id]);
+  }, [productId]);
 
   if (isLoading) {
     return (
@@ -55,8 +56,7 @@ const RateProduct = () => {
     );
   }
 
-  const { title, description, price, discountPercentage, thumbnail } =
-    data.data;
+  const { title, description, price, discountPercentage, thumbnail } = data;
 
   const onSubmit = async (data) => {
     if (starSelected === 0) {
@@ -66,18 +66,19 @@ const RateProduct = () => {
 
     const { title, comment } = data;
 
-    try {
-      await postReq("/ratings", {
-        id,
-        rate: starSelected,
-        title,
-        comment,
-      });
-      refetch();
-      navigate(`/products/${id}`);
-    } catch (error) {
-      showErrorMessage({ message: error.message });
-    }
+    const obj = {
+      product: productId,
+      rate: starSelected,
+      title,
+      comment,
+      user: {
+        _id: user._id,
+        name: user.name,
+        photo: user.photo,
+      },
+    };
+
+    mutate(obj);
   };
 
   const { exchangeRatePrice, discountedPrice, roundDiscountPercent } =
@@ -96,7 +97,7 @@ const RateProduct = () => {
               {/* MARK: UPPER PORTION */}
               <div className="w-full flex gap-10">
                 <div className="h-full w-48">
-                  <Link to={`/products/${id}`}>
+                  <Link to={`/products/${productId}`}>
                     <img
                       src={thumbnail}
                       alt={title}
@@ -106,7 +107,7 @@ const RateProduct = () => {
                 </div>
                 <section className="flex-1 flex flex-col gap-4">
                   <div>
-                    <Link to={`/products/${id}`}>
+                    <Link to={`/products/${productId}`}>
                       <p>{title}</p>
                     </Link>
                     <p className="text-xs">{description}</p>
@@ -212,14 +213,15 @@ const RateProduct = () => {
 
               {/* MARK: SUBMIT AND CANCEL */}
               <div className="flex justify-end items-center gap-10">
-                <Link to={`/products/${id}`}>
+                <Link to={`/products/${productId}`}>
                   <button>Cancel</button>
                 </Link>
                 <button
                   type="submit"
+                  disabled={isPending}
                   className="rounded cursor-pointer py-3 px-20 bg-slate-600 text-white"
                 >
-                  {isSubmitting ? <Loading small={true} /> : "Submit"}
+                  {isPending ? <Loading small={true} /> : "Submit"}
                 </button>
               </div>
             </form>
