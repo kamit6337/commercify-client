@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  vite-react-app:
+    build:
+      context: . # Context points to the current directory
+      dockerfile: Dockerfile.dev # Use the development Dockerfile
+    ports:
+      - "5173:5173" # Map Vite's dev server port to the host machine
+    volumes:
+      - .:/app # Mount your local project directory into the container
+      - /app/node_modules # Avoid mounting node_modules to prevent issues
+    stdin_open: true
+    tty: true
+    environment:
+      - NODE_ENV=development
