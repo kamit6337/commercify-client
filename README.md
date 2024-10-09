@@ -60,9 +60,6 @@ To run this app locally using Docker Image :
 - create a .env file
 - copy .env.example file variables from above and paste in .env file
 - start filling all environment variables
-
-### SERVER_URL and CLIENT_URL will be enough to run this app.
-
 - open VS Code terminal
 
 ```
