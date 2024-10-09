@@ -2,7 +2,7 @@
 
 <p>It's a Full Stack e-Commerce Web App build in MERN Stack including Stripe payment integartion</p>
 
-You can visit the [Live website](https://commercify-client.vercel.app)  
+Docker Image : [kamit6337/commercify-client](https://hub.docker.com/repository/docker/kamit6337/commercify-client/general)
 
 ## Table of Contents
 
@@ -10,6 +10,7 @@ You can visit the [Live website](https://commercify-client.vercel.app)
 - [Features](#features)
 - [Tech](#tech)
 - [Screenshots](#screenshots)
+- [Running](#running)
 
 ## Description
 
@@ -48,3 +49,25 @@ Here are the screenshots of my project:
 
 ![product 1](https://commercify-vercel.s3.ap-south-1.amazonaws.com/images/commercify1.png)
 ![product 2](https://commercify-vercel.s3.ap-south-1.amazonaws.com/images/commercify2.png)
+
+
+## Running
+
+To run this app locally using Docker Image :
+
+- install Docker Desktop from [Docker website](https://www.docker.com/products/docker-desktop) and start to run in background
+- create a folder in desktop, open this folder in VS Code
+- create a .env file
+- copy .env.example file variables from above and paste in .env file
+- start filling all environment variables
+
+### SERVER_URL and CLIENT_URL will be enough to run this app.
+
+- open VS Code terminal
+
+```
+docker run --env-file .env -p 5173:80 kamit6337/commercify-client
+```
+
+- react-app started on http://localhost:5173
+
