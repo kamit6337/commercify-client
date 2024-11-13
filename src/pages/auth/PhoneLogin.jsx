@@ -9,7 +9,6 @@ import { useForm } from "react-hook-form";
 import { postAuthReq } from "../../utils/api/authApi";
 import Toastify from "../../lib/Toastify";
 import countries from "../../data/countries";
-import trackAnalyticsEvent from "../../lib/trackAnalyticsEvent";
 
 const PhoneLogin = () => {
   const navigate = useNavigate();
@@ -65,11 +64,6 @@ const PhoneLogin = () => {
   };
 
   const onSubmit = async (data) => {
-    trackAnalyticsEvent({
-      action: "login",
-      label: "Clicked Login Button",
-    });
-
     let { mobile } = data;
 
     if (!initialCountry) {
@@ -186,7 +180,7 @@ const PhoneLogin = () => {
               className="auth_button"
             >
               {isSubmitting ? (
-                <Loading hScreen={false} small={true} />
+                <Loading hScreen={false} small={true} color="white" />
               ) : (
                 "Request OTP"
               )}

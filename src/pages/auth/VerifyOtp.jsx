@@ -5,7 +5,6 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { postAuthReq } from "../../utils/api/authApi";
-import trackAnalyticsEvent from "../../lib/trackAnalyticsEvent";
 import OtpInput from "./OtpInput";
 import { patchReq } from "../../utils/api/api";
 import useLoginCheck from "../../hooks/auth/useLoginCheck";
@@ -47,11 +46,6 @@ const VerifyOtp = () => {
 
   const onSubmit = async () => {
     try {
-      trackAnalyticsEvent({
-        action: "verifyLogin",
-        label: "Verify Login OTP",
-      });
-
       const modifyOtp = otp.join("");
 
       if (modifyOtp.length < 6) {
@@ -75,9 +69,8 @@ const VerifyOtp = () => {
           mobile: state?.mobile,
           otp: modifyOtp,
         });
-        refetch();
       }
-
+      refetch();
       navigate("/");
     } catch (error) {
       showErrorMessage({ message: error.message });
@@ -152,7 +145,7 @@ const VerifyOtp = () => {
               className="auth_button"
             >
               {isLoading ? (
-                <Loading hScreen={false} small={true} />
+                <Loading hScreen={false} small={true} color="white" />
               ) : (
                 "Verify OTP"
               )}

@@ -7,7 +7,6 @@ import Toastify from "../../lib/Toastify";
 import environment from "../../utils/environment";
 import { currencyState } from "../../redux/slice/currencySlice";
 import CheckoutProducts from "./CheckoutProducts";
-import trackAnalyticsEvent from "../../lib/trackAnalyticsEvent";
 
 const Checkout = () => {
   const { cart } = useSelector(localStorageState);
@@ -18,11 +17,6 @@ const Checkout = () => {
   const { ToastContainer, showErrorMessage } = Toastify();
 
   const makePayment = async () => {
-    trackAnalyticsEvent({
-      action: "checkout",
-      label: "Clicked Checkout Button",
-    });
-
     try {
       const stripe = await loadStripe(environment.STRIPE_PUBLISHABLE_KEY);
 

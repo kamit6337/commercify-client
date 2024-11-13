@@ -78,7 +78,7 @@ const Product = ({ product }) => {
           <p className="text-xs">{roundDiscountPercent}% Off</p>
         </div>
       </div>
-      <div className="flex flex-col justify-between">
+      <div className="w-32 flex flex-col justify-between">
         <div className="self-end relative">
           <p
             className="text-2xl text-gray-300 cursor-pointer"

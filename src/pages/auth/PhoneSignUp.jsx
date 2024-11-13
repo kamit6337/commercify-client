@@ -10,7 +10,6 @@ import { postAuthReq } from "../../utils/api/authApi";
 import Toastify from "../../lib/Toastify";
 import { Icons } from "../../assets/icons";
 import countries from "../../data/countries";
-import trackAnalyticsEvent from "../../lib/trackAnalyticsEvent";
 
 const PhoneSignUp = () => {
   const navigate = useNavigate();
@@ -56,11 +55,6 @@ const PhoneSignUp = () => {
   };
 
   const onSubmit = async (data) => {
-    trackAnalyticsEvent({
-      action: "signup",
-      label: "Clicked SignUp Button",
-    });
-
     let { name, email, mobile } = data;
 
     if (!initialCountry) {
@@ -225,7 +219,7 @@ const PhoneSignUp = () => {
                 className="auth_button"
               >
                 {isSubmitting ? (
-                  <Loading hScreen={false} small={true} />
+                  <Loading hScreen={false} small={true} color="white" />
                 ) : (
                   "Submit"
                 )}
