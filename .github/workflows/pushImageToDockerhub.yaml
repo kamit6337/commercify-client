@@ -23,7 +23,7 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
       - name: Build the Docker image
-        run: docker build -t kamit6337/commercify-client:latest .
+        run: docker build -t kamit6337/voosh-project-client:latest .
 
       - name: Push the Docker image to Docker Hub
-        run: docker push kamit6337/commercify-client:latest
+        run: docker push kamit6337/voosh-project-client:latest

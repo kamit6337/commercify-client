@@ -4,46 +4,115 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --category-text: #8a8888;
-  --category-arrow-div: #f1eeee;
-  --all-text: #8a8888;
-  --important-text: #000042;
-  --important-black: #6b6b6b;
-  --some-less-important-text: #6e6e6e;
-  --auth-button-background: #dcdadd;
-  --auth-button-background-hover: #c8c7ca;
+@layer base {
+  :root {
+    --auth-background: #17181e;
+    --auth-text: #ffffff;
+    --auth-input-border: #30303d;
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --radius: 0.5rem;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --dark-blue: #3b78ec;
+    --white: #ffffff;
+    --ligit-white: #dce8f9;
+    --black: #000000;
+    --light-red: #e8686e;
+    --todo-header: #569af5;
+    --todo-bg: #d7e7fe;
+    --delete-btn: #f36767;
+    --edit-btn: #5b99ee;
+    --detail-btn: #3677ee;
+    --cancel-btn: #cbd0d6;
+    --save-btn: #f1f2f4;
+  }
+
+  .dark {
+    --auth-background: #17181e;
+    --auth-text: #ffffff;
+    --auth-input-border: #30303d;
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
 }
 
 @layer base {
   * {
-    @apply m-0 p-0 box-border;
+    @apply border-border m-0 p-0 box-border;
   }
 
   body {
-    @apply font-sans bg-white text-all_text cursor-default overflow-x-hidden;
-  }
-
-  select {
-    @apply outline-none border-none;
-  }
-
-  input,
-  textarea {
-    @apply outline-none border-none;
+    @apply font-sans bg-background text-foreground;
   }
 }
 
 @layer utilities {
-  .section_padding {
-    @apply px-6;
+  .auth_submit_btn {
+    @apply flex py-3 w-full items-center justify-center rounded-md font-bold  tracking-wider text-white hover:brightness-95;
   }
 
-  .auth_div {
-    @apply w-[600px] mobile:w-full border rounded-xl  mobile:p-4 shadow-lg   flex flex-col justify-evenly p-6 gap-5;
+  .auth_page_title {
+    @apply text-2xl font-bold tracking-wide mb-10;
   }
 
-  .auth_button {
-    @apply h-12 rounded-lg bg-black hover:bg-slate-800 duration-300 text-lg tracking-wide cursor-pointer w-full text-white uppercase;
+  .auth_input {
+    @apply border border-auth_input_border w-full p-3 rounded-lg bg-auth_background;
   }
+
+  .auth_input_password {
+    @apply outline-none border-none w-full px-3 h-full rounded-l-lg bg-auth_background;
+  }
+}
+
+/* NOTE: AUTH BUTTON GRADIENT */
+.auth_btn {
+  background: rgb(183, 46, 178);
+  background: linear-gradient(
+    95deg,
+    rgba(183, 46, 178, 1) 30%,
+    rgba(223, 106, 186, 1) 80%
+  );
 }
