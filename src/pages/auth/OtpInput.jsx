@@ -1,21 +1,7 @@
-/* eslint-disable react/prop-types */
-import { useEffect } from "react";
 import { useRef } from "react";
 
 const OtpInput = ({ otp, cb }) => {
   const inputRefs = useRef([]);
-
-  useEffect(() => {
-    if (inputRefs.current.length > 0) {
-      inputRefs.current[0].focus();
-    }
-  }, []);
-
-  useEffect(() => {
-    if (otp.every((item) => item === "")) {
-      inputRefs.current[0].focus();
-    }
-  }, [otp]);
 
   const handleChange = (e, index) => {
     const value = e.target.value;
@@ -39,28 +25,22 @@ const OtpInput = ({ otp, cb }) => {
   };
 
   return (
-    <div className="flex w-full items-center justify-center gap-2">
+    <div className="flex w-full items-center justify-between gap-2">
       {otp.map((value, index) => {
         return (
-          <div
+          <input
             key={index}
-            className="flex h-[48px] w-[46px] items-center justify-center rounded-md border-2 border-slate-200 px-1 text-lg text-black shadow-sm"
-          >
-            <input
-              type="text"
-              maxLength={1}
-              required={true}
-              value={value}
-              autoComplete="off"
-              spellCheck="false"
-              ref={(el) => {
-                inputRefs.current[index] = el;
-              }}
-              onKeyDown={(e) => handleKeyDown(e, index)}
-              onChange={(e) => handleChange(e, index)}
-              className="h-full w-full text-center"
-            />
-          </div>
+            type="text"
+            maxLength={1}
+            required={true}
+            value={value}
+            ref={(el) => {
+              inputRefs.current[index] = el;
+            }}
+            onKeyDown={(e) => handleKeyDown(e, index)}
+            onChange={(e) => handleChange(e, index)}
+            className="flex h-[48px] items-center auth_input text-center"
+          />
         );
       })}
     </div>

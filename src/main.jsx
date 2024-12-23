@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import environment from "./utils/environment.js";
 import { disableReactDevTools } from "@fvilers/disable-react-devtools";
+import { ToastContainer } from "react-toastify";
 
 const PRODUCTION = "production";
 
@@ -22,6 +23,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <Provider store={store}>
         <BrowserRouter>
           <App />
+          <ToastContainer />
         </BrowserRouter>
       </Provider>
       <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
