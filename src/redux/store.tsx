@@ -4,6 +4,10 @@ import { exampleReducer } from "./slice/exampleSlice";
 export const store = configureStore({
   reducer: {
     example: exampleReducer,
+    address: addressReducer,
+    localStorage: localStorageReducer,
+    currency: currencyReducer,
+    userOrders: userOrdersReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

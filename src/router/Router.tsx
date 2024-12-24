@@ -8,6 +8,7 @@ import AuthLayout from "@/layout/AuthLayout";
 import ForgotPassword from "@/pages/auth/ForgotPassword";
 import NewPassword from "@/pages/auth/NewPassword";
 import VerifyOAuthLogin from "@/pages/auth/VerifyOAuthLogin";
+import HomeLayout from "@/layout/HomeLayout";
 
 const Router = () => {
   return (
@@ -24,8 +25,54 @@ const Router = () => {
 
       {/* NOTE: ROOTLAYOUT */}
       <Route path="/" element={<RootLayout />}>
-        <Route index element={<Home />} />
+        {/* NOTE: PRODUCTS ROUTES */}
+        <Route path="/" element={<HomeLayout />}>
+          <Route index element={<Home />} />
+          <Route path="category/:id" element={<CategoryProducts />} />
+          <Route path="search" element={<SearchProducts />} />
+        </Route>
+
+        <Route path="products/:id" element={<SingleProduct />} />
+        <Route path="wishlist" element={<Wishlist />} />
+
+        {/* NOTE: PRODUCT RATING */}
+        <Route path="ratings/:id" element={<RateProduct />} />
+        <Route
+          path="ratings/update/:id/:productId"
+          element={<UpdateRatedProduct />}
+        />
+
+        {/* NOTE: CART ROUTES */}
+        <Route path="cart" element={<CartLayout />}>
+          <Route index element={<Cart />} />
+          <Route path="address" element={<AddressInCart />} />
+          <Route path="checkout" element={<Checkout />} />
+        </Route>
+
+        {/* NOTE: PAYMENT SUCCESS AND FAILURE */}
+        <Route path="payment/success" element={<PaymentSuccess />} />
+        <Route path="payment/cancel" element={<PaymentCancel />} />
+
+        {/* NOTE: USER ROUTES */}
+        <Route path="user" element={<UserLayout />}>
+          <Route index element={<Profile />} />
+          <Route path="address" element={<Address />} />
+          <Route path="orders" element={<UserOrders />} />
+        </Route>
+
+        {/* NOTE: USER CANCEL ORDER */}
+        <Route path="orders/cancel/:buyId" element={<OrderCancel />} />
+        <Route path="orders/return/:buyId" element={<OrderReturn />} />
+
+        {/* NOTE: PROTECTED ADMIN ROUTES */}
+        <Route path="admin" element={<AdminLayout />}>
+          <Route index element={<Admin />} />
+          <Route path="add" element={<AddProduct />} />
+          <Route path="update" element={<UpdateProduct />} />
+        </Route>
       </Route>
+
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };
