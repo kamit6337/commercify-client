@@ -10,6 +10,9 @@ const environment = {
   CURRENCY_EXCHANGE_KEY:
     window?.env?.VITE_APP_CURRENCY_EXCHANGE_KEY ||
     import.meta.env.VITE_APP_CURRENCY_EXCHANGE_KEY,
+  STRIPE_PUBLISHABLE_KEY:
+    window?.env?.VITE_APP_STRIPE_PUBLISHABLE_KEY ||
+    import.meta.env.VITE_APP_STRIPE_PUBLISHABLE_KEY,
 };
 
 export default environment;

@@ -1,6 +1,7 @@
 import ProductsAndFilter from "@/components/ProductsAndFilter";
 import useAllProducts from "@/hooks/products/useAllProducts";
 import Loading from "@/lib/Loading";
+import { PRODUCT } from "@/types";
 import { Helmet } from "react-helmet";
 
 const Home = () => {
@@ -19,6 +20,8 @@ const Home = () => {
     return <div>{error.message}</div>;
   }
 
+  const products = data?.pages.flat(1) as PRODUCT[];
+
   return (
     <>
       <Helmet>
@@ -27,7 +30,7 @@ const Home = () => {
       </Helmet>
 
       <ProductsAndFilter
-        products={data?.pages.flat(1)}
+        products={products}
         isFetching={isFetching}
         fetchNextPage={fetchNextPage}
       />

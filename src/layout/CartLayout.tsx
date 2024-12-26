@@ -1,29 +1,28 @@
 import { Link, Outlet } from "react-router-dom";
-import PriceList from "../components/PriceList";
 import { useSelector } from "react-redux";
-import { localStorageState } from "../redux/slice/localStorageSlice";
 import { Helmet } from "react-helmet";
-import useProductsFromIDs from "../hooks/query/useProductsFromIDs";
-import Loading from "../containers/Loading";
-import useUserAddress from "../hooks/query/useUserAddress";
+import { cartAndWishlistState } from "@/redux/slice/cartAndWishlistSlice";
+import useProductsFromIDs from "@/hooks/products/useProductsFromIDs";
+import Loading from "@/lib/Loading";
+import useUserAddress from "@/hooks/address/useUserAddress";
+import PriceList from "@/components/PriceList";
 
 const CartLayout = () => {
-  const { cart } = useSelector(localStorageState);
+  const { cart } = useSelector(cartAndWishlistState);
   const cartIds = cart.map((obj) => obj.id);
-  const { isLoading, error } = useProductsFromIDs(cartIds);
-  const { isLoading: isLoadingUserAddress, error: errorUserAddress } =
-    useUserAddress();
+  const { isLoading, error, data } = useProductsFromIDs(cartIds);
+  const {
+    isLoading: isLoadingUserAddress,
+    error: errorUserAddress,
+    data: userAddresses,
+  } = useUserAddress();
 
   if (isLoading || isLoadingUserAddress) {
-    return (
-      <div>
-        <Loading />
-      </div>
-    );
+    return <Loading />;
   }
 
   if (error || errorUserAddress) {
-    return <div>{error?.message || errorUserAddress?.message}</div>;
+    return <div>{error || errorUserAddress?.message}</div>;
   }
 
   if (!cart || cart.length === 0) {
@@ -53,10 +52,17 @@ const CartLayout = () => {
     <section className="p-5 sm_lap:px-2 bg-gray-100">
       <main className="flex items-start tablet:items-stretch tablet:flex-col gap-5">
         <div className="flex-1">
-          <Outlet />
+          <Outlet
+            context={{
+              products: data,
+              addresses: userAddresses,
+              cart,
+              cartIds,
+            }}
+          />
         </div>
         <div className="bg-white w-96 sm_lap:w-80 tablet:w-full sticky top-[100px]">
-          <PriceList />
+          <PriceList products={data} addresses={userAddresses} cart={cart} />
         </div>
       </main>
     </section>

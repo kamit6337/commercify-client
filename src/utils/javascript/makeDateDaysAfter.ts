@@ -30,8 +30,16 @@ const shortMonthList = [
   "Dec",
 ];
 
-const makeDateFromUTC = (UTC) => {
-  const finalDate = new Date(UTC);
+const makeDateDaysAfter = (days: number) => {
+  if (!days) return null;
+
+  const dateInMilli = new Date().getTime();
+
+  const givenDaysInMilli = days * 24 * 60 * 60 * 1000;
+
+  const finalDateInMilli = dateInMilli + givenDaysInMilli;
+
+  const finalDate = new Date(finalDateInMilli);
 
   const date = finalDate.getDate();
   const month = finalDate.getMonth();
@@ -40,4 +48,4 @@ const makeDateFromUTC = (UTC) => {
   return `${addZeroToDigit(date)} ${shortMonthList[month]} ${year}`;
 };
 
-export default makeDateFromUTC;
+export default makeDateDaysAfter;

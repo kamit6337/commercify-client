@@ -9,6 +9,19 @@ import ForgotPassword from "@/pages/auth/ForgotPassword";
 import NewPassword from "@/pages/auth/NewPassword";
 import VerifyOAuthLogin from "@/pages/auth/VerifyOAuthLogin";
 import HomeLayout from "@/layout/HomeLayout";
+import CategoryProducts from "@/pages/category/CategoryProducts";
+import SearchProducts from "@/pages/search/SearchProducts";
+import SingleProduct from "@/pages/product/SingleProduct";
+import RateProduct from "@/pages/ratings/RateProduct";
+import UpdateRatedProduct from "@/pages/ratings/UpdateRatedProduct";
+import Wishlist from "@/pages/wishlist/Wishlist";
+import CartLayout from "@/layout/CartLayout";
+import Cart from "@/pages/cart/Cart";
+import AddressInCart from "@/pages/cart/AddressInCart";
+import Checkout from "@/pages/cart/Checkout";
+import PaymentSuccess from "@/pages/payment/PaymentSuccess";
+import PaymentCancel from "@/pages/payment/PaymentCancel";
+import UserLayout from "@/layout/UserLayout";
 
 const Router = () => {
   return (
@@ -36,11 +49,8 @@ const Router = () => {
         <Route path="wishlist" element={<Wishlist />} />
 
         {/* NOTE: PRODUCT RATING */}
-        <Route path="ratings/:id" element={<RateProduct />} />
-        <Route
-          path="ratings/update/:id/:productId"
-          element={<UpdateRatedProduct />}
-        />
+        <Route path="ratings/create" element={<RateProduct />} />
+        <Route path="ratings/update" element={<UpdateRatedProduct />} />
 
         {/* NOTE: CART ROUTES */}
         <Route path="cart" element={<CartLayout />}>

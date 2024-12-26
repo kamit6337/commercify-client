@@ -1,12 +1,19 @@
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { currencyState } from "../redux/slice/currencySlice";
 import RangeSliderWithTooltip from "../lib/RangeSliderWithTooltip";
 import { useMemo } from "react";
 import useAllCategory from "@/hooks/category/useAllCategory";
 import findMaxPrice from "@/utils/javascript/findMaxPrice";
+import changePriceDiscountByExchangeRate from "@/utils/javascript/changePriceDiscountByExchangeRate";
+import { currencyState } from "@/redux/slice/currencySlice";
+import { CATEGORY, PRODUCT } from "@/types";
 
-const FilterSection = ({ products, filterProductsFn }) => {
+type Props = {
+  products: PRODUCT[];
+  filterProductsFn: (value: PRODUCT[]) => void;
+};
+
+const FilterSection = ({ products, filterProductsFn }: Props) => {
   const { data: allCategory } = useAllCategory();
   const { exchangeRate } = useSelector(currencyState);
 
@@ -14,13 +21,12 @@ const FilterSection = ({ products, filterProductsFn }) => {
     return findMaxPrice(products, exchangeRate);
   }, [products, exchangeRate]);
 
-  const handlePriceChange = (value) => {
+  const handlePriceChange = (value: number) => {
     const filter = products.filter((product) => {
-      const exchangeRatePrice = Math.round(product.price * exchangeRate);
-
-      const roundDiscountPercent = Math.round(product.discountPercentage);
-      const discountedPrice = Math.round(
-        (exchangeRatePrice * (100 - roundDiscountPercent)) / 100
+      const { discountedPrice } = changePriceDiscountByExchangeRate(
+        product.price,
+        product.discountPercentage,
+        exchangeRate
       );
 
       return discountedPrice <= value;
@@ -39,19 +45,6 @@ const FilterSection = ({ products, filterProductsFn }) => {
         </div>
 
         <div className="">
-          {/* <Box>
-            <Slider
-              aria-label="Temperature"
-              defaultValue={maxPrice}
-              valueLabelDisplay="auto"
-              step={Math.floor(maxPrice / 6) + 1}
-              marks={false}
-              size="small"
-              min={0}
-              max={maxPrice}
-              onChange={handlePriceChange}
-            />
-          </Box> */}
           <RangeSliderWithTooltip
             maxPrice={maxPrice}
             minPrice={minPrice}
@@ -73,7 +66,7 @@ const FilterSection = ({ products, filterProductsFn }) => {
                       <p className="text-sm capitalize">All</p>
                     </Link>
                   </div>
-                  {allCategory.map((category, i) => {
+                  {allCategory.map((category: CATEGORY, i: number) => {
                     const { _id, title } = category;
 
                     return (

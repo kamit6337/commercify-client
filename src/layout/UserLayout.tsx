@@ -1,20 +1,15 @@
 import { Outlet, NavLink, Link } from "react-router-dom";
 import useLoginCheck from "../hooks/auth/useLoginCheck";
-import { Icons } from "../assets/icons";
-import useUserBuysDetails from "../hooks/query/useUserBuysDetails";
-import Loading from "../containers/Loading";
+import Loading from "@/lib/Loading";
+import useUserBuysCount from "@/hooks/buys/useUserBuysCount";
+import Icons from "@/assets/icons";
 
 const UserLayout = () => {
   const { data: user } = useLoginCheck();
-
-  const { isLoading, error } = useUserBuysDetails();
+  const { isLoading, error, data } = useUserBuysCount();
 
   if (isLoading) {
-    return (
-      <div>
-        <Loading />
-      </div>
-    );
+    return <Loading />;
   }
 
   if (error) {
@@ -97,7 +92,7 @@ const UserLayout = () => {
         </div>
       </div>
       <div className="flex-1">
-        <Outlet />
+        <Outlet context={{ count: data }} />
       </div>
     </section>
   );

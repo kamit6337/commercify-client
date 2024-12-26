@@ -2,14 +2,22 @@ import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import FilterSection from "./FilterSection";
 import ProductGrid from "./ProductGrid";
+import { PRODUCT } from "@/types";
+
+type Props = {
+  products: PRODUCT[];
+  isPagination?: boolean;
+  isFetching?: boolean;
+  fetchNextPage: () => void;
+};
 
 const ProductsAndFilter = ({
   products,
   isPagination = false,
   isFetching,
   fetchNextPage,
-}) => {
-  const [filterProducts, setFilterProducts] = useState([]);
+}: Props) => {
+  const [filterProducts, setFilterProducts] = useState<PRODUCT[]>([]);
 
   const { ref, inView } = useInView({
     threshold: 0,
@@ -21,7 +29,7 @@ const ProductsAndFilter = ({
     }
   }, [inView, isFetching, fetchNextPage, isPagination]);
 
-  const filterProductsFn = (products) => {
+  const filterProductsFn = (products: PRODUCT[]) => {
     setFilterProducts(products);
   };
 

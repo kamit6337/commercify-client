@@ -1,6 +1,6 @@
 const changePriceDiscountByExchangeRate = (
   price: number,
-  discountPercentage: number,
+  discountPercentage: number = 0,
   exchangeRate: number = 1
 ) => {
   const exchangeRatePrice = Math.trunc(price * exchangeRate);
