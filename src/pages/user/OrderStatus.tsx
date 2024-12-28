@@ -1,13 +1,15 @@
+import { BUY } from "@/types";
 import makeDateFromUTC from "../../utils/javascript/makeDateFromUTC";
 
-/* eslint-disable react/prop-types */
+type Props = BUY;
+
 const OrderStatus = ({
   isDelivered,
   isCancelled,
   isReturned,
   deliveredDate,
   updatedAt,
-}) => {
+}: Props) => {
   if (isReturned) {
     return (
       <div>

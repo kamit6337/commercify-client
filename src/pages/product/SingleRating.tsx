@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import DeleteConfirmationDialog from "@/components/DeleteConfirmationDialog";
+import useDeleteRating from "@/hooks/ratings/useDeleteRating";
 
 type Props = {
   review: REVIEW;
@@ -19,7 +20,6 @@ type Props = {
 const SingleRating = ({ review, productId }: Props) => {
   const navigate = useNavigate();
   const { data: user } = useLoginCheck();
-
   const {
     _id,
     title,
@@ -27,6 +27,8 @@ const SingleRating = ({ review, productId }: Props) => {
     rate,
     user: { _id: userId, name, photo },
   } = review;
+
+  const { mutate, isPending } = useDeleteRating(_id, productId);
 
   return (
     <div className="space-y-3 border-b last:border-none p-5">
@@ -63,7 +65,12 @@ const SingleRating = ({ review, productId }: Props) => {
               </AlertDialogTrigger>
             </DropdownMenuContent>
           </DropdownMenu>
-          <DeleteConfirmationDialog ratingId={_id} productId={productId} />
+          <DeleteConfirmationDialog
+            mutate={mutate}
+            isPending={isPending}
+            content={`This action cannot be undone. This will permanently delete your
+          account and remove your data from our servers.`}
+          />
         </AlertDialog>
       </div>
 

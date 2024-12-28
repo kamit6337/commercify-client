@@ -22,6 +22,16 @@ import Checkout from "@/pages/cart/Checkout";
 import PaymentSuccess from "@/pages/payment/PaymentSuccess";
 import PaymentCancel from "@/pages/payment/PaymentCancel";
 import UserLayout from "@/layout/UserLayout";
+import Profile from "@/pages/user/Profile";
+import Address from "@/pages/user/Address";
+import UserOrders from "@/pages/user/UserOrders";
+import OrderCancel from "@/pages/orders/OrderCancel";
+import OrderReturn from "@/pages/orders/OrderReturn";
+import AdminLayout from "@/layout/AdminLayout";
+import Admin from "@/pages/admin/Admin";
+import AddProduct from "@/pages/admin/AddProduct";
+import UpdateProduct from "@/pages/admin/UpdateProduct";
+import NotFound from "@/pages/notFound/NotFound";
 
 const Router = () => {
   return (

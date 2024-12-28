@@ -3,17 +3,23 @@ import useLoginCheck from "../hooks/auth/useLoginCheck";
 import Loading from "@/lib/Loading";
 import useUserBuysCount from "@/hooks/buys/useUserBuysCount";
 import Icons from "@/assets/icons";
+import useUserAddress from "@/hooks/address/useUserAddress";
 
 const UserLayout = () => {
   const { data: user } = useLoginCheck();
   const { isLoading, error, data } = useUserBuysCount();
+  const {
+    data: userAddress,
+    isLoading: isLoadingUserAddress,
+    error: errorUserAddress,
+  } = useUserAddress();
 
-  if (isLoading) {
+  if (isLoading || isLoadingUserAddress) {
     return <Loading />;
   }
 
-  if (error) {
-    return <div>{error.message}</div>;
+  if (error || errorUserAddress) {
+    return <div>{error?.message || errorUserAddress?.message}</div>;
   }
 
   return (
@@ -92,7 +98,7 @@ const UserLayout = () => {
         </div>
       </div>
       <div className="flex-1">
-        <Outlet context={{ count: data }} />
+        <Outlet context={{ count: data, user, addresses: userAddress }} />
       </div>
     </section>
   );

@@ -9,6 +9,7 @@ export type BUY = {
   deliveredDate: Date;
   isCancelled: boolean;
   isReturned: boolean;
+  isDelievered: boolean;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -16,7 +17,7 @@ export type BUY = {
 export type ADDRESS = {
   _id: string;
   name: string;
-  mobile: number;
+  mobile: string;
   dial_code: string;
   country: string;
   address: string;
@@ -29,7 +30,10 @@ export type ADDRESS = {
 export type USER = {
   _id: string;
   name: string;
+  email: string;
   photo: string;
+  dial_code: string;
+  mobile: string;
 };
 
 export type REVIEW = {

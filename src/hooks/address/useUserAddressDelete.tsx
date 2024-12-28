@@ -1,8 +1,9 @@
+import Toastify from "@/lib/Toastify";
+import { ADDRESS } from "@/types";
+import { deleteReq } from "@/utils/api/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteReq } from "../../../utils/api/api";
-import Toastify from "../../../lib/Toastify";
 
-const useUserAddressDelete = (addressId) => {
+const useUserAddressDelete = (addressId: string) => {
   const queryClient = useQueryClient();
   const { showErrorMessage } = Toastify();
 
@@ -16,18 +17,24 @@ const useUserAddressDelete = (addressId) => {
       });
 
       const previousAddress = JSON.parse(
-        JSON.stringify(queryClient.getQueryData(["user addresses"]))
+        JSON.stringify(queryClient.getQueryData(["user addresses"]) || [])
       );
 
-      queryClient.setQueryData(["user addresses"], (old) => {
-        if (!old) return [];
-        return old.filter((address) => address._id !== addressId);
-      });
+      const checkState = queryClient.getQueryState(["user addresses"]);
+
+      if (checkState) {
+        queryClient.setQueryData(["user addresses"], (old: ADDRESS[]) => {
+          if (!old) return [];
+          return old.filter((address) => address._id !== addressId);
+        });
+      }
 
       return { previousAddress };
     },
     onError: (error, variable, context) => {
-      if (context?.previousAddress) {
+      const checkState = queryClient.getQueryState(["user addresses"]);
+
+      if (checkState) {
         queryClient.setQueryData(["user addresses"], context?.previousAddress);
       }
       showErrorMessage({ message: error.message });

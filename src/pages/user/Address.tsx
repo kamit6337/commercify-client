@@ -1,31 +1,18 @@
 import { Helmet } from "react-helmet";
-import { Icons } from "../../assets/icons";
 import { useState } from "react";
 import NewAddressForm from "../../components/NewAddressForm";
-import Loading from "../../containers/Loading";
-import useUserAddress from "../../hooks/query/useUserAddress";
+import { useOutletContext } from "react-router-dom";
+import { ADDRESS } from "@/types";
+import Icons from "@/assets/icons";
 import SingleAddress from "./SingleAddress";
 
+type OUTLET = {
+  addresses: ADDRESS[];
+};
+
 const Address = () => {
-  const {
-    data: userAddress,
-    isLoading: isLoadingUserAddress,
-    error,
-  } = useUserAddress();
-
+  const { addresses: userAddress } = useOutletContext<OUTLET>();
   const [openNewAddressForm, setOpenNewAddressForm] = useState(false);
-
-  if (isLoadingUserAddress) {
-    return (
-      <div>
-        <Loading />
-      </div>
-    );
-  }
-
-  if (error) {
-    return <p>{error.message}</p>;
-  }
 
   const handleCancel = () => {
     setOpenNewAddressForm(false);

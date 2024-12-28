@@ -25,9 +25,12 @@ import Loading from "@/lib/Loading";
 import useCountryStates from "@/hooks/countryAndCurrency/useCountryStates";
 import useStateCities from "@/hooks/countryAndCurrency/useStateCities";
 import useUserAddressCreated from "@/hooks/address/useUserAddressCreated";
+import { ADDRESS } from "@/types";
+import useUserAddressUpdate from "@/hooks/address/useUserAddressUpdate";
 
 type Props = {
   handleCancel: () => void;
+  address?: ADDRESS | null;
 };
 
 type Form = {
@@ -36,42 +39,47 @@ type Form = {
   address: string;
 };
 
-const NewAddressForm = ({ handleCancel }: Props) => {
-  const { country, id, dial_code, flag } = useSelector(currencyState);
-  const [countryId, setCountryId] = useState(id);
-  const [selectedState, setSelectedState] = useState("");
-  const [selectedDistrict, setSelectedDistrict] = useState("");
+const NewAddressForm = ({ handleCancel, address = null }: Props) => {
+  const { country, dial_code } = useSelector(currencyState);
+  const [selectedCountry, setSelectedCountry] = useState(
+    address ? address?.country : country
+  );
+  const [selectedState, setSelectedState] = useState(
+    address ? address?.state : ""
+  );
+  const [selectedDistrict, setSelectedDistrict] = useState(
+    address ? address?.district : ""
+  );
 
-  const selectedCountry = useMemo(() => {
-    const findCountry = countries.find((obj) => obj.id === countryId);
+  const selectedDialCode = useMemo(() => {
+    const findCountry = countries.find((obj) => obj.name === selectedCountry);
 
     if (!findCountry) {
-      return {
-        id,
-        name: country,
-        dial_code,
-        flag,
-      };
+      return dial_code;
     }
+    return findCountry.dial_code;
+  }, [countries, selectedCountry]);
 
-    return findCountry;
-  }, [countries, countryId]);
-
-  const { isLoading, data, error } = useCountryStates(selectedCountry.name);
-
-  const { mutate, isPending, isSuccess } = useUserAddressCreated();
-
+  const { isLoading, data, error } = useCountryStates(selectedCountry);
   const {
     isLoading: isLoadingStateCities,
     data: stateCities,
     error: errorStateCities,
   } = useStateCities(selectedState);
 
+  const { mutate, isPending, isSuccess } = useUserAddressCreated();
+  const {
+    mutate: updateAddress,
+    isPending: isPendingUpdateAddress,
+    isSuccess: isSuccessUpdateAddress,
+  } = useUserAddressUpdate(address);
+
   const { showErrorMessage, showSuccessMessage, showAlertMessage } = Toastify();
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -82,13 +90,31 @@ const NewAddressForm = ({ handleCancel }: Props) => {
   });
 
   useEffect(() => {
+    if (address) {
+      reset({
+        name: address.name,
+        mobile: address.mobile,
+        address: address.address,
+      });
+    }
+  }, [address, reset]);
+
+  useEffect(() => {
     if (isSuccess) {
       handleCancel();
       showSuccessMessage({
         message: "New Address Created",
       });
+      return;
     }
-  }, [isSuccess, handleCancel, showSuccessMessage]);
+    if (isSuccessUpdateAddress) {
+      handleCancel();
+      showSuccessMessage({
+        message: "Address got updated",
+      });
+      return;
+    }
+  }, [isSuccess, handleCancel, showSuccessMessage, isSuccessUpdateAddress]);
 
   useEffect(() => {
     if (error) {
@@ -107,12 +133,39 @@ const NewAddressForm = ({ handleCancel }: Props) => {
       return;
     }
 
-    const postData = { ...data };
-    postData._id = Date.now().toString();
-    postData.country = selectedCountry.name;
-    postData.state = selectedState;
-    postData.district = selectedDistrict;
-    postData.dial_code = selectedCountry.dial_code;
+    if (address) {
+      if (
+        data.name === address.name &&
+        data.mobile === address.mobile &&
+        data.address === address.address &&
+        selectedCountry === address.country &&
+        selectedState === address.state &&
+        selectedDistrict === address.district &&
+        selectedDialCode === address.dial_code
+      ) {
+        showAlertMessage({ message: "Please update profile to update" });
+        return;
+      }
+      const postData = {
+        ...address,
+        ...data,
+        dial_code: selectedDialCode,
+        country: selectedCountry,
+        state: selectedState,
+        district: selectedDistrict,
+      };
+      updateAddress(postData);
+      return;
+    }
+
+    const postData = {
+      ...data,
+      _id: Date.now().toString(),
+      dial_code: selectedDialCode,
+      country: selectedCountry,
+      state: selectedState,
+      district: selectedDistrict,
+    };
 
     mutate(postData);
   };
@@ -151,14 +204,14 @@ const NewAddressForm = ({ handleCancel }: Props) => {
                 <DropdownMenuLabel>Country with Dial Code</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuRadioGroup
-                  value={countryId.toString()}
-                  onValueChange={(value) => setCountryId(Number(value))}
+                  value={selectedCountry}
+                  onValueChange={(value) => setSelectedCountry(value)}
                 >
                   {countries.map((obj) => {
                     const { id, name, dial_code } = obj;
 
                     return (
-                      <DropdownMenuRadioItem key={id} value={id.toString()}>
+                      <DropdownMenuRadioItem key={id} value={name}>
                         {name} ({dial_code})
                       </DropdownMenuRadioItem>
                     );
@@ -175,7 +228,7 @@ const NewAddressForm = ({ handleCancel }: Props) => {
                     validate: (value) => {
                       const numericPattern = /^[0-9]+$/;
 
-                      if (!numericPattern.test(value)) {
+                      if (!numericPattern.test(value.toString())) {
                         return "Please enter your valid mobile number";
                       }
                       return true;
@@ -212,8 +265,8 @@ const NewAddressForm = ({ handleCancel }: Props) => {
           {/* MARK: SELECT COUNTRY */}
 
           <Select
-            defaultValue={countryId.toString()}
-            onValueChange={(value) => setCountryId(Number(value))}
+            value={selectedCountry}
+            onValueChange={(value) => setSelectedCountry(value)}
           >
             <SelectTrigger className="w-[280px]">
               <SelectValue placeholder="--select-country" />
@@ -222,7 +275,7 @@ const NewAddressForm = ({ handleCancel }: Props) => {
               {countries.map((obj) => {
                 const { id, name } = obj;
                 return (
-                  <SelectItem key={id} value={id.toString()}>
+                  <SelectItem key={id} value={name}>
                     {name}
                   </SelectItem>
                 );
@@ -278,11 +331,17 @@ const NewAddressForm = ({ handleCancel }: Props) => {
 
           <div className="flex gap-10 items-center h-12">
             <button
-              disabled={isPending}
+              disabled={isPending || isPendingUpdateAddress}
               className="h-full px-20 bg-sky-200 flex items-center rounded-md text-blue-700 font-semibold tracking-wide "
               type="submit"
             >
-              {isPending ? <Loading small={true} /> : "Submit"}
+              {isPending ? (
+                <Loading small={true} />
+              ) : isPendingUpdateAddress ? (
+                <Loading small={true} />
+              ) : (
+                "Submit"
+              )}
             </button>
             <button onClick={handleCancel}>Cancel</button>
           </div>

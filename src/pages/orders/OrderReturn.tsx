@@ -1,24 +1,40 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useEffect, useMemo } from "react";
-import { useForm } from "react-hook-form";
-import SmallLoading from "../../containers/SmallLoading";
-import Toastify from "../../lib/Toastify";
 import { useSelector } from "react-redux";
 import { currencyState } from "../../redux/slice/currencySlice";
+import Toastify from "../../lib/Toastify";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import changePriceDiscountByExchangeRate from "../../utils/javascript/changePriceDiscountByExchangeRate";
 import makeDateFromUTC from "../../utils/javascript/makeDateFromUTC";
-import useOrderCancel from "../../hooks/mutation/orders/useOrderCancel";
 import { useQueryClient } from "@tanstack/react-query";
+import useSingleBuy from "@/hooks/buys/useSingleBuy";
+import { BUY } from "@/types";
+import Loading from "@/lib/Loading";
+import useOrderReturn from "@/hooks/orders/useOrderReturn";
 
-const OrderCancel = () => {
+const listOfResons = [
+  "Product is defective or expired",
+  "Product quality was not as expected",
+  "Packaging was broken while arrived",
+  "Delivered a different product from what ordered",
+  "Some other issues",
+];
+
+type Params = {
+  buyId: string;
+};
+
+const OrderReturn = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const { buyId } = useParams();
+  const { buyId } = useParams() as Params;
+  const [optionSelected, setOptionSelected] = useState<number | null>(null);
   const { symbol, exchangeRate } = useSelector(currencyState);
-  const { ToastContainer } = Toastify();
-  const orders = queryClient.getQueryData(["buy products of user"]);
+  const { showAlertMessage, showSuccessMessage } = Toastify();
+  const { refetch, isLoading, error } = useSingleBuy(buyId);
+  const [buyProduct, setBuyProduct] = useState<BUY | null>(null);
 
-  const { mutate, isPending, isSuccess } = useOrderCancel(buyId);
+  const { mutate, isPending, isSuccess } = useOrderReturn(buyId);
 
   const {
     register,
@@ -31,6 +47,26 @@ const OrderCancel = () => {
   });
 
   useEffect(() => {
+    const checkState = queryClient.getQueryState(["buy products of user"]);
+
+    if (checkState) {
+      const orders = queryClient.getQueryData([
+        "buy products of user",
+      ]) as BUY[];
+      const buy = orders.find((obj) => obj._id === buyId);
+
+      if (buy) {
+        setBuyProduct(buy);
+      } else {
+        refetch();
+      }
+      return;
+    }
+
+    refetch();
+  }, [buyId]);
+
+  useEffect(() => {
     window.scrollTo({
       top: 0,
       behavior: "instant",
@@ -39,15 +75,18 @@ const OrderCancel = () => {
 
   useEffect(() => {
     if (isSuccess) {
+      showSuccessMessage({ message: "Returning order placed successfully" });
       navigate("/user/orders");
     }
   }, [isSuccess, navigate]);
 
-  const buyProduct = useMemo(() => {
-    if (!buyId) return null;
-    const buy = orders.find((obj) => obj._id === buyId);
-    return { ...buy };
-  }, [buyId, orders]);
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (error) {
+    return <p>{error.message}</p>;
+  }
 
   if (!buyProduct) {
     return (
@@ -62,7 +101,7 @@ const OrderCancel = () => {
     price,
     quantity,
     address: buyAddress,
-    isDelivered,
+    isDelievered,
     deliveredDate,
     createdAt,
   } = buyProduct;
@@ -71,6 +110,11 @@ const OrderCancel = () => {
   const { country, district, state, address } = buyAddress;
 
   const onSubmit = async () => {
+    if (!optionSelected) {
+      showAlertMessage({ message: "Select one of the reason for returning" });
+      return;
+    }
+
     mutate();
   };
 
@@ -83,13 +127,13 @@ const OrderCancel = () => {
   return (
     <>
       <section className="bg-gray-100 p-5">
-        <main className="bg-white ">
+        <main className="bg-white space-y-10 ">
           <p className="border-b-2 text-xl font-semibold p-5">
-            Cancelling the Order
+            Returning the Order
           </p>
 
           <div className="space-y-10">
-            <div className="p-7">
+            <div className="px-16 tablet:px-10">
               {/* MARK: UPPER PORTION */}
               <div className="w-full flex gap-10 tablet:flex-col">
                 <div className="flex gap-10">
@@ -119,9 +163,9 @@ const OrderCancel = () => {
                 </div>
 
                 <div className="w-60 grow-0 shrink-0">
-                  {!isDelivered && (
+                  {!isDelievered && (
                     <div className="flex items-center gap-3 text-sm">
-                      <p>Delievered By:</p>
+                      <p>Delievered On:</p>
                       <p className="text-base">
                         {makeDateFromUTC(deliveredDate)}
                       </p>
@@ -152,28 +196,56 @@ const OrderCancel = () => {
               </div>
             </div>
 
-            {/* MARK: CANCEL FORM */}
+            {/* MARK: OPTION FOR RETURNING */}
             <form
-              className="px-7 pb-7 space-y-10"
               onSubmit={handleSubmit(onSubmit)}
+              className="space-y-10 px-16 py-10 border-t tablet:px-10"
             >
-              <div>
-                <div className="border">
-                  <textarea
-                    rows={5}
-                    {...register("reason", {
-                      required:
-                        "Please write the reason for cancelling the order",
-                    })}
-                    placeholder="Why do you want to cancel the order. Give suggestion to improve our services"
-                    className="p-3 w-full"
-                    maxLength={200} // Add maxLength attribute
-                  />
-                </div>
-                <p className="text-red-500 text-xs h-4 mt-1 ml-1">
-                  {errors.reason?.message}
-                </p>
+              <p className="text-lg font-semibold">
+                Select the reason for returning the order
+              </p>
+              <div className="">
+                {listOfResons.map((reason, i) => {
+                  const strID = (i + 1).toString();
+
+                  return (
+                    <div key={i} className="flex items-center gap-2">
+                      <input
+                        type="radio"
+                        id={strID}
+                        checked={optionSelected === i + 1}
+                        onChange={() => setOptionSelected(i + 1)}
+                      />
+                      <label htmlFor={strID}>
+                        <p>{reason}</p>
+                      </label>
+                    </div>
+                  );
+                })}
               </div>
+
+              {/* MARK: CANCEL FORM */}
+              {optionSelected === listOfResons.length && (
+                <div className="">
+                  <div>
+                    <div className="border">
+                      <textarea
+                        rows={5}
+                        {...register("reason", {
+                          required:
+                            "Please write the reason for returning the order",
+                        })}
+                        placeholder="Why do you want to return the order. Give issues related to product delivered."
+                        className="p-3 w-full"
+                        maxLength={200} // Add maxLength attribute
+                      />
+                    </div>
+                    <p className="text-red-500 text-xs h-4 mt-1 ml-1">
+                      {errors.reason?.message}
+                    </p>
+                  </div>
+                </div>
+              )}
               <div className="flex justify-end items-center gap-10">
                 <button type="button" onClick={() => navigate(-1)}>
                   Cancel
@@ -183,16 +255,19 @@ const OrderCancel = () => {
                   disabled={isPending}
                   className="rounded cursor-pointer py-2 px-10 bg-slate-600 text-white"
                 >
-                  {isPending ? <SmallLoading /> : "Submit"}
+                  {isPending ? (
+                    <Loading small={true} height={"full"} />
+                  ) : (
+                    "Submit"
+                  )}
                 </button>
               </div>
             </form>
           </div>
         </main>
       </section>
-      <ToastContainer />
     </>
   );
 };
 
-export default OrderCancel;
+export default OrderReturn;

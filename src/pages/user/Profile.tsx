@@ -1,34 +1,56 @@
 import { useForm } from "react-hook-form";
-import useLoginCheck from "../../hooks/auth/useLoginCheck";
-import { useState } from "react";
-import { Icons } from "../../assets/icons";
+import { useMemo, useState } from "react";
 import { Helmet } from "react-helmet";
-import { patchReq } from "../../utils/api/api";
 import Toastify from "../../lib/Toastify";
-import SmallLoading from "../../containers/SmallLoading";
-import { useRef } from "react";
 import { useEffect } from "react";
-import countryDialCode from "../../data/countryDialCode";
-import { useNavigate } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 import countries from "../../data/countries";
+import { USER } from "@/types";
+import { useSelector } from "react-redux";
+import { currencyState } from "@/redux/slice/currencySlice";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import Loading from "@/lib/Loading";
+import useUpdateUser from "@/hooks/auth/useUpdateUser";
+
+type OUTLET = {
+  user: USER;
+};
+
+type Form = {
+  name: string;
+  mobile: string;
+};
 
 const Profile = () => {
-  const navigate = useNavigate();
-  const { data: user } = useLoginCheck();
+  const { user } = useOutletContext<OUTLET>();
+  const { id, dial_code } = useSelector(currencyState);
+  const [countryId, setCountryId] = useState(id);
   const [isEditable, setIsEditable] = useState(false);
-  const countryListRef = useRef(null);
-  const [initialCountry, setInitialCountry] = useState(() => {
-    const id = localStorage.getItem("_cou");
-    if (!id) return "";
-    const findCountry = countries.find((obj) => obj.id === Number(id));
+  const { showAlertMessage, showSuccessMessage } = Toastify();
+  const { mutate, isSuccess, isPending } = useUpdateUser();
+  const selectedCountry = useMemo(() => {
+    const findCountry = countries.find((obj) => obj.id === countryId);
+
+    if (!findCountry) {
+      return {
+        id,
+        dial_code,
+      };
+    }
     return findCountry;
-  });
-  const [openCountryList, setOpenCountryList] = useState(false);
-  const { ToastContainer, showErrorMessage, showAlertMessage } = Toastify();
+  }, [countries, countryId]);
 
   const {
     register,
-    formState: { errors, isSubmitting },
+    formState: { errors },
     handleSubmit,
     reset,
   } = useForm({
@@ -38,31 +60,12 @@ const Profile = () => {
     },
   });
 
-  // Scroll the country list to make the initial country visible when it changes
   useEffect(() => {
-    if (openCountryList && countryListRef.current) {
-      const initialCountryIndex = countryDialCode.findIndex(
-        (obj) => obj.name === initialCountry?.name
-      );
-      if (initialCountryIndex !== -1) {
-        const listItem = countryListRef.current.children[initialCountryIndex];
-        listItem.scrollIntoView({ behavior: "instant", block: "nearest" });
-      }
+    if (isSuccess) {
+      showSuccessMessage({ message: "User Profile updated" });
+      handleCancelOnSuccessfull();
     }
-  }, [openCountryList, initialCountry]);
-
-  useEffect(() => {
-    if (isEditable) {
-      const removeCodeFromUserMobile = user.mobile.replace(
-        initialCountry.dial_code,
-        ""
-      );
-      reset({
-        mobile: removeCodeFromUserMobile,
-      });
-      return;
-    }
-  }, [isEditable, reset]);
+  }, [isSuccess]);
 
   const handleCancel = () => {
     setIsEditable(false);
@@ -76,27 +79,24 @@ const Profile = () => {
     setIsEditable(false);
   };
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: Form) => {
     let { name, mobile } = data;
 
-    mobile = initialCountry.dial_code + mobile;
+    mobile = selectedCountry.dial_code + mobile;
 
     if (name === user.name && mobile === user.mobile) {
       showAlertMessage({ message: "Update Profile to Change" });
       return;
     }
 
-    const formData = { name, email: user.email, mobile };
+    const formData = {
+      ...user,
+      name,
+      mobile,
+      dial_code: selectedCountry.dial_code,
+    };
 
-    try {
-      await patchReq("/user/send-otp", formData);
-      handleCancelOnSuccessfull();
-      navigate(`/verify`, {
-        state: { mobile },
-      });
-    } catch (error) {
-      showErrorMessage({ message: error.message || "Something went wrong" });
-    }
+    mutate(formData);
   };
 
   return (
@@ -155,44 +155,27 @@ const Profile = () => {
 
           {isEditable ? (
             <div className="flex gap-2 max-w-96">
-              <div className="relative">
-                <div
-                  className="border py-1 flex items-center justify-center gap-1 cursor-pointer w-20 h-11"
-                  onClick={() => setOpenCountryList((prev) => !prev)}
-                >
-                  <p>
-                    {openCountryList ? (
-                      <Icons.downArrow className="text-sm text-gray-400" />
-                    ) : (
-                      <Icons.upArrow className="text-sm text-gray-400" />
-                    )}
-                  </p>
-                  <p>{initialCountry?.dial_code}</p>
-                </div>
-                {openCountryList && (
-                  <div
-                    className="absolute bg-white z-10 bottom-full left-0 overflow-y-auto max-h-60 mb-1 border w-80"
-                    ref={countryListRef}
+              <DropdownMenu>
+                <DropdownMenuTrigger>Select Country Code</DropdownMenuTrigger>
+                <DropdownMenuContent className="w-20">
+                  <DropdownMenuLabel>Country with Dial Code</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuRadioGroup
+                    value={countryId.toString()}
+                    onValueChange={(value) => setCountryId(Number(value))}
                   >
-                    {countryDialCode.map((obj, i) => {
-                      const { name, dial_code } = obj;
+                    {countries.map((obj) => {
+                      const { id, name, dial_code } = obj;
 
                       return (
-                        <div
-                          key={i}
-                          className="p-2  border-b last:border-none hover:bg-gray-50 cursor-pointer text-sm"
-                          onClick={() => {
-                            setInitialCountry(obj);
-                            setOpenCountryList(false);
-                          }}
-                        >
+                        <DropdownMenuRadioItem key={id} value={id.toString()}>
                           {name} ({dial_code})
-                        </div>
+                        </DropdownMenuRadioItem>
                       );
                     })}
-                  </div>
-                )}
-              </div>
+                  </DropdownMenuRadioGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
 
               <div className="flex-1 flex flex-col">
                 <p className="w-full border h-11">
@@ -236,10 +219,11 @@ const Profile = () => {
         {isEditable && (
           <div className="flex items-center gap-10">
             <button
+              disabled={isPending}
               className="px-12 py-3 bg-green-400 rounded-md w-max font-semibold tracking-wide text-green-900 "
               type="submit"
             >
-              {isSubmitting ? <SmallLoading /> : "Submit"}
+              {isPending ? <Loading height={"full"} small={true} /> : "Submit"}
             </button>
             <button className="" onClick={handleCancel}>
               Cancel
@@ -247,7 +231,6 @@ const Profile = () => {
           </div>
         )}
       </form>
-      <ToastContainer />
     </>
   );
 };

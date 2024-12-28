@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import Toastify from "../lib/Toastify";
 import { useForm } from "react-hook-form";
-import Loading from "../containers/Loading";
 import countries from "../data/countries";
-import useCountryStates from "../hooks/query/useCountryStates";
-import useStateCities from "../hooks/query/useStateCities";
-import { Icons } from "../assets/icons";
-import useUserAddressUpdate from "../hooks/mutation/address/useUserAddressUpdate";
+import { ADDRESS } from "@/types";
 
-const UpdateAddressForm = ({ handleCancel, data: givenAddress }) => {
+type Props = {
+  data: ADDRESS;
+  handleCancel: () => void;
+};
+
+const UpdateAddressForm = ({ data: givenAddress, handleCancel }: Props) => {
   const { _id, name, mobile, country, district, state, address, dial_code } =
     givenAddress;
   const countryListRef = useRef(null);
