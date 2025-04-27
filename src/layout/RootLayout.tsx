@@ -12,7 +12,7 @@ const RootLayout = () => {
       <div className="h-20 w-full border-b-2 sticky top-0 z-20">
         <Navbar />
       </div>
-      <Outlet />
+      {/* <Outlet /> */}
       <div className="h-96 w-full">
         <Footer />
       </div>

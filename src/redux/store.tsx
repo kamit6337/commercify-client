@@ -8,8 +8,8 @@ export const store = configureStore({
     example: exampleReducer,
     currency: currencyReducer,
     cartAndWishlist: cartAndWishlistReducer,
-    address: addressReducer,
-    userOrders: userOrdersReducer,
+    // address: addressReducer,
+    // userOrders: userOrdersReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

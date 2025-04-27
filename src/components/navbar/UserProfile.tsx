@@ -40,12 +40,12 @@ const UserProfile = () => {
         >
           <p className="w-8">
             <img
-              src={user.photo}
+              src={user?.photo}
               loading="lazy"
               className="w-full rounded-full object-cover "
             />
           </p>
-          <p className="mobile:hidden">{user.name.split(" ")[0]}</p>
+          <p className="mobile:hidden">{user?.name?.split(" ")[0]}</p>
           <p className="text-xs">
             {showUserInfo ? (
               <Icons.upArrow className="" />

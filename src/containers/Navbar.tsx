@@ -13,7 +13,6 @@ import UserCountry from "@/components/navbar/UserCountry";
 const Navbar = () => {
   const navigate = useNavigate();
   const { cart } = useSelector(cartAndWishlistState);
-
   const [showClearAll, setShowClearAll] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [searchList, setSearchList] = useState([]);
@@ -65,29 +64,29 @@ const Navbar = () => {
   };
 
   return (
-    <section className="w-full flex justify-between items-center px-40 gap-5 h-full absolute z-10 ">
+    <section className="w-full flex justify-between items-center px-5 md:px-12 gap-5 h-full">
       {/* MARK: APP LOGO */}
-      <Link to={`/`} className="tablet:hidden">
+      <Link to={`/`} className="hidden lg:flex">
         <div className="cursor-pointer w-40">
           <img src={CustomImages.logo} className="w-full object-cover" />
         </div>
       </Link>
 
-      <Link to={`/`} className="hidden tablet:flex">
+      <Link to={`/`} className="lg:hidden">
         <div className="cursor-pointer w-10">
           <img src={CustomImages.smallLogo} className="w-full object-cover" />
         </div>
       </Link>
 
       {/* MARK: SEARCH BAR */}
-      <div className="flex-1 relative flex justify-between items-center border border-white  rounded-3xl">
+      <div className="flex-1 relative flex justify-between items-center border-2  rounded-full">
         <input
           type="text"
           value={searchText}
           spellCheck="false"
           autoComplete="off"
           placeholder="Search Products"
-          className="bg-inherit px-5 py-2 w-full"
+          className="bg-inherit px-5 py-2 w-full border-none outline-none"
           onChange={(e) => handleChange(e.target.value)}
           onKeyDown={handleKeyDown}
         />
@@ -101,18 +100,15 @@ const Navbar = () => {
           </p>
         ) : (
           <p className="px-5 py-2 flex justify-center items-center">
-            <Icons.search className="text-xl" />
+            <Icons.search className="text-xl text-gray-400" />
           </p>
         )}
         {searchList.length > 0 && (
-          <div className="absolute z-50 w-full top-full mt-1 border border-black rounded-lg max-h-96 overflow-y-auto">
+          <div className="absolute z-50 w-full top-full mt-1 border-2 rounded-lg max-h-96 overflow-y-auto">
             {searchList.map((product) => {
               const { _id, title } = product;
               return (
-                <div
-                  key={_id}
-                  className={` p-2 border-b border-black last:border-none  `}
-                >
+                <div key={_id} className={` p-2 border-b last:border-none  `}>
                   <Link to={`/products/${_id}`} onClick={resetSearch}>
                     {title}
                   </Link>

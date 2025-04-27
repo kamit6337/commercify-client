@@ -13,8 +13,12 @@ type InitialState = {
 };
 
 const initialState: InitialState = {
-  cart: JSON.parse(localStorage.getItem("_cart") || "") || [],
-  wishlist: JSON.parse(localStorage.getItem("_wishlist") || "") || [],
+  cart: localStorage.getItem("_cart")
+    ? JSON.parse(localStorage.getItem("_cart") || "")
+    : [],
+  wishlist: localStorage.getItem("_wishlist")
+    ? JSON.parse(localStorage.getItem("_wishlist") || "")
+    : [],
 };
 
 const cartAndWishlistSlice = createSlice({

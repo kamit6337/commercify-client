@@ -36,6 +36,7 @@ const UserCountry = () => {
   useEffect(() => {
     if (error) {
       showErrorMessage({ message: error.message });
+      return;
     }
     if (errorCurrencyExchange) {
       showErrorMessage({ message: errorCurrencyExchange.message });
@@ -57,10 +58,10 @@ const UserCountry = () => {
       const obj = {
         id: countryInfo?.id,
         code: currencyCode,
-        country: countryInfo?.name,
-        exchangeRate: getExchangeRate,
         name: countryInfo?.currency.name,
         symbol: countryInfo?.currency.symbol,
+        exchangeRate: getExchangeRate,
+        country: countryInfo?.name,
         dial_code: countryInfo?.dial_code,
         flag: countryInfo?.flag,
       };

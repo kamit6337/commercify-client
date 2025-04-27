@@ -20,6 +20,8 @@ const HorizontalScrolling = ({ renderList, SingleItem }: Props) => {
     initialSlide: 0,
   };
 
+  if (!renderList || renderList.length === 0) return;
+
   return (
     <Slider {...settings}>
       {renderList.map((item, i) => {
