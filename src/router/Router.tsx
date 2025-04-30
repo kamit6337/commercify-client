@@ -58,16 +58,16 @@ const Router = () => {
         <Route path="products/:id" element={<SingleProduct />} />
         <Route path="wishlist" element={<Wishlist />} />
 
-        {/* NOTE: PRODUCT RATING */}
-        <Route path="ratings/create" element={<RateProduct />} />
-        <Route path="ratings/update" element={<UpdateRatedProduct />} />
-
         {/* NOTE: CART ROUTES */}
         <Route path="cart" element={<CartLayout />}>
           <Route index element={<Cart />} />
           <Route path="address" element={<AddressInCart />} />
           <Route path="checkout" element={<Checkout />} />
         </Route>
+
+        {/* NOTE: PRODUCT RATING */}
+        <Route path="ratings/create" element={<RateProduct />} />
+        <Route path="ratings/update" element={<UpdateRatedProduct />} />
 
         {/* NOTE: PAYMENT SUCCESS AND FAILURE */}
         <Route path="payment/success" element={<PaymentSuccess />} />
