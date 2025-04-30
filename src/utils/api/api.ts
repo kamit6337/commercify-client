@@ -1,12 +1,11 @@
 import axios from "axios";
 import environment from "../environment";
 import catchAsyncError from "@/lib/catchAsyncError";
-import getAuthToken from "./getAuthToken";
 
 const BASE_URL = environment.SERVER_URL;
 
 export const getReq = catchAsyncError(async (url: string, params?: object) => {
-  const token = getAuthToken() || "";
+  const token = "";
 
   const get = await axios.get(`${BASE_URL}${url}`, {
     params,
@@ -19,7 +18,7 @@ export const getReq = catchAsyncError(async (url: string, params?: object) => {
 });
 
 export const postReq = catchAsyncError(async (url: string, body: object) => {
-  const token = getAuthToken() || "";
+  const token = "";
 
   const post = await axios.post(`${BASE_URL}${url}`, body, {
     headers: {
@@ -31,7 +30,7 @@ export const postReq = catchAsyncError(async (url: string, body: object) => {
 });
 
 export const patchReq = catchAsyncError(async (url: string, body: object) => {
-  const token = getAuthToken() || "";
+  const token = "";
 
   const patch = await axios.patch(`${BASE_URL}${url}`, body, {
     headers: {
@@ -44,7 +43,7 @@ export const patchReq = catchAsyncError(async (url: string, body: object) => {
 
 export const deleteReq = catchAsyncError(
   async (url: string, params: object) => {
-    const token = getAuthToken() || "";
+    const token = "";
 
     const deleted = await axios.delete(`${BASE_URL}${url}`, {
       params,

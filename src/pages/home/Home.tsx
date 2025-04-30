@@ -1,39 +1,13 @@
-import ProductsAndFilter from "@/components/ProductsAndFilter";
-import useAllProducts from "@/hooks/products/useAllProducts";
-import Loading from "@/lib/Loading";
-import { PRODUCT } from "@/types";
 import { Helmet } from "react-helmet";
 
 const Home = () => {
-  const { data, isLoading, error, isFetching, fetchNextPage } =
-    useAllProducts();
-
-  if (isLoading) {
-    return (
-      <div>
-        <Loading />
-      </div>
-    );
-  }
-
-  if (error) {
-    return <div>{error.message}</div>;
-  }
-
-  const products = data?.pages.flat(1) as PRODUCT[];
-
   return (
     <>
       <Helmet>
-        <title>Commercify</title>
-        <meta name="description" content="An e-Commerce App" />
+        <title>Home</title>
+        <meta name="discription" content="Home page of this project" />
       </Helmet>
-
-      <ProductsAndFilter
-        products={products}
-        isFetching={isFetching}
-        fetchNextPage={fetchNextPage}
-      />
+      <div>Hello world</div>
     </>
   );
 };
