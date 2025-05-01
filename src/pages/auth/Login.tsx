@@ -170,11 +170,7 @@ const Login = () => {
             disabled={isSubmitting}
             className="auth_btn auth_submit_btn"
           >
-            {isSubmitting ? (
-              <Loading hScreen={false} small={true} />
-            ) : (
-              "Sign In."
-            )}
+            {isSubmitting ? <Loading small={true} /> : "Sign In."}
           </button>
           <div className="flex items-center justify-center gap-3">
             <p className="text-sm">don’t have an account?</p>

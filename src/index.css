@@ -105,6 +105,10 @@
   .auth_input_password {
     @apply outline-none border-none w-full px-3 h-full rounded-l-lg bg-auth_background;
   }
+
+  .section_padding {
+    @apply px-10;
+  }
 }
 
 /* NOTE: AUTH BUTTON GRADIENT */

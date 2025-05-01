@@ -5,7 +5,6 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 
 const VerifyOAuthLogin = () => {
   const navigate = useNavigate();
-
   const token = useSearchParams()[0].get("token");
 
   useEffect(() => {
