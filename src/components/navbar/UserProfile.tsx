@@ -17,7 +17,7 @@ const UserProfile = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  // const { data: user } = useLoginCheck();
+  const { data: user } = useLoginCheck();
   const [showUserInfo, setShowUserInfo] = useState<Boolean>(false);
 
   const handleLogout = async () => {
@@ -38,15 +38,14 @@ const UserProfile = () => {
           className="flex justify-center items-center gap-[6px] cursor-pointer"
           onClick={() => setShowUserInfo((prev) => !prev)}
         >
-          hello
-          {/* <p className="w-8">
+          <p className="w-8">
             <img
               src={user?.photo}
               loading="lazy"
               className="w-full rounded-full object-cover "
             />
           </p>
-          <p className="mobile:hidden">{user?.name?.split(" ")[0]}</p> */}
+          <p className="mobile:hidden">{user?.name?.split(" ")[0]}</p>
           <p className="text-xs">
             {showUserInfo ? (
               <Icons.upArrow className="" />

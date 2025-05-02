@@ -15,7 +15,9 @@ function SampleNextArrow(props) {
       className={className}
       style={{ ...style, display: "block", background: "red" }}
       onClick={onClick}
-    />
+    >
+      next
+    </div>
   );
 }
 
@@ -24,7 +26,13 @@ function SamplePrevArrow(props) {
   return (
     <div
       className={className}
-      style={{ ...style, display: "block", background: "green" }}
+      style={{
+        ...style,
+        display: "block",
+        color: "black",
+        borderColor: "black",
+        borderWidth: "5px",
+      }}
       onClick={onClick}
     />
   );
@@ -33,11 +41,11 @@ function SamplePrevArrow(props) {
 const HorizontalScrolling = ({ renderList, SingleItem }: Props) => {
   const settings = {
     className: "slider variable-width",
-    dots: true,
+    dots: false,
     infinite: false,
     speed: 500,
     slidesToShow: 1,
-    slidesToScroll: 1,
+    slidesToScroll: 2,
     variableWidth: true,
     initialSlide: 0,
     nextArrow: <SampleNextArrow />,

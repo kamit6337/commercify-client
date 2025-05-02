@@ -3,13 +3,19 @@ import { BUY } from "@/types";
 import { patchReq } from "@/utils/api/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+type OLD = {
+  pages: BUY[][];
+  pageParams: number[];
+};
+
 const useOrderReturn = (buyId: string) => {
   const queryClient = useQueryClient();
   const { showErrorMessage } = Toastify();
 
   const mutation = useMutation({
     mutationKey: ["order return", buyId],
-    mutationFn: () => patchReq("/buy/return", { id: buyId }),
+    mutationFn: (reason: string) =>
+      patchReq("/buy/return", { id: buyId, reason }),
     onMutate: async () => {
       await queryClient.cancelQueries({
         queryKey: ["buy products of user"],
@@ -22,17 +28,20 @@ const useOrderReturn = (buyId: string) => {
 
       const checkState = queryClient.getQueryState(["buy products of user"]);
 
-      if (checkState) {
-        queryClient.setQueryData(["buy products of user"], (old: BUY[]) => {
-          const modify = old.map((buy) => {
-            if (buy._id === buyId) {
-              return { ...buy, isReturned: true };
-            }
+      if (checkState?.status === "success") {
+        queryClient.setQueryData(["buy products of user"], (old: OLD) => {
+          if (!old || old.pages[0].length === 0) return old;
 
-            return buy;
-          });
+          const modifyBuy = old.pages.map((page) =>
+            page.map((buy) => {
+              if (buy._id === buyId) {
+                return { ...buy, isReturned: true };
+              }
+              return buy;
+            })
+          );
 
-          return modify;
+          return { ...old, pages: modifyBuy };
         });
       }
 

@@ -1,12 +1,19 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { getReq } from "../../utils/api/api";
 
-const useUserOrders = (page: number) => {
-  const query = useQuery({
+const useUserOrders = () => {
+  const query = useInfiniteQuery({
     queryKey: ["buy products of user"],
-    queryFn: () => getReq("/buy", { page: page }),
+    queryFn: ({ pageParam }) => getReq("/buy", { page: pageParam }),
     staleTime: Infinity,
-    enabled: !!page,
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, _allPages, lastPageParam) => {
+      if (lastPage.length === 0) {
+        return undefined;
+      } else {
+        return lastPageParam + 1;
+      }
+    },
   });
 
   return query;

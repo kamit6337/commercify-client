@@ -1,40 +1,57 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { currencyState } from "../../redux/slice/currencySlice";
 import changePriceDiscountByExchangeRate from "../../utils/javascript/changePriceDiscountByExchangeRate";
 import makeDateFromUTC from "../../utils/javascript/makeDateFromUTC";
-import { useQueryClient } from "@tanstack/react-query";
 import useSingleBuy from "@/hooks/buys/useSingleBuy";
-import { BUY } from "@/types";
 import Loading from "@/lib/Loading";
 import useOrderCancel from "@/hooks/orders/useOrderCancel";
 import Toastify from "@/lib/Toastify";
+import countries from "@/data/countries";
 
 type Params = {
   buyId: string;
 };
 
+type FormType = {
+  reason: string;
+};
+
 const OrderCancel = () => {
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { buyId } = useParams() as Params;
   const { showSuccessMessage } = Toastify();
-  const { symbol, exchangeRate } = useSelector(currencyState);
-  const { refetch, isLoading, error } = useSingleBuy(buyId);
+  const { symbol } = useSelector(currencyState);
+  const { isLoading, error, data: buyProduct } = useSingleBuy(buyId);
   const { mutate, isPending, isSuccess } = useOrderCancel(buyId);
-  const [buyProduct, setBuyProduct] = useState<BUY | null>(null);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<FormType>({
     defaultValues: {
       reason: "",
     },
   });
+
+  const countrySymbol = useMemo(() => {
+    if (!buyProduct) return symbol;
+
+    const {
+      address: { country },
+    } = buyProduct;
+
+    const findCountry = countries.find(
+      (countryObj) => countryObj.name.toLowerCase() === country.toLowerCase()
+    );
+
+    if (!findCountry) return symbol;
+
+    return findCountry.currency.symbol;
+  }, [buyProduct]);
 
   useEffect(() => {
     window.scrollTo({
@@ -43,25 +60,26 @@ const OrderCancel = () => {
     });
   }, [buyId]);
 
-  useEffect(() => {
-    const checkState = queryClient.getQueryState(["buy products of user"]);
+  // useEffect(() => {
+  //   const checkState = queryClient.getQueryState(["buy products of user"]);
 
-    if (checkState) {
-      const orders = queryClient.getQueryData([
-        "buy products of user",
-      ]) as BUY[];
-      const buy = orders.find((obj) => obj._id === buyId);
+  //   if (checkState) {
+  //     const orders = queryClient.getQueryData([
+  //       "buy products of user",
+  //     ]) as BUY[];
 
-      if (buy) {
-        setBuyProduct(buy);
-      } else {
-        refetch();
-      }
-      return;
-    }
+  //     const buy = orders.find((obj) => obj._id === buyId);
 
-    refetch();
-  }, [buyId]);
+  //     if (buy) {
+  //       setBuyProduct(buy);
+  //     } else {
+  //       refetch();
+  //     }
+  //     return;
+  //   }
+
+  //   refetch();
+  // }, [buyId]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -93,14 +111,16 @@ const OrderCancel = () => {
     address: buyAddress,
     isDelivered,
     deliveredDate,
+    exchangeRate,
     createdAt,
   } = buyProduct;
 
   const { _id: productId, title, description, thumbnail } = product;
   const { country, district, state, address } = buyAddress;
 
-  const onSubmit = async () => {
-    mutate();
+  const onSubmit = async (data: FormType) => {
+    const reason = data.reason;
+    mutate(reason);
   };
 
   const { exchangeRatePrice } = changePriceDiscountByExchangeRate(
@@ -111,79 +131,76 @@ const OrderCancel = () => {
 
   return (
     <>
-      <section className="bg-gray-100 p-5">
+      <section className="bg-gray-100 p-2 md:p-5">
         <main className="bg-white ">
           <p className="border-b-2 text-xl font-semibold p-5">
             Cancelling the Order
           </p>
 
           <div className="space-y-10">
-            <div className="p-7">
-              {/* MARK: UPPER PORTION */}
-              <div className="w-full flex gap-10 tablet:flex-col">
-                <div className="flex gap-10">
-                  <div className="h-full w-48">
+            {/* MARK: UPPER PORTION */}
+            <div className="w-full flex gap-5 flex-col lg:flex-row p-3">
+              <section className="flex gap-5">
+                <div className="lg:w-48 md:w-40 w-32 grow-0 shrink-0">
+                  <Link to={`/products/${productId}`}>
+                    <img
+                      src={thumbnail}
+                      alt={title}
+                      className=" w-full object-cover"
+                    />
+                  </Link>
+                </div>
+                <div className="flex-1 flex flex-col gap-2">
+                  <div>
                     <Link to={`/products/${productId}`}>
-                      <img
-                        src={thumbnail}
-                        alt={title}
-                        className="h-full w-full object-cover"
-                      />
+                      <p className="font-semibold">{title}</p>
                     </Link>
-                  </div>
-                  <section className="flex-1 flex flex-col gap-2">
-                    <div>
-                      <Link to={`/products/${productId}`}>
-                        <p>{title}</p>
-                      </Link>
-                      <p className="text-xs">{description}</p>
-                    </div>
-
-                    <p className="text-2xl font-semibold tracking-wide">
-                      {symbol}
-                      {exchangeRatePrice}
+                    <p className="text-xs line-clamp-2 lg:line-clamp-3">
+                      {description}
                     </p>
-                    <div className="text-xs">Qty : {quantity}</div>
-                  </section>
-                </div>
+                  </div>
 
-                <div className="w-60 grow-0 shrink-0">
-                  {!isDelivered && (
-                    <div className="flex items-center gap-3 text-sm">
-                      <p>Delievered By:</p>
-                      <p className="text-base">
-                        {makeDateFromUTC(deliveredDate)}
-                      </p>
+                  <p className="text-xl font-semibold tracking-wide">
+                    {countrySymbol}
+                    {exchangeRatePrice}
+                  </p>
+                  <div className="text-xs">Qty : {quantity}</div>
+
+                  {/* MARK: ADDRESS */}
+                  <div className="flex flex-col mt-1 gap-1 lg:flex-row lg:gap-3 text-sm">
+                    <p>Address:</p>
+                    <div className="cursor-pointer">
+                      <p className="text-sm">{address}</p>
+                      <div className="flex">
+                        <p className="text-sm">{district},</p>
+                        <p className="ml-2 text-sm">{state}</p>
+                        <p className="mx-1">-</p>
+                        <p>{country}</p>
+                      </div>
                     </div>
-                  )}
+                  </div>
+                </div>
+              </section>
+
+              <div className="w-60 grow-0 shrink-0">
+                {!isDelivered && (
                   <div className="flex items-center gap-3 text-sm">
-                    <p>Ordered on:</p>
-                    <p className="">{makeDateFromUTC(createdAt)}</p>
+                    <p>Delievered By:</p>
+                    <p className="text-base">
+                      {makeDateFromUTC(deliveredDate)}
+                    </p>
                   </div>
-                </div>
-              </div>
-
-              {/* MARK: LOWER PORTION */}
-              <div className="flex justify-between items-center mt-6">
-                {/* MARK: ADDRESS */}
-                <div className="flex mt-1 gap-3 text-sm">
-                  <p>Address:</p>
-                  <div className="cursor-pointer">
-                    <p className="text-sm">{address}</p>
-                    <div className="flex">
-                      <p className="text-sm">{district},</p>
-                      <p className="ml-2 text-sm">{state}</p>
-                      <p className="mx-1">-</p>
-                      <p>{country}</p>
-                    </div>
-                  </div>
+                )}
+                <div className="flex items-center gap-3 text-sm">
+                  <p>Ordered on:</p>
+                  <p className="">{makeDateFromUTC(createdAt)}</p>
                 </div>
               </div>
             </div>
 
             {/* MARK: CANCEL FORM */}
             <form
-              className="px-7 pb-7 space-y-10"
+              className="px-3 pb-3 lg:px-7 lg:pb-7 space-y-10"
               onSubmit={handleSubmit(onSubmit)}
             >
               <div>

@@ -2,17 +2,16 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { currencyState } from "../../redux/slice/currencySlice";
 import Toastify from "../../lib/Toastify";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import changePriceDiscountByExchangeRate from "../../utils/javascript/changePriceDiscountByExchangeRate";
 import makeDateFromUTC from "../../utils/javascript/makeDateFromUTC";
-import { useQueryClient } from "@tanstack/react-query";
 import useSingleBuy from "@/hooks/buys/useSingleBuy";
-import { BUY } from "@/types";
 import Loading from "@/lib/Loading";
 import useOrderReturn from "@/hooks/orders/useOrderReturn";
+import countries from "@/data/countries";
 
-const listOfResons = [
+const listOfReasons = [
   "Product is defective or expired",
   "Product quality was not as expected",
   "Packaging was broken while arrived",
@@ -20,19 +19,21 @@ const listOfResons = [
   "Some other issues",
 ];
 
+type FormType = {
+  reason: string;
+};
+
 type Params = {
   buyId: string;
 };
 
 const OrderReturn = () => {
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { buyId } = useParams() as Params;
   const [optionSelected, setOptionSelected] = useState<number | null>(null);
-  const { symbol, exchangeRate } = useSelector(currencyState);
+  const { symbol } = useSelector(currencyState);
   const { showAlertMessage, showSuccessMessage } = Toastify();
-  const { refetch, isLoading, error } = useSingleBuy(buyId);
-  const [buyProduct, setBuyProduct] = useState<BUY | null>(null);
+  const { isLoading, error, data: buyProduct } = useSingleBuy(buyId);
 
   const { mutate, isPending, isSuccess } = useOrderReturn(buyId);
 
@@ -40,31 +41,47 @@ const OrderReturn = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<FormType>({
     defaultValues: {
       reason: "",
     },
   });
 
-  useEffect(() => {
-    const checkState = queryClient.getQueryState(["buy products of user"]);
+  const countrySymbol = useMemo(() => {
+    if (!buyProduct) return symbol;
 
-    if (checkState) {
-      const orders = queryClient.getQueryData([
-        "buy products of user",
-      ]) as BUY[];
-      const buy = orders.find((obj) => obj._id === buyId);
+    const {
+      address: { country },
+    } = buyProduct;
 
-      if (buy) {
-        setBuyProduct(buy);
-      } else {
-        refetch();
-      }
-      return;
-    }
+    const findCountry = countries.find(
+      (countryObj) => countryObj.name.toLowerCase() === country.toLowerCase()
+    );
 
-    refetch();
-  }, [buyId]);
+    if (!findCountry) return symbol;
+
+    return findCountry.currency.symbol;
+  }, [buyProduct]);
+
+  // useEffect(() => {
+  //   const checkState = queryClient.getQueryState(["buy products of user"]);
+
+  //   if (checkState) {
+  //     const orders = queryClient.getQueryData([
+  //       "buy products of user",
+  //     ]) as BUY[];
+  //     const buy = orders.find((obj) => obj._id === buyId);
+
+  //     if (buy) {
+  //       setBuyProduct(buy);
+  //     } else {
+  //       refetch();
+  //     }
+  //     return;
+  //   }
+
+  //   refetch();
+  // }, [buyId]);
 
   useEffect(() => {
     window.scrollTo({
@@ -104,18 +121,26 @@ const OrderReturn = () => {
     isDelievered,
     deliveredDate,
     createdAt,
+    exchangeRate,
   } = buyProduct;
 
   const { _id: productId, title, description, thumbnail } = product;
   const { country, district, state, address } = buyAddress;
 
-  const onSubmit = async () => {
+  const onSubmit = async (data: FormType) => {
     if (!optionSelected) {
       showAlertMessage({ message: "Select one of the reason for returning" });
       return;
     }
 
-    mutate();
+    let reason = "";
+    if (optionSelected === listOfReasons.length) {
+      reason = data.reason;
+    } else {
+      reason = listOfReasons[optionSelected + 1];
+    }
+
+    mutate(reason);
   };
 
   const { exchangeRatePrice } = changePriceDiscountByExchangeRate(
@@ -126,72 +151,68 @@ const OrderReturn = () => {
 
   return (
     <>
-      <section className="bg-gray-100 p-5">
+      <section className="bg-gray-100 p-2 md:p-5">
         <main className="bg-white space-y-10 ">
           <p className="border-b-2 text-xl font-semibold p-5">
             Returning the Order
           </p>
 
           <div className="space-y-10">
-            <div className="px-16 tablet:px-10">
-              {/* MARK: UPPER PORTION */}
-              <div className="w-full flex gap-10 tablet:flex-col">
-                <div className="flex gap-10">
-                  <div className="h-full w-48">
+            <div className="w-full flex gap-5 flex-col lg:flex-row p-3">
+              <section className="flex gap-5">
+                <div className="lg:w-48 md:w-40 w-32 grow-0 shrink-0">
+                  <Link to={`/products/${productId}`}>
+                    <img
+                      src={thumbnail}
+                      alt={title}
+                      className=" w-full object-cover"
+                    />
+                  </Link>
+                </div>
+                <div className="flex-1 flex flex-col gap-2">
+                  <div>
                     <Link to={`/products/${productId}`}>
-                      <img
-                        src={thumbnail}
-                        alt={title}
-                        className="h-full w-full object-cover"
-                      />
+                      <p className="font-semibold">{title}</p>
                     </Link>
-                  </div>
-                  <section className="flex-1 flex flex-col gap-2">
-                    <div>
-                      <Link to={`/products/${productId}`}>
-                        <p>{title}</p>
-                      </Link>
-                      <p className="text-xs">{description}</p>
-                    </div>
-
-                    <p className="text-2xl font-semibold tracking-wide">
-                      {symbol}
-                      {exchangeRatePrice}
+                    <p className="text-xs line-clamp-2 lg:line-clamp-3">
+                      {description}
                     </p>
-                    <div className="text-xs">Qty : {quantity}</div>
-                  </section>
-                </div>
+                  </div>
 
-                <div className="w-60 grow-0 shrink-0">
-                  {!isDelievered && (
-                    <div className="flex items-center gap-3 text-sm">
-                      <p>Delievered On:</p>
-                      <p className="text-base">
-                        {makeDateFromUTC(deliveredDate)}
-                      </p>
+                  <p className="text-xl font-semibold tracking-wide">
+                    {countrySymbol}
+                    {exchangeRatePrice}
+                  </p>
+                  <div className="text-xs">Qty : {quantity}</div>
+
+                  {/* MARK: ADDRESS */}
+                  <div className="flex flex-col mt-1 gap-1 lg:flex-row lg:gap-3 text-sm">
+                    <p>Address:</p>
+                    <div className="cursor-pointer">
+                      <p className="text-sm">{address}</p>
+                      <div className="flex">
+                        <p className="text-sm">{district},</p>
+                        <p className="ml-2 text-sm">{state}</p>
+                        <p className="mx-1">-</p>
+                        <p>{country}</p>
+                      </div>
                     </div>
-                  )}
+                  </div>
+                </div>
+              </section>
+
+              <div className="w-60 grow-0 shrink-0">
+                {!isDelievered && (
                   <div className="flex items-center gap-3 text-sm">
-                    <p>Ordered on:</p>
-                    <p className="">{makeDateFromUTC(createdAt)}</p>
+                    <p>Delievered On:</p>
+                    <p className="text-base">
+                      {makeDateFromUTC(deliveredDate)}
+                    </p>
                   </div>
-                </div>
-              </div>
-
-              {/* MARK: LOWER PORTION */}
-              <div className="flex justify-between items-center mt-6">
-                {/* MARK: ADDRESS */}
-                <div className="flex mt-1 gap-3 text-sm">
-                  <p>Address:</p>
-                  <div className="cursor-pointer">
-                    <p className="text-sm">{address}</p>
-                    <div className="flex">
-                      <p className="text-sm">{district},</p>
-                      <p className="ml-2 text-sm">{state}</p>
-                      <p className="mx-1">-</p>
-                      <p>{country}</p>
-                    </div>
-                  </div>
+                )}
+                <div className="flex items-center gap-3 text-sm">
+                  <p>Ordered on:</p>
+                  <p className="">{makeDateFromUTC(createdAt)}</p>
                 </div>
               </div>
             </div>
@@ -199,13 +220,13 @@ const OrderReturn = () => {
             {/* MARK: OPTION FOR RETURNING */}
             <form
               onSubmit={handleSubmit(onSubmit)}
-              className="space-y-10 px-16 py-10 border-t tablet:px-10"
+              className="space-y-10 px-6 lg:px-16 py-10 border-t"
             >
               <p className="text-lg font-semibold">
                 Select the reason for returning the order
               </p>
               <div className="">
-                {listOfResons.map((reason, i) => {
+                {listOfReasons.map((reason, i) => {
                   const strID = (i + 1).toString();
 
                   return (
@@ -225,7 +246,7 @@ const OrderReturn = () => {
               </div>
 
               {/* MARK: CANCEL FORM */}
-              {optionSelected === listOfResons.length && (
+              {optionSelected === listOfReasons.length && (
                 <div className="">
                   <div>
                     <div className="border">
@@ -235,7 +256,7 @@ const OrderReturn = () => {
                           required:
                             "Please write the reason for returning the order",
                         })}
-                        placeholder="Why do you want to return the order. Give issues related to product delivered."
+                        placeholder="Why do you want to return the order? Give issues related to product."
                         className="p-3 w-full"
                         maxLength={200} // Add maxLength attribute
                       />
@@ -247,7 +268,7 @@ const OrderReturn = () => {
                 </div>
               )}
               <div className="flex justify-end items-center gap-10">
-                <button type="button" onClick={() => navigate(-1)}>
+                <button type="button" onClick={() => navigate("/user/orders")}>
                   Cancel
                 </button>
                 <button
