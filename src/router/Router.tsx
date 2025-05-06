@@ -29,9 +29,15 @@ import OrderCancel from "@/pages/orders/OrderCancel";
 import OrderReturn from "@/pages/orders/OrderReturn";
 import AdminLayout from "@/layout/AdminLayout";
 import Admin from "@/pages/admin/Admin";
-import AddProduct from "@/pages/admin/AddProduct";
-import UpdateProduct from "@/pages/admin/UpdateProduct";
 import NotFound from "@/pages/notFound/NotFound";
+import OrderStatusLayout from "@/layout/OrderStatusLayout";
+import Ordered from "@/pages/admin/orderStatus/Ordered";
+import Delivered from "@/pages/admin/orderStatus/Delivered";
+import Cancelled from "@/pages/admin/orderStatus/Cancelled";
+import Returned from "@/pages/admin/orderStatus/Returned";
+import AdminProductsLayout from "@/layout/AdminProductsLayout";
+import AdminProducts from "@/pages/admin/products/AdminProducts";
+import AdminCategoryProducts from "@/pages/admin/products/AdminCategoryProducts";
 
 const Router = () => {
   return (
@@ -83,12 +89,21 @@ const Router = () => {
         {/* NOTE: USER CANCEL ORDER */}
         <Route path="orders/cancel/:buyId" element={<OrderCancel />} />
         <Route path="orders/return/:buyId" element={<OrderReturn />} />
+      </Route>
+      {/* NOTE: PROTECTED ADMIN ROUTES */}
+      <Route path="admin" element={<AdminLayout />}>
+        <Route index element={<Admin />} />
 
-        {/* NOTE: PROTECTED ADMIN ROUTES */}
-        <Route path="admin" element={<AdminLayout />}>
-          <Route index element={<Admin />} />
-          <Route path="add" element={<AddProduct />} />
-          <Route path="update" element={<UpdateProduct />} />
+        <Route path="order-status" element={<OrderStatusLayout />}>
+          <Route index element={<Ordered />} />
+          <Route path="delivered" element={<Delivered />} />
+          <Route path="cancelled" element={<Cancelled />} />
+          <Route path="returned" element={<Returned />} />
+        </Route>
+
+        <Route path="products" element={<AdminProductsLayout />}>
+          <Route index element={<AdminProducts />} />
+          <Route path="category/:id" element={<AdminCategoryProducts />} />
         </Route>
       </Route>
 

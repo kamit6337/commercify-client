@@ -67,6 +67,9 @@ const UserProfile = () => {
         <DropdownMenuItem onClick={() => navigate(`/user`)}>
           Profile
         </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => navigate(`/admin`)}>
+          Admin
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={() => handleLogout()}>
           Logout
         </DropdownMenuItem>

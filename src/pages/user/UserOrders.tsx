@@ -8,8 +8,14 @@ import SingleBuy from "./SingleBuy";
 
 const UserOrders = () => {
   const [page, setPage] = useState(1);
-  const { isLoading, error, data, fetchNextPage, isFetchingNextPage } =
-    useUserOrders();
+  const {
+    isLoading,
+    error,
+    data,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+  } = useUserOrders();
 
   const {
     isLoading: isLoadingBuysCount,
@@ -99,9 +105,9 @@ const UserOrders = () => {
             Prev
           </button>
           <button
-            disabled={isFetchingNextPage}
+            disabled={isFetchingNextPage || !hasNextPage}
             onClick={handleNextFetch}
-            className={isFetchingNextPage ? "" : "hover:text-blue-500"}
+            className={!hasNextPage ? "" : "hover:text-blue-500"}
           >
             Next
           </button>

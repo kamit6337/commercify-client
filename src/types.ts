@@ -73,9 +73,20 @@ export type PRODUCT = {
   thumbnail: string;
   images?: string[];
   rate: number;
-  rateCount: number;
+  rateCount?: number;
   createdAt: Date;
   updatedAt: Date;
+};
+
+export type ADD_PRODUCT = {
+  title: string;
+  description: string;
+  price: number;
+  discountPercentage: number;
+  deliveredBy: number;
+  category: CATEGORY;
+  thumbnail: string;
+  images?: string[];
 };
 
 export type CATEGORY = {
@@ -83,6 +94,10 @@ export type CATEGORY = {
   title: string;
   createdAt: Date;
   updatedAt: Date;
+};
+
+export type ADD_CATEGORY = {
+  title: string;
 };
 
 export type PARAMS = {
