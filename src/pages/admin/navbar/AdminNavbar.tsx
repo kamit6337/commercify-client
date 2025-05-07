@@ -122,19 +122,6 @@ const AdminNavbar = () => {
       {/* MARK: USER PROFILE */}
       <UserCountry />
       <UserProfile />
-
-      {/* MARK: CART */}
-      <Link to={`/cart`}>
-        <div className="flex gap-1">
-          <div className="relative cursor-pointer">
-            <Icons.cart className="text-2xl" />
-            <p className="absolute z-50 bottom-full right-0 text-xs -mb-1 mr-[6px]">
-              {cart.length}
-            </p>
-          </div>
-          <p className="tracking-wide">Cart</p>
-        </div>
-      </Link>
     </section>
   );
 };

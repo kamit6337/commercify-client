@@ -44,9 +44,12 @@ const Admin = () => {
             <p>Order Status</p>
             <p>Time</p>
           </div>
-          <div className="flex justify-between items-center">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             <p className="bg-gray-100 p-2 rounded">
               Ordered ({orderCounts.ordered})
+            </p>
+            <p className="bg-gray-100 p-2 rounded">
+              Un-Delievered ({orderCounts.undelivered})
             </p>
             <p className="bg-gray-100 p-2 rounded">
               Delievered ({orderCounts.delivered})
@@ -71,7 +74,7 @@ const Admin = () => {
         {categoryProducts?.length > 0 && (
           <div className="p-10 border-b-2 space-y-10">
             <p>Category Products</p>
-            <div className="flex justify-between items-center">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {categoryProducts.map((obj: CATEGORY_PRODUCT) => {
                 const { _id, title, categoryProductsCount } = obj;
 

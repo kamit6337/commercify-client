@@ -67,17 +67,6 @@ const UserOrders = () => {
     );
   }
 
-  // if (page > 1 && !data?.length) {
-  //   return (
-  //     <div
-  //       className="w-full flex flex-col gap-3 items-center justify-center bg-white"
-  //       style={{ height: "calc(100vh - 120px)" }}
-  //     >
-  //       <p>No further orders yet.</p>
-  //     </div>
-  //   );
-  // }
-
   return (
     <>
       <section className="bg-white">

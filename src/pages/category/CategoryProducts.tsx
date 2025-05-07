@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet";
 import { useEffect } from "react";
 import useCategoryProducts from "@/hooks/category/useCategoryProducts";
 import Loading from "@/lib/Loading";
-import { PARAMS, PRODUCT } from "@/types";
+import { CATEGORY, PARAMS, PRODUCT } from "@/types";
 import ProductsAndFilter from "@/components/ProductsAndFilter";
 import useAllCategory from "@/hooks/category/useAllCategory";
 
@@ -40,12 +40,14 @@ const CategoryProducts = () => {
 
   const products = data?.pages.flatMap((page) => page) as PRODUCT[];
 
-  const activeCategory = allCategory?.find((category) => category._id === id);
+  const activeCategory = allCategory?.find(
+    (category: CATEGORY) => category._id === id
+  ) as CATEGORY;
 
   return (
     <>
       <Helmet>
-        <title>Category | {activeCategory}</title>
+        <title className="capitalize">Category | {activeCategory.title}</title>
         <meta name="description" content="Category products of this App" />
       </Helmet>
 

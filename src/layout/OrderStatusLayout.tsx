@@ -1,9 +1,11 @@
 import ReactIcons from "@/assets/icons";
+import useAdminCountDetails from "@/hooks/admin/useAdminCountDetails";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 const OrderStatusLayout = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const { data: orderCounts } = useAdminCountDetails();
 
   return (
     <div className="bg-gray-100 p-5 flex gap-3 flex-col lg:flex-row lg:items-start">
@@ -22,7 +24,7 @@ const OrderStatusLayout = () => {
           }`}
           onClick={() => navigate("/admin/order-status")}
         >
-          Ordered
+          Ordered ({orderCounts.ordered})
         </p>
         <p
           className={`py-5 border-b font-semibold text-center cursor-pointer ${
@@ -30,7 +32,15 @@ const OrderStatusLayout = () => {
           }`}
           onClick={() => navigate("/admin/order-status/delivered")}
         >
-          Delivered
+          Un-Delivered ({orderCounts.undelivered})
+        </p>
+        <p
+          className={`py-5 border-b font-semibold text-center cursor-pointer ${
+            pathname === "/admin/order-status/delivered" ? "text-blue-500 " : ""
+          }`}
+          onClick={() => navigate("/admin/order-status/delivered")}
+        >
+          Delivered ({orderCounts.delivered})
         </p>
         <p
           className={`py-5 border-b font-semibold text-center cursor-pointer ${
@@ -38,7 +48,7 @@ const OrderStatusLayout = () => {
           }`}
           onClick={() => navigate("/admin/order-status/cancelled")}
         >
-          Cancelled
+          Cancelled ({orderCounts.cancelled})
         </p>
         <p
           className={`py-5 border-b font-semibold text-center cursor-pointer ${
@@ -46,10 +56,10 @@ const OrderStatusLayout = () => {
           }`}
           onClick={() => navigate("/admin/order-status/returned")}
         >
-          Returned
+          Returned ({orderCounts.returned})
         </p>
       </div>
-      <div className="flex-1 min-h-96 bg-white">
+      <div className="flex-1 min-h-96">
         <Outlet />
       </div>
     </div>
