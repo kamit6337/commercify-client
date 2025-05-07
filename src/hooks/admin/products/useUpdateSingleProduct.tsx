@@ -15,7 +15,7 @@ const useUpdateSingleProduct = (productId: string) => {
     mutationKey: ["update product", productId],
     mutationFn: (obj: PRODUCT) => patchReq("/admin/products", obj),
     async onSuccess(data: PRODUCT, variables, context) {
-      const modifYProduct = data;
+      const modifyProduct = data;
 
       await queryClient.cancelQueries({
         queryKey: ["allProducts"],
@@ -38,7 +38,7 @@ const useUpdateSingleProduct = (productId: string) => {
         queryClient.setQueryData(["allProducts"], (old: OLD) => {
           const modifyPages = old.pages.map((page) =>
             page.map((product) =>
-              product._id === modifYProduct._id ? modifYProduct : product
+              product._id === modifyProduct._id ? modifyProduct : product
             )
           );
 
@@ -52,7 +52,7 @@ const useUpdateSingleProduct = (productId: string) => {
           (old: OLD) => {
             const modifyPages = old.pages.map((page) =>
               page.map((product) =>
-                product._id === modifYProduct._id ? modifYProduct : product
+                product._id === modifyProduct._id ? modifyProduct : product
               )
             );
 

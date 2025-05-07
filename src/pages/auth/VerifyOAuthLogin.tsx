@@ -9,7 +9,7 @@ const VerifyOAuthLogin = () => {
 
   useEffect(() => {
     if (!token) {
-      navigate("/login?msg=Issue in OAuth Login. Please try again");
+      navigate("/login?msg=Issue in OAuth Login. Please try again later.");
       return;
     }
 

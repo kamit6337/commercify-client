@@ -4,6 +4,7 @@ import useLoginCheck from "@/hooks/auth/useLoginCheck";
 import Loading from "@/lib/Loading";
 import OfflineDetector from "@/lib/OfflineDetector";
 import ScrollToTop from "@/lib/ScrollToTop";
+import SocketProviders from "@/providers/SocketProviders";
 import { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -25,7 +26,7 @@ const RootLayout = () => {
   if (!isSuccess) return;
 
   return (
-    <>
+    <SocketProviders>
       <OfflineDetector />
       <div className="h-20 w-full border-b-2 sticky top-0 z-20 bg-background px-5 md:px-12">
         <Navbar />
@@ -36,7 +37,7 @@ const RootLayout = () => {
       </div>
       <ScrollToTop />
       <ToastContainer />
-    </>
+    </SocketProviders>
   );
 };
 

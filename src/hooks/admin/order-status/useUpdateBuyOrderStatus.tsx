@@ -53,6 +53,7 @@ const useUpdateBuyOrderStatus = (buyId: string) => {
       const checkCountStatus = queryClient.getQueryState([
         "admin count details",
       ]);
+
       const checkAllUndeliveredStatus = queryClient.getQueryState([
         "all undelivered",
       ]);
