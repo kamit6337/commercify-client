@@ -28,9 +28,11 @@ const OrderStatusLayout = () => {
         </p>
         <p
           className={`py-5 border-b font-semibold text-center cursor-pointer ${
-            pathname === "/admin/order-status/delivered" ? "text-blue-500 " : ""
+            pathname === "/admin/order-status/un-delivered"
+              ? "text-blue-500 "
+              : ""
           }`}
-          onClick={() => navigate("/admin/order-status/delivered")}
+          onClick={() => navigate("/admin/order-status/un-delivered")}
         >
           Un-Delivered ({orderCounts.undelivered})
         </p>

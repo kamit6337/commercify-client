@@ -32,7 +32,10 @@ const Admin = () => {
         >
           Products
         </p>
-        <p className="py-5 font-semibold text-center cursor-pointer">
+        <p
+          className="py-5 font-semibold text-center cursor-pointer"
+          onClick={() => navigate("/admin/products")}
+        >
           Categories
         </p>
       </div>

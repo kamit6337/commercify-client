@@ -141,7 +141,7 @@ const AddProduct = () => {
           className="border rounded py-2 cursor-pointer hover:bg-gray-100 text-center"
           onClick={() => imageRef.current?.click()}
         >
-          Select Image
+          Select Thumbnail
         </p>
         <input
           ref={imageRef}

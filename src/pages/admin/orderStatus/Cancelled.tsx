@@ -1,5 +1,7 @@
+import AllOrderStatus from "@/components/admin/order-status/AllOrderStatus";
+
 const Cancelled = () => {
-  return <div>Cancelled</div>;
+  return <AllOrderStatus querykey="all cancelled" path="cancelled" />;
 };
 
 export default Cancelled;

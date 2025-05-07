@@ -39,9 +39,26 @@ const useUpdateBuyOrderStatus = (buyId: string) => {
         exact: true,
       });
 
+      await queryClient.cancelQueries({
+        queryKey: ["all undelivered"],
+        exact: true,
+      });
+
+      await queryClient.cancelQueries({
+        queryKey: ["all delivered"],
+        exact: true,
+      });
+
       const checkStatus = queryClient.getQueryState(["all ordered"]);
       const checkCountStatus = queryClient.getQueryState([
         "admin count details",
+      ]);
+      const checkAllUndeliveredStatus = queryClient.getQueryState([
+        "all undelivered",
+      ]);
+
+      const checkAllDeliveredStatus = queryClient.getQueryState([
+        "all delivered",
       ]);
 
       if (checkStatus?.status === "success") {
@@ -61,6 +78,26 @@ const useUpdateBuyOrderStatus = (buyId: string) => {
             undelivered: old.undelivered - 1,
             delivered: old.delivered + 1,
           };
+        });
+      }
+
+      if (checkAllUndeliveredStatus?.status === "success") {
+        queryClient.setQueryData(["all undelivered"], (old: OLD) => {
+          const modifyPages = old.pages.map((page) =>
+            page.filter((buy) => buy._id !== updateBuy._id)
+          );
+
+          return { ...old, pages: modifyPages };
+        });
+      }
+
+      if (checkAllDeliveredStatus?.status === "success") {
+        queryClient.setQueryData(["all delivered"], (old: OLD) => {
+          const modifyPages = old.pages.map((page) => [...page]);
+
+          modifyPages[0] = [updateBuy, ...modifyPages[0]];
+
+          return { ...old, pages: modifyPages };
         });
       }
     },

@@ -38,6 +38,7 @@ import Returned from "@/pages/admin/orderStatus/Returned";
 import AdminProductsLayout from "@/layout/AdminProductsLayout";
 import AdminProducts from "@/pages/admin/products/AdminProducts";
 import AdminCategoryProducts from "@/pages/admin/products/AdminCategoryProducts";
+import UnDelivered from "@/pages/admin/orderStatus/UnDelivered";
 
 const Router = () => {
   return (
@@ -96,6 +97,7 @@ const Router = () => {
 
         <Route path="order-status" element={<OrderStatusLayout />}>
           <Route index element={<Ordered />} />
+          <Route path="un-delivered" element={<UnDelivered />} />
           <Route path="delivered" element={<Delivered />} />
           <Route path="cancelled" element={<Cancelled />} />
           <Route path="returned" element={<Returned />} />

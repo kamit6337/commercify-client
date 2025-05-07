@@ -7,6 +7,17 @@ type OLD = {
   pages: PRODUCT[][];
 };
 
+type CATEGORY_PRODUCT = {
+  _id: string;
+  title: string;
+  categoryProductsCount: number;
+};
+
+type COUNT_OLD = {
+  products: number;
+  categoryProducts: CATEGORY_PRODUCT[];
+};
+
 const useAddSingleProduct = () => {
   const { showErrorMessage } = Toastify();
   const queryClient = useQueryClient();
@@ -21,16 +32,46 @@ const useAddSingleProduct = () => {
       });
 
       await queryClient.cancelQueries({
+        queryKey: ["products count details"],
+        exact: true,
+      });
+
+      await queryClient.cancelQueries({
         queryKey: ["Category Products", data.category?.toString()],
         exact: true,
       });
 
       const checkStatus = queryClient.getQueryState(["allProducts"]);
+      const checkProductCountStatus = queryClient.getQueryState([
+        "products count details",
+      ]);
 
       const checkCategoryProductsStatus = queryClient.getQueryState([
         "Category Products",
         data.category?.toString(),
       ]);
+
+      if (checkProductCountStatus?.status === "success") {
+        queryClient.setQueryData(
+          ["products count details"],
+          (old: COUNT_OLD) => {
+            const newCategory = old.categoryProducts.map((category) => {
+              if (category._id === data.category?.toString()) {
+                return {
+                  ...category,
+                  categoryProductsCount: category.categoryProductsCount + 1,
+                };
+              }
+              return category;
+            });
+
+            return {
+              products: old.products + 1,
+              categoryProducts: newCategory,
+            };
+          }
+        );
+      }
 
       if (checkStatus?.status === "success") {
         queryClient.setQueryData(["allProducts"], (old: OLD) => {

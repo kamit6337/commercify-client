@@ -1,5 +1,7 @@
+import AllOrderStatus from "@/components/admin/order-status/AllOrderStatus";
+
 const Returned = () => {
-  return <div>Returned</div>;
+  return <AllOrderStatus querykey="all returned" path="returned" />;
 };
 
 export default Returned;
