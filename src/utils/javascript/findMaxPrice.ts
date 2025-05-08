@@ -20,6 +20,9 @@ const findMinMaxPrice = (products: PRODUCT[], exchangeRate: number) => {
     }
   }
 
+  console.log("maxPrice", maxPrice);
+  console.log("minPrice", minPrice);
+
   return { maxPrice, minPrice };
 };
 

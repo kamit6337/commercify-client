@@ -11,6 +11,7 @@ import CheckoutProduct from "./CheckoutProduct";
 import { useMemo, useState } from "react";
 import PriceList from "@/components/PriceList";
 import Loading from "@/lib/Loading";
+import { useQueryClient } from "@tanstack/react-query";
 
 type Product = {
   id: string;
@@ -24,6 +25,7 @@ type OUTLET = {
 };
 
 const Checkout = () => {
+  const queryClient = useQueryClient();
   const { cart, products, addresses } = useOutletContext<OUTLET>();
   const { code, symbol } = useSelector(currencyState);
   const { showErrorMessage } = Toastify();
@@ -51,14 +53,8 @@ const Checkout = () => {
         });
         return;
       }
-      console.log(
-        "environment.STRIPE_PUBLISHABLE_KEY",
-        environment.STRIPE_PUBLISHABLE_KEY
-      );
 
       const stripe = await loadStripe(environment.STRIPE_PUBLISHABLE_KEY);
-
-      console.log("stripe", stripe);
 
       const checkoutSession = await postReq("/payment", {
         products: cart,
@@ -67,7 +63,10 @@ const Checkout = () => {
         symbol,
       });
 
-      console.log("checkoutSession", checkoutSession);
+      queryClient.invalidateQueries({
+        queryKey: ["buy products of user"],
+        exact: true,
+      });
 
       await stripe?.redirectToCheckout({
         sessionId: checkoutSession.session.id,

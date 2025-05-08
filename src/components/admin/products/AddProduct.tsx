@@ -78,6 +78,8 @@ const AddProduct = () => {
       price: "",
     });
 
+    setSelectedImage("");
+    setImageFile(null);
     setSelectedDeliveryDay("");
     setSelectedCategoryId("no");
   };

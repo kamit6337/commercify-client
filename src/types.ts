@@ -1,3 +1,11 @@
+export type ORDER_STATUS_COUNT = {
+  ordered: number;
+  undelivered: number;
+  delivered: number;
+  cancelled: number;
+  returned: number;
+};
+
 export type COUNTRY = {
   id: number;
   name: string;

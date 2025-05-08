@@ -1,5 +1,5 @@
 import Toastify from "@/lib/Toastify";
-import { BUY } from "@/types";
+import { BUY, ORDER_STATUS_COUNT } from "@/types";
 import { patchReq } from "@/utils/api/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -9,14 +9,6 @@ type OBJ = {
 
 type OLD = {
   pages: BUY[][];
-};
-
-type COUNT_OLD = {
-  ordered: number;
-  undelivered: number;
-  delivered: number;
-  cancelled: number;
-  returned: number;
 };
 
 const useUpdateBuyOrderStatus = (buyId: string) => {
@@ -73,13 +65,16 @@ const useUpdateBuyOrderStatus = (buyId: string) => {
       }
 
       if (checkCountStatus?.status === "success") {
-        queryClient.setQueryData(["admin count details"], (old: COUNT_OLD) => {
-          return {
-            ...old,
-            undelivered: old.undelivered - 1,
-            delivered: old.delivered + 1,
-          };
-        });
+        queryClient.setQueryData(
+          ["admin count details"],
+          (old: ORDER_STATUS_COUNT) => {
+            return {
+              ...old,
+              undelivered: old.undelivered - 1,
+              delivered: old.delivered + 1,
+            };
+          }
+        );
       }
 
       if (checkAllUndeliveredStatus?.status === "success") {

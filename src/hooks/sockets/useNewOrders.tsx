@@ -21,7 +21,7 @@ const useNewOrders = (socket: Socket) => {
   useEffect(() => {
     if (!socket) return;
 
-    const handleNewOrders = (data: BUY) => {
+    const handleNewOrders = (data: BUY[]) => {
       const newBuy = data;
 
       const checkStatus = queryClient.getQueryState(["all ordered"]);
@@ -37,7 +37,7 @@ const useNewOrders = (socket: Socket) => {
         queryClient.setQueryData(["all ordered"], (old: OLD) => {
           const modifyPages = old.pages.map((page) => [...page]);
 
-          modifyPages[0] = [newBuy, ...modifyPages[0]];
+          modifyPages[0] = [...newBuy, ...modifyPages[0]];
 
           return { ...old, pages: modifyPages };
         });
@@ -47,7 +47,7 @@ const useNewOrders = (socket: Socket) => {
         queryClient.setQueryData(["all undelivered"], (old: OLD) => {
           const modifyPages = old.pages.map((page) => [...page]);
 
-          modifyPages[0] = [newBuy, ...modifyPages[0]];
+          modifyPages[0] = [...newBuy, ...modifyPages[0]];
 
           return { ...old, pages: modifyPages };
         });
@@ -57,8 +57,8 @@ const useNewOrders = (socket: Socket) => {
         queryClient.setQueryData(["admin count details"], (old: COUNT_OLD) => {
           return {
             ...old,
-            ordered: old.ordered + 1,
-            undelivered: old.undelivered + 1,
+            ordered: old.ordered + newBuy.length,
+            undelivered: old.undelivered + newBuy.length,
           };
         });
       }

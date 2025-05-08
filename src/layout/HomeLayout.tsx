@@ -30,8 +30,8 @@ const HomeLayout = () => {
             const { _id, title } = item as CATEGORY;
 
             return (
-              <Link to={`/category/${_id}`} key={_id}>
-                <div className="px-10 h-8">
+              <div className="px-10 h-8" key={_id}>
+                <Link to={`/category/${_id}`}>
                   <p
                     className={`${
                       optionIndex === i && "border-b-2"
@@ -41,8 +41,8 @@ const HomeLayout = () => {
                   >
                     {title}
                   </p>
-                </div>
-              </Link>
+                </Link>
+              </div>
             );
           }}
         />
