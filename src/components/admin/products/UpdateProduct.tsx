@@ -18,9 +18,11 @@ import {
 import useAllCategory from "@/hooks/category/useAllCategory";
 import Toastify from "@/lib/Toastify";
 import useUpdateSingleProduct from "@/hooks/admin/products/useUpdateSingleProduct";
+import uploadImageToCLoud from "@/lib/uploadImageToCLoud";
 
 type Props = {
   product: PRODUCT;
+  handleCancel?: () => void;
 };
 
 type FormDataType = {
@@ -30,12 +32,15 @@ type FormDataType = {
   price: string;
 };
 
-const UpdateProduct = ({ product }: Props) => {
+const UpdateProduct = ({ product, handleCancel }: Props) => {
   const [selectedCategoryId, setSelectedCategoryId] = useState("no");
   const [selectedDeliveryDay, setSelectedDeliveryDay] = useState("");
   const { data: allCategory } = useAllCategory();
-  const { showAlertMessage, showSuccessMessage } = Toastify();
+  const { showAlertMessage, showSuccessMessage, showErrorMessage } = Toastify();
   const closeRef = useRef<HTMLButtonElement>(null);
+  const imageRef = useRef<HTMLInputElement>(null);
+  const [selectedImage, setSelectedImage] = useState("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const {
     _id,
@@ -77,6 +82,14 @@ const UpdateProduct = ({ product }: Props) => {
   }, [_id]);
 
   useEffect(() => {
+    return () => {
+      if (selectedImage) {
+        URL.revokeObjectURL(selectedImage);
+      }
+    };
+  }, [selectedImage]);
+
+  useEffect(() => {
     if (isSuccess) {
       showSuccessMessage({ message: "Product updated Successfully" });
       if (closeRef?.current) {
@@ -93,44 +106,45 @@ const UpdateProduct = ({ product }: Props) => {
       price: price.toString(),
     });
 
+    setSelectedImage("");
+    setImageFile(null);
     setSelectedCategoryId(categoryId);
     setSelectedDeliveryDay(deliveredBy.toString());
   };
 
-  const onSubmit = (data: FormDataType) => {
-    if (
-      title === data.title &&
-      description === data.description &&
-      discountPercentage === parseFloat(data.discountPercentage) &&
-      price === parseFloat(data.price) &&
-      deliveredBy === parseFloat(selectedDeliveryDay) &&
-      categoryId === selectedCategoryId
-    ) {
-      showAlertMessage({ message: "Please update data to submit" });
-      return;
+  const onSubmit = async (data: FormDataType) => {
+    try {
+      if (
+        title === data.title &&
+        description === data.description &&
+        discountPercentage === parseFloat(data.discountPercentage) &&
+        price === parseFloat(data.price) &&
+        deliveredBy === parseFloat(selectedDeliveryDay) &&
+        categoryId === selectedCategoryId &&
+        !selectedImage
+      ) {
+        showAlertMessage({ message: "Please update data to submit" });
+        return;
+      }
+
+      const getImageUrl = await uploadImageToCLoud(imageFile);
+
+      const obj = {
+        title: data.title,
+        description: data.description,
+        price: parseFloat(data.price),
+        discountPercentage: parseFloat(data.discountPercentage),
+        deliveredBy: parseFloat(selectedDeliveryDay),
+        category: selectedCategoryId,
+        thumbnail: getImageUrl,
+      };
+
+      mutate(obj);
+    } catch (error) {
+      showErrorMessage({
+        message: error instanceof Error ? error?.message : "",
+      });
     }
-
-    const findCategory = allCategory.find(
-      (category: CATEGORY) => category._id === selectedCategoryId
-    ) as CATEGORY;
-
-    const obj = {
-      ...product,
-      _id,
-      title: data.title,
-      description: data.description,
-      price: parseFloat(data.price),
-      discountPercentage: parseFloat(data.discountPercentage),
-      deliveredBy: parseFloat(selectedDeliveryDay),
-      category: {
-        _id: findCategory._id,
-        title: findCategory.title,
-        createdAt: findCategory.createdAt,
-        updatedAt: findCategory.updatedAt,
-      },
-    };
-
-    mutate(obj);
   };
 
   return (
@@ -138,7 +152,35 @@ const UpdateProduct = ({ product }: Props) => {
       <AlertDialogTitle>Update Product</AlertDialogTitle>
 
       <div className="w-48 grow-0 shrink-0">
-        <img src={thumbnail} alt={title} className="w-full object-cover" />
+        {selectedImage ? (
+          <img
+            src={selectedImage}
+            alt={title}
+            className="w-full object-cover"
+          />
+        ) : (
+          <img src={thumbnail} alt={title} className="w-full object-cover" />
+        )}
+        <p
+          className="border rounded py-2 cursor-pointer hover:bg-gray-100 text-center"
+          onClick={() => imageRef.current?.click()}
+        >
+          Select Thumbnail
+        </p>
+        <input
+          ref={imageRef}
+          type="file"
+          accept="images/*"
+          className="hidden"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) {
+              setImageFile(file);
+              const imageUrl = URL.createObjectURL(file);
+              setSelectedImage(imageUrl);
+            }
+          }}
+        />
       </div>
 
       <form className="flex flex-col gap-3" onSubmit={handleSubmit(onSubmit)}>
@@ -269,7 +311,11 @@ const UpdateProduct = ({ product }: Props) => {
           <Button type="button" className="w-full" onClick={resetField}>
             Reset
           </Button>
-          <AlertDialogCancel ref={closeRef} className="w-full">
+          <AlertDialogCancel
+            ref={closeRef}
+            className="w-full"
+            onClick={() => (handleCancel ? handleCancel() : "")}
+          >
             Cancel
           </AlertDialogCancel>
           <Button className="w-full">

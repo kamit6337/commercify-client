@@ -98,10 +98,6 @@ const AddProduct = () => {
 
       const getImageUrl = await uploadImageToCLoud(imageFile);
 
-      const findCategory = allCategory.find(
-        (category: CATEGORY) => category._id === selectedCategoryId
-      ) as CATEGORY;
-
       const obj = {
         title: data.title,
         description: data.description,
@@ -109,12 +105,7 @@ const AddProduct = () => {
         price: parseFloat(data.price),
         discountPercentage: parseFloat(data.discountPercentage),
         deliveredBy: parseFloat(selectedDeliveryDay),
-        category: {
-          _id: findCategory._id,
-          title: findCategory.title,
-          createdAt: findCategory.createdAt,
-          updatedAt: findCategory.updatedAt,
-        },
+        category: selectedCategoryId,
       };
 
       mutate(obj);

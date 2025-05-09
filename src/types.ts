@@ -102,7 +102,7 @@ export type ADD_PRODUCT = {
   price: number;
   discountPercentage: number;
   deliveredBy: number;
-  category: CATEGORY;
+  category: string;
   thumbnail: string;
   images?: string[];
 };

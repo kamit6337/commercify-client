@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import useSearchProducts from "@/hooks/products/useSearchProducts";
 import useDebounce from "@/hooks/general/useDebounce";
@@ -7,13 +7,17 @@ import UserProfile from "@/components/navbar/UserProfile";
 import UserCountry from "@/components/navbar/UserCountry";
 import Toastify from "@/lib/Toastify";
 import CustomImages from "@/assets/images";
+import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import UpdateProduct from "@/components/admin/products/UpdateProduct";
+import { PRODUCT } from "@/types";
 
 const AdminNavbar = () => {
-  const navigate = useNavigate();
   const [showClearAll, setShowClearAll] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [searchList, setSearchList] = useState([]);
   const { error, data, refetch } = useSearchProducts(searchText);
+  const [product, setProduct] = useState<PRODUCT | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   const debouncedSearch = useDebounce(() => {
     refetch();
@@ -33,20 +37,15 @@ const AdminNavbar = () => {
     }
   }, [error]);
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault(); // Prevent default form submission behavior
-      const query = e.currentTarget.value;
-      navigate(`/search?q=${query}`);
-      setSearchList([]);
-    }
+  const handleClickProduct = (product: PRODUCT) => {
+    resetSearch();
+    setProduct(product);
+    setIsOpen(true);
   };
 
   const handleChange = (value: string) => {
     if (!value) {
-      setSearchText("");
-      setSearchList([]);
-      setShowClearAll(false);
+      resetSearch();
       return;
     }
     setShowClearAll(true);
@@ -58,6 +57,10 @@ const AdminNavbar = () => {
     setSearchText("");
     setSearchList([]);
     setShowClearAll(false);
+  };
+
+  const handleCancel = () => {
+    setIsOpen(false);
   };
 
   return (
@@ -85,7 +88,6 @@ const AdminNavbar = () => {
           placeholder="Search Products"
           className="bg-inherit px-5 py-2 w-full border-none outline-none"
           onChange={(e) => handleChange(e.target.value)}
-          onKeyDown={handleKeyDown}
         />
 
         {showClearAll ? (
@@ -105,10 +107,12 @@ const AdminNavbar = () => {
             {searchList.map((product) => {
               const { _id, title } = product;
               return (
-                <div key={_id} className={` p-2 border-b last:border-none  `}>
-                  <Link to={`/products/${_id}`} onClick={resetSearch}>
-                    {title}
-                  </Link>
+                <div
+                  key={_id}
+                  className={` p-2 border-b last:border-none cursor-pointer  `}
+                  onClick={() => handleClickProduct(product)}
+                >
+                  {title}
                 </div>
               );
             })}
@@ -119,6 +123,15 @@ const AdminNavbar = () => {
       {/* MARK: USER PROFILE */}
       <UserCountry />
       <UserProfile />
+
+      {/* MARK: ALERT DIALOG */}
+
+      <AlertDialog open={isOpen}>
+        <AlertDialogTrigger className="hidden"></AlertDialogTrigger>
+        {product && (
+          <UpdateProduct product={product} handleCancel={handleCancel} />
+        )}
+      </AlertDialog>
     </section>
   );
 };

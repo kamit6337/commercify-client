@@ -1,5 +1,5 @@
 import Toastify from "@/lib/Toastify";
-import { PRODUCT } from "@/types";
+import { ADD_PRODUCT, PRODUCT } from "@/types";
 import { patchReq } from "@/utils/api/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -13,7 +13,7 @@ const useUpdateSingleProduct = (productId: string) => {
 
   const mutation = useMutation({
     mutationKey: ["update product", productId],
-    mutationFn: (obj: PRODUCT) => patchReq("/admin/products", obj),
+    mutationFn: (obj: ADD_PRODUCT) => patchReq("/admin/products", obj),
     async onSuccess(data: PRODUCT) {
       const modifyProduct = data;
 

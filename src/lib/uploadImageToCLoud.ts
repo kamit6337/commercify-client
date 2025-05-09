@@ -1,8 +1,10 @@
 import { getReq } from "@/utils/api/api";
 import axios from "axios";
 
-const uploadImageToCLoud = async (imageFile: File) => {
+const uploadImageToCLoud = async (imageFile: File | null) => {
   try {
+    if (!imageFile) return "";
+
     const getImageUrl = await getReq("/file/image");
 
     const { timestamp, signature, apiKey, folder, eager, url } = getImageUrl;

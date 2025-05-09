@@ -1,11 +1,12 @@
 import Footer from "@/components/footer/Footer";
 import Navbar from "@/components/navbar/Navbar";
 import useLoginCheck from "@/hooks/auth/useLoginCheck";
+import InitialLoading from "@/lib/InitialLoading";
 import Loading from "@/lib/Loading";
 import OfflineDetector from "@/lib/OfflineDetector";
 import ScrollToTop from "@/lib/ScrollToTop";
 import SocketProviders from "@/providers/SocketProviders";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
@@ -13,17 +14,38 @@ const RootLayout = () => {
   const navigate = useNavigate();
   const { isLoading, error, isSuccess } = useLoginCheck();
 
+  const [showInitialLoading, setShowInitialLoading] = useState(() => {
+    return sessionStorage.getItem("initialLoading") !== "1";
+  });
+
   useEffect(() => {
     if (error) {
       navigate(`/login?msg=${error.message}`);
     }
   }, [error]);
 
+  useEffect(() => {
+    if (isSuccess) {
+      sessionStorage.setItem("initialLoading", "1");
+      setShowInitialLoading(true);
+    }
+  }, [isSuccess]);
+
+  const handleInitialLoadingTimeout = () => {
+    setShowInitialLoading(true); // This will simulate the loading timeout
+  };
+
+  if (!showInitialLoading) {
+    return <InitialLoading onTimeout={handleInitialLoadingTimeout} />;
+  }
+
   if (isLoading) {
     return <Loading />;
   }
 
-  if (!isSuccess) return;
+  if (!isSuccess) {
+    return <div>Error: Unable to login. Please try after sometime</div>; // Display error when isSuccess is false
+  }
 
   return (
     <SocketProviders>
