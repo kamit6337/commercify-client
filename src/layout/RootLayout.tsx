@@ -15,7 +15,9 @@ const RootLayout = () => {
   const { isLoading, error, isSuccess } = useLoginCheck();
 
   const [showInitialLoading, setShowInitialLoading] = useState(() => {
-    return sessionStorage.getItem("initialLoading") !== "1";
+    const value = sessionStorage.getItem("initialLoading");
+    if (!value) return true;
+    return value === "1" ? false : true;
   });
 
   useEffect(() => {
@@ -27,15 +29,15 @@ const RootLayout = () => {
   useEffect(() => {
     if (isSuccess) {
       sessionStorage.setItem("initialLoading", "1");
-      setShowInitialLoading(true);
+      setShowInitialLoading(false);
     }
   }, [isSuccess]);
 
   const handleInitialLoadingTimeout = () => {
-    setShowInitialLoading(true); // This will simulate the loading timeout
+    setShowInitialLoading(false); // This will simulate the loading timeout
   };
 
-  if (!showInitialLoading) {
+  if (showInitialLoading) {
     return <InitialLoading onTimeout={handleInitialLoadingTimeout} />;
   }
 
