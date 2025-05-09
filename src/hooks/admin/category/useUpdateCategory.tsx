@@ -25,7 +25,7 @@ const useUpdateCategory = (categoryId: string) => {
   const mutation = useMutation({
     mutationKey: ["update category", categoryId],
     mutationFn: (obj: BODY) => patchReq("/admin/category", obj),
-    async onSuccess(data, variables, context) {
+    async onSuccess(data) {
       const updatedCategory = data as CATEGORY;
 
       await queryClient.cancelQueries({
@@ -68,7 +68,7 @@ const useUpdateCategory = (categoryId: string) => {
         );
       }
     },
-    onError(error, variables, context) {
+    onError(error) {
       showErrorMessage({ message: error?.message });
     },
   });

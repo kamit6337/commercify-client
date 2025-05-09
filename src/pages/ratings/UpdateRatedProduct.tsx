@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Toastify from "../../lib/Toastify";
 import { currencyState } from "../../redux/slice/currencySlice";
@@ -19,6 +19,7 @@ type Form = {
 };
 
 const UpdateRatedProduct = () => {
+  const navigate = useNavigate();
   const ratingId = useSearchParams()[0].get("rating") as string;
   const productId = useSearchParams()[0].get("product") as string;
   const { symbol, exchangeRate } = useSelector(currencyState);
@@ -84,6 +85,7 @@ const UpdateRatedProduct = () => {
   useEffect(() => {
     if (isSuccess) {
       showSuccessMessage({ message: "Your Rating updated successfully" });
+      navigate(`/products/${productId}`);
     }
   }, [isSuccess]);
 
@@ -185,7 +187,7 @@ const UpdateRatedProduct = () => {
             <div className="flex gap-5 items-center">
               <p className="text-lg">Rate the Product</p>
               <div className="flex text-2xl h-10">
-                {Array.from({ length: 5 }).map((value, i) => {
+                {Array.from({ length: 5 }).map((_value, i) => {
                   const newI = i + 1;
 
                   if (newI <= starSelected) {

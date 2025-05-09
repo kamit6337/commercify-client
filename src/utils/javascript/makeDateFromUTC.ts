@@ -1,19 +1,19 @@
 import addZeroToDigit from "./addZeroToDigit";
 
-const monthsList = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
+// const monthsList = [
+//   "January",
+//   "February",
+//   "March",
+//   "April",
+//   "May",
+//   "June",
+//   "July",
+//   "August",
+//   "September",
+//   "October",
+//   "November",
+//   "December",
+// ];
 
 const shortMonthList = [
   "Jan",

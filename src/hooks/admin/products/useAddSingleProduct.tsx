@@ -25,7 +25,7 @@ const useAddSingleProduct = () => {
   const mutation = useMutation({
     mutationKey: ["add product"],
     mutationFn: (obj: ADD_PRODUCT) => postReq("/admin/products", obj),
-    async onSuccess(data: PRODUCT, variables, context) {
+    async onSuccess(data: PRODUCT) {
       await queryClient.cancelQueries({
         queryKey: ["allProducts"],
         exact: true,
@@ -96,7 +96,7 @@ const useAddSingleProduct = () => {
         );
       }
     },
-    onError(error, variables, context) {
+    onError(error) {
       showErrorMessage({ message: error?.message });
     },
   });

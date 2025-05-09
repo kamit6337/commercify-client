@@ -73,7 +73,7 @@ const ForgotPassword = () => {
           disabled={isSubmitting}
           className="auth_btn auth_submit_btn"
         >
-          {isSubmitting ? <Loading hScreen={false} small={true} /> : "Submit"}
+          {isSubmitting ? <Loading height={"full"} small={true} /> : "Submit"}
         </button>
       </form>
     </>

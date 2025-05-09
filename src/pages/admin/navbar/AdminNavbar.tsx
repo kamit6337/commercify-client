@@ -1,7 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { cartAndWishlistState } from "@/redux/slice/cartAndWishlistSlice";
 import useSearchProducts from "@/hooks/products/useSearchProducts";
 import useDebounce from "@/hooks/general/useDebounce";
 import Icons from "@/assets/icons";
@@ -12,7 +10,6 @@ import CustomImages from "@/assets/images";
 
 const AdminNavbar = () => {
   const navigate = useNavigate();
-  const { cart } = useSelector(cartAndWishlistState);
   const [showClearAll, setShowClearAll] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [searchList, setSearchList] = useState([]);

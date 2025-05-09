@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
-import { REVIEW } from "@/types";
+import { NEW_REVIEW, REVIEW } from "@/types";
 import Toastify from "@/lib/Toastify";
 import { postReq } from "@/utils/api/api";
 
@@ -9,26 +8,19 @@ type OLD = {
 };
 
 const useNewRating = (productId: string) => {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { showErrorMessage } = Toastify();
 
   const mutation = useMutation({
     mutationKey: ["new product rating"],
-    mutationFn: (obj: REVIEW) => postReq("/ratings", obj),
-    onMutate: async (variables) => {
-      const obj = variables as REVIEW;
+    mutationFn: (obj: NEW_REVIEW) => postReq("/ratings", obj),
+    onSuccess: async (data) => {
+      const newReview = data as REVIEW;
 
       await queryClient.cancelQueries({
         queryKey: ["Product Rating", productId],
       });
 
-      const previousData = JSON.parse(
-        JSON.stringify(
-          queryClient.getQueryData(["Product Rating", productId]) || []
-        )
-      );
-
       const checkState = queryClient.getQueryState([
         "Product Rating",
         productId,
@@ -37,44 +29,12 @@ const useNewRating = (productId: string) => {
       if (checkState) {
         queryClient.setQueryData(["Product Rating", productId], (old: OLD) => {
           const newPages = [...old.pages];
-          newPages[0] = [obj, ...newPages[0]];
-          return { ...old, pages: newPages };
-        });
-      }
-
-      navigate(`/products/${productId}`);
-
-      return { previousData, newId: obj._id };
-    },
-    onSuccess: (data, variables, context) => {
-      const checkState = queryClient.getQueryState([
-        "Product Rating",
-        productId,
-      ]);
-
-      if (checkState) {
-        queryClient.setQueryData(["Product Rating", productId], (old: OLD) => {
-          const newPages = [...old.pages];
-          newPages[0] = newPages[0].map((rating) => {
-            return rating._id === context?.newId ? data : rating;
-          });
+          newPages[0] = [newReview, ...newPages[0]];
           return { ...old, pages: newPages };
         });
       }
     },
-    onError: (error, variables, context) => {
-      const checkState = queryClient.getQueryState([
-        "Product Rating",
-        productId,
-      ]);
-
-      if (checkState) {
-        queryClient.setQueryData(
-          ["Product Rating", productId],
-          context?.previousData
-        );
-      }
-
+    onError: (error) => {
       showErrorMessage({ message: error.message });
     },
   });

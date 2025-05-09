@@ -63,26 +63,6 @@ const OrderReturn = () => {
     return findCountry.currency.symbol;
   }, [buyProduct]);
 
-  // useEffect(() => {
-  //   const checkState = queryClient.getQueryState(["buy products of user"]);
-
-  //   if (checkState) {
-  //     const orders = queryClient.getQueryData([
-  //       "buy products of user",
-  //     ]) as BUY[];
-  //     const buy = orders.find((obj) => obj._id === buyId);
-
-  //     if (buy) {
-  //       setBuyProduct(buy);
-  //     } else {
-  //       refetch();
-  //     }
-  //     return;
-  //   }
-
-  //   refetch();
-  // }, [buyId]);
-
   useEffect(() => {
     window.scrollTo({
       top: 0,

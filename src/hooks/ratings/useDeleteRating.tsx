@@ -14,16 +14,10 @@ const useDeleteRating = (ratingId: string, productId: string) => {
   const mutation = useMutation({
     mutationKey: ["delete rating", ratingId],
     mutationFn: () => deleteReq("/ratings", { productId, ratingId }),
-    onMutate: async () => {
+    async onSuccess() {
       await queryClient.cancelQueries({
         queryKey: ["Product Rating", productId],
       });
-
-      const previousData = JSON.parse(
-        JSON.stringify(
-          queryClient.getQueryData(["Product Rating", productId]) || []
-        )
-      );
 
       const checkState = queryClient.getQueryState([
         "Product Rating",
@@ -41,22 +35,8 @@ const useDeleteRating = (ratingId: string, productId: string) => {
           return { ...old, pages: newPages };
         });
       }
-
-      return { previousData };
     },
-    onError: (error, variables, context) => {
-      const checkState = queryClient.getQueryState([
-        "Product Rating",
-        productId,
-      ]);
-
-      if (checkState) {
-        queryClient.setQueryData(
-          ["Product Rating", productId],
-          context?.previousData
-        );
-      }
-
+    onError: (error) => {
       showErrorMessage({ message: error.message });
     },
   });

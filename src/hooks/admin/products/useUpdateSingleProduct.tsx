@@ -14,7 +14,7 @@ const useUpdateSingleProduct = (productId: string) => {
   const mutation = useMutation({
     mutationKey: ["update product", productId],
     mutationFn: (obj: PRODUCT) => patchReq("/admin/products", obj),
-    async onSuccess(data: PRODUCT, variables, context) {
+    async onSuccess(data: PRODUCT) {
       const modifyProduct = data;
 
       await queryClient.cancelQueries({
@@ -61,7 +61,7 @@ const useUpdateSingleProduct = (productId: string) => {
         );
       }
     },
-    onError(error, variables, context) {
+    onError(error) {
       showErrorMessage({ message: error?.message });
     },
   });

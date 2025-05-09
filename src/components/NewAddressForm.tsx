@@ -12,15 +12,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
 import Loading from "@/lib/Loading";
 import useCountryStates from "@/hooks/countryAndCurrency/useCountryStates";
 import useStateCities from "@/hooks/countryAndCurrency/useStateCities";
@@ -249,29 +240,6 @@ const NewAddressForm = ({ handleCancel, prevAddress = null }: Props) => {
                 })}
               </SelectContent>
             </Select>
-
-            {/* 
-            <DropdownMenu>
-              <DropdownMenuTrigger>Select Country Code</DropdownMenuTrigger>
-              <DropdownMenuContent className="w-40">
-                <DropdownMenuLabel>Country with Dial Code</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuRadioGroup
-                  value={countryId}
-                  onValueChange={(value) => setCountryId(value)}
-                >
-                  {countries.map((obj) => {
-                    const { id, name, dial_code } = obj;
-
-                    return (
-                      <DropdownMenuRadioItem key={id} value={id.toString()}>
-                        {name} ({dial_code})
-                      </DropdownMenuRadioItem>
-                    );
-                  })}
-                </DropdownMenuRadioGroup>
-              </DropdownMenuContent>
-            </DropdownMenu> */}
 
             <div className="flex-1 flex flex-col ">
               <p className="w-full border flex items-center border-black">

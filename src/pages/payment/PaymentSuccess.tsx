@@ -22,11 +22,11 @@ const PaymentSuccess = () => {
 
   // Retry if data is empty, up to 3 times
   useEffect(() => {
-    if (!error && data?.length === 0 && retryCount < 3) {
+    if (!error && data?.length === 0 && retryCount < 5) {
       const retryTimeout = setTimeout(() => {
         refetch();
         setRetryCount((prev) => prev + 1);
-      }, 1000); // wait 1 second between retries
+      }, 2000); // wait 2 second between retries
 
       return () => clearTimeout(retryTimeout);
     }
@@ -49,8 +49,10 @@ const PaymentSuccess = () => {
   if (buyProducts.length === 0) {
     return (
       <div className="h-96 w-full flex flex-col justify-center items-center">
-        <p>We're finalizing your order...</p>
-        <p>Please wait or refresh the page shortly.</p>
+        <p>
+          Your payment was successful, but we're still processing your order.
+        </p>
+        <p>Please check back in a few minutes or contact support.</p>
       </div>
     );
   }

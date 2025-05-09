@@ -69,7 +69,7 @@ const AdminSingleProduct = ({ product }: Props) => {
         <div className="flex items-center gap-2">
           {/* MARK: RATE AVERAGE VALUE STAR */}
           <div className="flex text-2xl h-10">
-            {Array.from({ length: 5 }).map((VALUE, i) => {
+            {Array.from({ length: 5 }).map((_VALUE, i) => {
               if (i < rateValue) {
                 return (
                   <p key={i} className="w-8 flex items-center justify-center">

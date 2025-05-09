@@ -1,11 +1,10 @@
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import Toastify from "../../lib/Toastify";
 import changePriceDiscountByExchangeRate from "../../utils/javascript/changePriceDiscountByExchangeRate";
 import { useSelector } from "react-redux";
 import { currencyState } from "../../redux/slice/currencySlice";
 import { useEffect, useState } from "react";
-import useLoginCheck from "../../hooks/auth/useLoginCheck";
 import useSingleProduct from "@/hooks/products/useSingleProduct";
 import Loading from "@/lib/Loading";
 import Icons from "@/assets/icons";
@@ -17,14 +16,14 @@ type Form = {
 };
 
 const RateProduct = () => {
+  const navigate = useNavigate();
   const productId = useSearchParams()[0].get("product") as string;
-  const { data: user } = useLoginCheck();
 
   const { symbol, exchangeRate } = useSelector(currencyState);
   const { isLoading, error, data } = useSingleProduct(productId);
   const [starSelected, setStarSelected] = useState(0);
   const { showAlertMessage } = Toastify();
-  const { mutate, isPending } = useNewRating(productId);
+  const { mutate, isPending, isSuccess } = useNewRating(productId);
 
   const {
     register,
@@ -44,6 +43,12 @@ const RateProduct = () => {
       behavior: "instant",
     });
   }, [productId]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      navigate(`/products/${productId}`);
+    }
+  }, [isSuccess]);
 
   if (isLoading) {
     return <Loading />;
@@ -68,16 +73,10 @@ const RateProduct = () => {
     const { title, comment } = data;
 
     const obj = {
-      _id: Date.now().toString(),
       product: productId,
       rate: starSelected,
       title,
       comment,
-      user: {
-        _id: user._id,
-        name: user.name,
-        photo: user.photo,
-      },
     };
 
     mutate(obj);
@@ -136,7 +135,7 @@ const RateProduct = () => {
             <div className="flex gap-5 items-center">
               <p className="text-lg">Rate the Product</p>
               <div className="flex text-2xl h-10">
-                {Array.from({ length: 5 }).map((value, i) => {
+                {Array.from({ length: 5 }).map((_value, i) => {
                   const newI = i + 1;
 
                   if (newI <= starSelected) {

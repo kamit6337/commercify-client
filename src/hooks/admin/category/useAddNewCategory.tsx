@@ -20,7 +20,7 @@ const useAddNewCategory = () => {
   const mutation = useMutation({
     mutationKey: ["add new category"],
     mutationFn: (obj: ADD_CATEGORY) => postReq("/admin/category", obj),
-    async onSuccess(data, variables, context) {
+    async onSuccess(data) {
       const newCategory = data as CATEGORY;
 
       await queryClient.cancelQueries({
@@ -60,7 +60,7 @@ const useAddNewCategory = () => {
         );
       }
     },
-    onError(error, variables, context) {
+    onError(error) {
       showErrorMessage({ message: error?.message });
     },
   });

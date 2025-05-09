@@ -10,15 +10,11 @@ const useUserAddressDelete = (addressId: string) => {
   const mutation = useMutation({
     mutationKey: ["user address delete", addressId],
     mutationFn: () => deleteReq("/address", { id: addressId }),
-    onMutate: async () => {
+    async onSuccess() {
       await queryClient.cancelQueries({
         queryKey: ["user addresses"],
         exact: true,
       });
-
-      const previousAddress = JSON.parse(
-        JSON.stringify(queryClient.getQueryData(["user addresses"]) || [])
-      );
 
       const checkState = queryClient.getQueryState(["user addresses"]);
 
@@ -28,15 +24,8 @@ const useUserAddressDelete = (addressId: string) => {
           return old.filter((address) => address._id !== addressId);
         });
       }
-
-      return { previousAddress };
     },
-    onError: (error, variable, context) => {
-      const checkState = queryClient.getQueryState(["user addresses"]);
-
-      if (checkState) {
-        queryClient.setQueryData(["user addresses"], context?.previousAddress);
-      }
+    onError: (error) => {
       showErrorMessage({ message: error.message });
     },
   });

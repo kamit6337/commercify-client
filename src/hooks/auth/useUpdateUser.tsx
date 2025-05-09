@@ -31,7 +31,7 @@ const useUpdateUser = () => {
 
       return { previousUser };
     },
-    onError(error, variables, context) {
+    onError(error, _variables, context) {
       const checkState = queryClient.getQueryState(["login check"]);
 
       if (checkState) {

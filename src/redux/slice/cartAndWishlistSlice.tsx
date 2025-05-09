@@ -1,4 +1,3 @@
-import removeDuplicate from "@/utils/javascript/removeDuplicate";
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 

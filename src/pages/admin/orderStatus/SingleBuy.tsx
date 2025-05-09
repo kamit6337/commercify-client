@@ -1,4 +1,4 @@
-import ClickToDeliver from "@/components/admin/order-status/clickToDeliver";
+import ClickToDeliver from "@/components/admin/order-status/ClickToDeliver";
 import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import countries from "@/data/countries";
 import OrderStatus from "@/pages/user/OrderStatus";
@@ -28,6 +28,8 @@ const SingleBuy = ({ buy }: Props) => {
     isReturned,
     createdAt,
     exchangeRate,
+    reasonForReturned,
+    reasonForCancelled,
   } = buy;
 
   const { country, district, state, address } = buyAddress;
@@ -89,6 +91,26 @@ const SingleBuy = ({ buy }: Props) => {
               </div>
             </div>
           </div>
+          {reasonForReturned && (
+            <div className="flex flex-col md:gap-1 md:flex-row">
+              <p className="text-red-500 whitespace-nowrap font-semibold">
+                Reason :{" "}
+              </p>
+              <p className="text-sm md:mt-[2px] text-red-500">
+                {reasonForReturned}
+              </p>
+            </div>
+          )}
+          {reasonForCancelled && (
+            <div className="flex flex-col md:gap-1 md:flex-row">
+              <p className="text-red-500 whitespace-nowrap font-semibold">
+                Reason :{" "}
+              </p>
+              <p className="text-sm md:mt-[2px] text-red-500">
+                {reasonForCancelled}
+              </p>
+            </div>
+          )}
         </div>
       </div>
 

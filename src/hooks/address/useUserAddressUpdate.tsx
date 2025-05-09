@@ -10,37 +10,27 @@ const useUserAddressUpdate = (address: ADDRESS | null) => {
   const mutation = useMutation({
     mutationKey: ["update user address", address?._id],
     mutationFn: (postData: ADDRESS) => patchReq("/address", postData),
-    onMutate: async (variables) => {
-      const postData = variables;
-
+    async onSuccess(data) {
+      const updatedAddress = data as ADDRESS;
       await queryClient.cancelQueries({
         queryKey: ["user addresses"],
         exact: true,
       });
-
-      const previousAddress = JSON.parse(
-        JSON.stringify(queryClient.getQueryData(["user addresses"]) || [])
-      );
 
       const checkState = queryClient.getQueryState(["user addresses"]);
 
       if (checkState) {
         queryClient.setQueryData(["user addresses"], (old: ADDRESS[]) => {
           const modify = old.map((address) => {
-            return address._id === postData._id ? postData : address;
+            return address._id === updatedAddress._id
+              ? updatedAddress
+              : address;
           });
           return modify;
         });
       }
-
-      return { previousAddress };
     },
-    onError: (error, variables, context) => {
-      const checkState = queryClient.getQueryState(["user addresses"]);
-
-      if (checkState) {
-        queryClient.setQueryData(["user addresses"], context?.previousAddress);
-      }
+    onError: (error) => {
       showErrorMessage({ message: error.message });
     },
   });

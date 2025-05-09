@@ -34,6 +34,8 @@ export type BUY = {
   isCancelled: boolean;
   isReturned: boolean;
   isDelievered: boolean;
+  reasonForReturned?: string;
+  reasonForCancelled?: string;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -62,12 +64,20 @@ export type USER = {
 
 export type REVIEW = {
   _id: string;
+  product: string;
   rate: number;
   title: string;
   comment: string;
   createdAt?: Date;
   updatedAt?: Date;
   user: USER;
+};
+
+export type NEW_REVIEW = {
+  product: string;
+  rate: number;
+  title: string;
+  comment: string;
 };
 
 export type PRODUCT = {

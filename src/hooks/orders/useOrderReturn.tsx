@@ -16,47 +16,27 @@ const useOrderReturn = (buyId: string) => {
     mutationKey: ["order return", buyId],
     mutationFn: (reason: string) =>
       patchReq("/buy/return", { id: buyId, reason }),
-    onMutate: async () => {
+    async onSuccess(data) {
+      const updateBuy = data as BUY;
+
       await queryClient.cancelQueries({
         queryKey: ["buy products of user"],
         exact: true,
       });
 
-      const previousData = JSON.parse(
-        JSON.stringify(queryClient.getQueryData(["buy products of user"]) || [])
-      );
-
       const checkState = queryClient.getQueryState(["buy products of user"]);
 
       if (checkState?.status === "success") {
         queryClient.setQueryData(["buy products of user"], (old: OLD) => {
-          if (!old || old.pages[0].length === 0) return old;
-
           const modifyBuy = old.pages.map((page) =>
-            page.map((buy) => {
-              if (buy._id === buyId) {
-                return { ...buy, isReturned: true };
-              }
-              return buy;
-            })
+            page.map((buy) => (buy._id === updateBuy._id ? updateBuy : buy))
           );
 
           return { ...old, pages: modifyBuy };
         });
       }
-
-      return { previousData };
     },
-    onError: (error, variables, context) => {
-      const checkState = queryClient.getQueryState(["buy products of user"]);
-
-      if (checkState) {
-        queryClient.setQueryData(
-          ["buy products of user"],
-          context?.previousData
-        );
-      }
-
+    onError: (error) => {
       showErrorMessage({ message: error.message });
     },
   });

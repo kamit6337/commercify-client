@@ -8,7 +8,7 @@ type Props = {
   SingleItem: ({ item, i }: { item: Object; i: number }) => React.ReactNode;
 };
 
-function SampleNextArrow(props) {
+function SampleNextArrow(props: React.HTMLProps<HTMLDivElement>) {
   const { className, style, onClick } = props;
   return (
     <div
@@ -21,7 +21,7 @@ function SampleNextArrow(props) {
   );
 }
 
-function SamplePrevArrow(props) {
+function SamplePrevArrow(props: React.HTMLProps<HTMLDivElement>) {
   const { className, style, onClick } = props;
   return (
     <div

@@ -1,5 +1,5 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { currencyState } from "../../redux/slice/currencySlice";

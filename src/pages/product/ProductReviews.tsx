@@ -1,9 +1,7 @@
-import { Link } from "react-router-dom";
-import useLoginCheck from "../../hooks/auth/useLoginCheck";
 import useGetProductRatings from "@/hooks/ratings/useGetProductRatings";
 import Loading from "@/lib/Loading";
 import Icons from "@/assets/icons";
-import { PRODUCT } from "@/types";
+import { PRODUCT, REVIEW } from "@/types";
 import SingleRating from "./SingleRating";
 
 type Props = {
@@ -35,7 +33,7 @@ const ProductReviews = ({ product }: Props) => {
     );
   }
 
-  const productRatings = data?.pages.flat(1);
+  const productRatings = data?.pages.flatMap((page) => page) as [];
   // const isUserRated = productRatings?.find(
   //   (obj) => obj?.user?._id === user._id
   // );
@@ -52,7 +50,7 @@ const ProductReviews = ({ product }: Props) => {
 
           {/* MARK: RATE AVERAGE VALUE STAR */}
           <div className="flex text-2xl h-10">
-            {Array.from({ length: 5 }).map((VALUE, i) => {
+            {Array.from({ length: 5 }).map((_VALUE, i) => {
               if (i < rateValue) {
                 return (
                   <p key={i} className="w-8 flex items-center justify-center">
@@ -99,7 +97,7 @@ const ProductReviews = ({ product }: Props) => {
             </div>
           ) : (
             <div className="">
-              {productRatings?.map((review) => {
+              {productRatings?.map((review: REVIEW) => {
                 return (
                   <SingleRating
                     key={review._id}

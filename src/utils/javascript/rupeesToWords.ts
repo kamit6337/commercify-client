@@ -1,4 +1,4 @@
-function rupeesToWords(amount) {
+function rupeesToWords(amount: number) {
   // Array of units up to crore
   const units = [
     "",
@@ -37,7 +37,7 @@ function rupeesToWords(amount) {
   ];
 
   // Function to convert two digits to words
-  function convertTwoDigits(num) {
+  function convertTwoDigits(num: number) {
     if (num === 0) {
       return "";
     } else if (num < 20) {
@@ -48,7 +48,7 @@ function rupeesToWords(amount) {
   }
 
   // Function to convert three digits to words
-  function convertThreeDigits(num) {
+  function convertThreeDigits(num: number) {
     let str = "";
     if (num >= 100) {
       str += units[Math.floor(num / 100)] + " Hundred ";
@@ -59,7 +59,7 @@ function rupeesToWords(amount) {
   }
 
   // Function to convert given number to words
-  function convertToWords(num) {
+  function convertToWords(num: number) {
     if (num === 0) return "Zero Rupees";
     let words = "";
     if (num >= 10000000) {
@@ -84,5 +84,3 @@ function rupeesToWords(amount) {
 }
 
 export default rupeesToWords;
-
-

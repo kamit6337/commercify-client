@@ -18,7 +18,7 @@ const useUpdateBuyOrderStatus = (buyId: string) => {
   const mutation = useMutation({
     mutationKey: ["click to deliver", buyId],
     mutationFn: (obj: OBJ) => patchReq("/admin/order-status/deliver", obj),
-    async onSuccess(data, variables, context) {
+    async onSuccess(data) {
       const updateBuy = data as BUY;
 
       await queryClient.cancelQueries({
@@ -97,7 +97,7 @@ const useUpdateBuyOrderStatus = (buyId: string) => {
         });
       }
     },
-    onError(error, variables, context) {
+    onError(error) {
       showErrorMessage({ message: error.message });
     },
   });
