@@ -22,6 +22,8 @@ const RootLayout = () => {
 
   useEffect(() => {
     if (error) {
+      sessionStorage.setItem("initialLoading", "1");
+      setShowInitialLoading(false);
       navigate(`/login?msg=${error.message}`);
     }
   }, [error]);
