@@ -98,7 +98,9 @@ const Admin = () => {
         {isSuccess && (
           <div className="p-10 border-b-2 space-y-10">
             <div className="flex items-center justify-between">
-              <p>Order Status</p>
+              <p className="font-semibold text-xl tracking-wide underline underline-offset-4">
+                Order Status
+              </p>
               <Select
                 value={selectTimeScale}
                 onValueChange={(value) =>
@@ -149,7 +151,9 @@ const Admin = () => {
 
         {/* MARK: PRODUCTS */}
         <div className="p-10 space-y-10">
-          <p>Products</p>
+          <p className="font-semibold text-xl tracking-wide underline underline-offset-4">
+            Products
+          </p>
           <p className="bg-gray-100 p-2 rounded w-max">
             Total Products ({productCounts.products})
           </p>
@@ -157,7 +161,9 @@ const Admin = () => {
 
         {categoryProducts?.length > 0 && (
           <div className="p-10 space-y-10">
-            <p>Category Products</p>
+            <p className="font-semibold text-xl tracking-wide underline underline-offset-4">
+              Category Products
+            </p>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {categoryProducts.map((obj: CATEGORY_PRODUCT) => {
                 const { _id, title, categoryProductsCount } = obj;
