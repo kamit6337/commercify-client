@@ -1,5 +1,17 @@
+import OrderStatusGraph from "@/components/admin/graphs/OrderStatusGraph";
+import ProductsGraph from "@/components/admin/graphs/ProductsGraph";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import useAdminCountDetails from "@/hooks/admin/useAdminCountDetails";
 import useProductsCount from "@/hooks/admin/useProductsCount";
+import Loading from "@/lib/Loading";
+import Toastify from "@/lib/Toastify";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 type CATEGORY_PRODUCT = {
@@ -8,12 +20,52 @@ type CATEGORY_PRODUCT = {
   categoryProductsCount: number;
 };
 
+type TimeScale = "day" | "month" | "year" | "6month";
+
+type OrderTimeScale = {
+  title: string;
+  time: TimeScale;
+};
+
+const orderTimeScale: OrderTimeScale[] = [
+  {
+    title: "Last 1 Day",
+    time: "day",
+  },
+  {
+    title: "Last 1 Month",
+    time: "month",
+  },
+  {
+    title: "Last 6 Months",
+    time: "6month",
+  },
+  {
+    title: "Last 1 Year",
+    time: "year",
+  },
+];
+
 const Admin = () => {
   const navigate = useNavigate();
-  const { data: orderCounts } = useAdminCountDetails();
-  const { data: productsCount } = useProductsCount();
+  const { showErrorMessage } = Toastify();
+  const [selectTimeScale, setSelectTimeScale] = useState<TimeScale>("month");
+  const {
+    data: orderCounts,
+    isLoading,
+    error,
+    isSuccess,
+  } = useAdminCountDetails(true, selectTimeScale);
 
-  const categoryProducts = productsCount.categoryProducts;
+  const { data: productCounts } = useProductsCount();
+
+  const categoryProducts = productCounts.categoryProducts;
+
+  useEffect(() => {
+    if (error) {
+      showErrorMessage({ message: error.message });
+    }
+  }, [error]);
 
   return (
     <main className="bg-gray-100 p-5 flex gap-3 flex-col lg:flex-row lg:items-start">
@@ -42,40 +94,69 @@ const Admin = () => {
 
       <div className="bg-white flex-1">
         {/* MARK: ORDER STATUS */}
-        <div className="p-10 border-b-2 space-y-10">
-          <div className="flex items-center justify-between">
-            <p>Order Status</p>
-            <p>Time</p>
+        {isLoading && <Loading />}
+        {isSuccess && (
+          <div className="p-10 border-b-2 space-y-10">
+            <div className="flex items-center justify-between">
+              <p>Order Status</p>
+              <Select
+                value={selectTimeScale}
+                onValueChange={(value) =>
+                  setSelectTimeScale(value as TimeScale)
+                }
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Time Scale" />
+                </SelectTrigger>
+                <SelectContent>
+                  {orderTimeScale.map((timeScale, i) => {
+                    return (
+                      <SelectItem key={i} value={timeScale.time}>
+                        {timeScale.title}
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              <p className="bg-gray-100 p-2 rounded">
+                Ordered ({orderCounts.ordered})
+              </p>
+              <p className="bg-gray-100 p-2 rounded">
+                Un-Delievered ({orderCounts.undelivered})
+              </p>
+              <p className="bg-gray-100 p-2 rounded">
+                Delievered ({orderCounts.delivered})
+              </p>
+              <p className="bg-gray-100 p-2 rounded">
+                Cancelled ({orderCounts.cancelled})
+              </p>
+              <p className="bg-gray-100 p-2 rounded">
+                Returned ({orderCounts.returned})
+              </p>
+            </div>
+            <OrderStatusGraph
+              orderCounts={orderCounts}
+              topLabel={
+                orderTimeScale.find(
+                  (timeScale) => timeScale.time === selectTimeScale
+                )?.title
+              }
+            />
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            <p className="bg-gray-100 p-2 rounded">
-              Ordered ({orderCounts.ordered})
-            </p>
-            <p className="bg-gray-100 p-2 rounded">
-              Un-Delievered ({orderCounts.undelivered})
-            </p>
-            <p className="bg-gray-100 p-2 rounded">
-              Delievered ({orderCounts.delivered})
-            </p>
-            <p className="bg-gray-100 p-2 rounded">
-              Cancelled ({orderCounts.cancelled})
-            </p>
-            <p className="bg-gray-100 p-2 rounded">
-              Returned ({orderCounts.returned})
-            </p>
-          </div>
-        </div>
+        )}
 
         {/* MARK: PRODUCTS */}
-        <div className="p-10 border-b-2 space-y-10">
+        <div className="p-10 space-y-10">
           <p>Products</p>
           <p className="bg-gray-100 p-2 rounded w-max">
-            Total Products ({productsCount.products})
+            Total Products ({productCounts.products})
           </p>
         </div>
 
         {categoryProducts?.length > 0 && (
-          <div className="p-10 border-b-2 space-y-10">
+          <div className="p-10 space-y-10">
             <p>Category Products</p>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {categoryProducts.map((obj: CATEGORY_PRODUCT) => {
@@ -90,6 +171,9 @@ const Admin = () => {
             </div>
           </div>
         )}
+        <div className="p-10">
+          <ProductsGraph />
+        </div>
       </div>
     </main>
   );

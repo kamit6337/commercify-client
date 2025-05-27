@@ -8,6 +8,7 @@ import { Provider } from "react-redux";
 import { store } from "./redux/store.tsx";
 import { disableReactDevTools } from "@fvilers/disable-react-devtools";
 import environment from "./utils/environment.ts";
+import "@/lib/chartSetup.ts";
 
 const PRODUCTION = "production";
 

@@ -1,7 +1,7 @@
 import Footer from "@/components/footer/Footer";
 import useAdminCountDetails from "@/hooks/admin/useAdminCountDetails";
 import useProductsCount from "@/hooks/admin/useProductsCount";
-import useLoginAdminCheck from "@/hooks/auth/useLoginAdminCheck";
+import useLoginCheck from "@/hooks/auth/useLoginCheck";
 import Loading from "@/lib/Loading";
 import ScrollToTop from "@/lib/ScrollToTop";
 import Toastify from "@/lib/Toastify";
@@ -19,7 +19,7 @@ const AdminLayout = () => {
     isLoading: isLoadingLoginCheck,
     error: errorLoginCheck,
     isSuccess,
-  } = useLoginAdminCheck();
+  } = useLoginCheck();
 
   useEffect(() => {
     if (errorLoginCheck) {

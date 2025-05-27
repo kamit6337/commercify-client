@@ -90,7 +90,7 @@ const Login = () => {
 
       {/* MARK: GO TO OAUTH LOGIN PAGE*/}
       <div
-        className="border border-auth_input_border rounded-lg py-3 w-full cursor-pointer flex justify-center items-center gap-4"
+        className="border border-auth_input_border rounded-lg py-3 w-full cursor-pointer flex justify-center items-center gap-4 hover:bg-auth_input_border"
         onClick={() => googleOAuth()}
       >
         <div className="w-6">

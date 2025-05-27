@@ -3,7 +3,6 @@ import Loading from "@/lib/Loading";
 import Toastify from "@/lib/Toastify";
 import { postAuthReq } from "@/utils/api/authApi";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Cookies from "js-cookie";
 import { useState } from "react";
 import { Helmet } from "react-helmet";
 import { useForm } from "react-hook-form";
@@ -21,7 +20,6 @@ const schema = z
   });
 
 const NewPassword = () => {
-  const email = Cookies.get("email");
   const resetToken = useSearchParams()[0].get("resetToken");
   const { showErrorMessage, showSuccessMessage } = Toastify();
   const navigate = useNavigate();
@@ -45,7 +43,7 @@ const NewPassword = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof schema>) => {
-    if (!email) {
+    if (!resetToken) {
       showErrorMessage({ message: "Something went wrong. Please try again." });
       setTimeout(() => {
         navigate("/forgotPassword");
@@ -56,12 +54,10 @@ const NewPassword = () => {
     const formData = { ...values };
     delete formData.confirmPassword;
 
-    const data = { ...formData, email, resetToken };
+    const data = { password: formData.password, resetToken };
 
     try {
       const response = await postAuthReq("/newPassword", data);
-      Cookies.remove("email");
-
       showSuccessMessage({ message: response.message });
       setTimeout(() => {
         navigate("/login");
