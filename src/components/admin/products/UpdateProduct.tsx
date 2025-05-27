@@ -70,15 +70,17 @@ const UpdateProduct = ({ product, handleCancel }: Props) => {
   const { mutate, isPending, isSuccess } = useUpdateSingleProduct(_id);
 
   useEffect(() => {
-    reset({
-      title,
-      description,
-      discountPercentage: discountPercentage.toString(),
-      price: price.toString(),
-    });
+    if (product && _id) {
+      reset({
+        title,
+        description,
+        discountPercentage: discountPercentage.toString(),
+        price: price.toString(),
+      });
 
-    setSelectedCategoryId(categoryId);
-    setSelectedDeliveryDay(deliveredBy.toString());
+      setSelectedCategoryId(categoryId);
+      setSelectedDeliveryDay(deliveredBy.toString());
+    }
   }, [_id]);
 
   useEffect(() => {
