@@ -68,10 +68,15 @@ const cartAndWishlistSlice = createSlice({
       localStorage.setItem("_cart", JSON.stringify(modifyProduct));
       return state;
     },
+    emptyCart: (state) => {
+      state.cart = [];
+      localStorage.setItem("_cart", JSON.stringify([]));
+      return state;
+    },
   },
 });
 
-export const { updateCart, updateWishlist, updateProductQuantity } =
+export const { updateCart, updateWishlist, updateProductQuantity, emptyCart } =
   cartAndWishlistSlice.actions;
 
 export const cartAndWishlistReducer = cartAndWishlistSlice.reducer;

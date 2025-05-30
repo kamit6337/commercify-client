@@ -5,13 +5,23 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import Product from "./Product";
 import { BUY } from "@/types";
+import { useDispatch } from "react-redux";
+import { emptyCart } from "@/redux/slice/cartAndWishlistSlice";
 
 const PaymentSuccess = () => {
   const orderId = useSearchParams()[0].get("orderId") as string;
   const navigate = useNavigate();
-  const { isLoading, error, data, refetch } = useBuyProducts(orderId);
+  const { isLoading, error, data, refetch, isSuccess } =
+    useBuyProducts(orderId);
   const [retryCount, setRetryCount] = useState(0);
   const { showErrorMessage } = Toastify();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (isSuccess) {
+      dispatch(emptyCart());
+    }
+  }, [isSuccess]);
 
   useEffect(() => {
     if (!orderId) {
