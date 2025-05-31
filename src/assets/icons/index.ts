@@ -49,6 +49,7 @@ import {
   MdDelete,
   MdPayment,
   MdFileDownloadDone,
+  MdRefresh,
 } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { FiMinus } from "react-icons/fi";
@@ -108,6 +109,7 @@ const ReactIcons = {
   download: LiaDownloadSolid,
   history: MdOutlineHistory,
   cart: IoCart,
+  refresh: MdRefresh,
 };
 
 export default ReactIcons;

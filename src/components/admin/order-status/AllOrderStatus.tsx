@@ -1,8 +1,10 @@
+import ReactIcons from "@/assets/icons";
 import Loading from "@/lib/Loading";
 import SingleBuy from "@/pages/admin/orderStatus/SingleBuy";
 import { BUY } from "@/types";
 import { getReq } from "@/utils/api/api";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import timeAgoFrom from "@/utils/javascript/timeAgoFrom";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 type Props = {
@@ -12,6 +14,7 @@ type Props = {
 
 const AllOrderStatus = ({ querykey, path }: Props) => {
   const [page, setPage] = useState(1);
+  const queryClient = useQueryClient();
 
   const {
     isLoading,
@@ -20,6 +23,8 @@ const AllOrderStatus = ({ querykey, path }: Props) => {
     isFetchingNextPage,
     fetchNextPage,
     hasNextPage,
+    dataUpdatedAt,
+    refetch,
   } = useInfiniteQuery({
     queryKey: [querykey],
     queryFn: ({ pageParam }) =>
@@ -34,6 +39,16 @@ const AllOrderStatus = ({ querykey, path }: Props) => {
       return lastPageParam + 1;
     },
   });
+
+  const [currentTime, setCurrentTime] = useState(Date.now());
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(Date.now());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     window.scrollTo({
@@ -71,11 +86,34 @@ const AllOrderStatus = ({ querykey, path }: Props) => {
     });
   };
 
+  const handleRefresh = () => {
+    setCurrentTime(Date.now());
+    queryClient.removeQueries({
+      queryKey: [querykey],
+      exact: true,
+    });
+    setPage(1);
+    refetch();
+  };
+
   const lastPageBool = !hasNextPage && page === data?.pageParams.at(-1);
 
   return (
     <div className="space-y-5">
-      <div className="bg-white w-full p-3 text-lg">Orders ({buys.length})</div>
+      <div className="bg-white w-full p-3 text-lg flex justify-between items-center">
+        <p>
+          Orders ({buys.length}) : Page ({page})
+        </p>
+        <div
+          className="flex items-center gap-1 text-xs cursor-pointer hover:text-blue-400"
+          onClick={handleRefresh}
+        >
+          <p>
+            <ReactIcons.refresh className="text-xl" />
+          </p>
+          <p>Last Refresh : {timeAgoFrom(currentTime, dataUpdatedAt)}</p>
+        </div>
+      </div>
       <div className="bg-white">
         {buys.length > 0 ? (
           buys.map((buy: BUY) => {
@@ -89,6 +127,12 @@ const AllOrderStatus = ({ querykey, path }: Props) => {
       </div>
       <div className="mt-10 h-20  text-center flex justify-center items-center">
         <div className="w-max bg-white h-full flex justify-center items-center gap-10 px-10">
+          <button
+            onClick={() => setPage(1)}
+            className={`${page > 2 ? "flex" : "hidden"} hover:text-blue-500 `}
+          >
+            First Page
+          </button>
           <button
             disabled={page === 1}
             onClick={handlePrevFetch}

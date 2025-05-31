@@ -1,5 +1,4 @@
 import Footer from "@/components/footer/Footer";
-import useAdminCountDetails from "@/hooks/admin/useAdminCountDetails";
 import useProductsCount from "@/hooks/admin/useProductsCount";
 import useLoginCheck from "@/hooks/auth/useLoginCheck";
 import Loading from "@/lib/Loading";
@@ -28,16 +27,15 @@ const AdminLayout = () => {
     }
   }, [errorLoginCheck]);
 
-  const { isLoading, error } = useAdminCountDetails(isSuccess);
   const { isLoading: isLoadingProductsCount, error: errorProductsCount } =
     useProductsCount(isSuccess);
 
-  if (isLoading || isLoadingProductsCount || isLoadingLoginCheck) {
+  if (isLoadingProductsCount || isLoadingLoginCheck) {
     return <Loading />;
   }
 
-  if (error || errorProductsCount) {
-    return <p>{error?.message || errorProductsCount?.message}</p>;
+  if (errorProductsCount) {
+    return <p>{errorProductsCount?.message}</p>;
   }
 
   if (!isSuccess) return;

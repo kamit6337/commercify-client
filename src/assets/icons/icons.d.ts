@@ -53,6 +53,7 @@ declare module "@/assets/icons" {
     download: IconType;
     history: IconType;
     cart: IconType;
+    refresh: IconType;
   };
 
   export default ReactIcons;

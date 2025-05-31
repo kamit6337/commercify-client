@@ -1,3 +1,13 @@
+export type TimeScale = "day" | "month" | "year" | "6month" | "all";
+
+export type ORDERS_COUNT = {
+  ordered: number;
+  undelivered: number;
+  delivered: number;
+  cancelled: number;
+  returned: number;
+};
+
 export type ORDER_STATUS_COUNT = {
   ordered: number;
   undelivered: number;
