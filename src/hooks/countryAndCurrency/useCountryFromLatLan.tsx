@@ -1,12 +1,12 @@
 import { getReq } from "@/utils/api/api";
 import { useQuery } from "@tanstack/react-query";
 
-const useCountryFromLatLan = (lat: number, lon: number) => {
+const useCountryFromLatLan = (toggle = false, lat: number, lon: number) => {
   const query = useQuery({
     queryKey: ["location", lat, lon],
-    queryFn: () => getReq("/additional/countries", { lat, lon }),
+    queryFn: () => getReq("/additional/country", { lat, lon }),
     staleTime: Infinity,
-    enabled: !!lat && !!lon,
+    enabled: toggle && !!lat && !!lon,
   });
 
   return query;

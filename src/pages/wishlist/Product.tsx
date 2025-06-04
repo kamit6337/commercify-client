@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { currencyState } from "../../redux/slice/currencySlice";
-import changePriceDiscountByExchangeRate from "../../utils/javascript/changePriceDiscountByExchangeRate";
 import { PRODUCT } from "@/types";
 import {
   cartAndWishlistState,
@@ -19,17 +18,10 @@ type Props = {
 
 const Product = ({ product }: Props) => {
   const { cart } = useSelector(cartAndWishlistState);
-  const { symbol, exchangeRate } = useSelector(currencyState);
+  const { symbol, currency_code } = useSelector(currencyState);
   const dispatch = useDispatch();
 
-  const {
-    _id: id,
-    title,
-    description,
-    price,
-    discountPercentage,
-    thumbnail,
-  } = product;
+  const { _id: id, title, description, price, thumbnail } = product;
 
   const isAddedToCart = useMemo(() => {
     return !!cart.find((obj) => obj.id === id);
@@ -44,7 +36,7 @@ const Product = ({ product }: Props) => {
   };
 
   const { discountedPrice, exchangeRatePrice, roundDiscountPercent } =
-    changePriceDiscountByExchangeRate(price, discountPercentage, exchangeRate);
+    price[currency_code];
 
   return (
     <div className="w-full h-48 border-b-2 last:border-none md:p-7 p-3 flex lg:gap-10 gap-5">

@@ -3,8 +3,7 @@ import { Helmet } from "react-helmet";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { currencyState } from "../../redux/slice/currencySlice";
-import changePriceDiscountByExchangeRate from "../../utils/javascript/changePriceDiscountByExchangeRate";
-import { PARAMS } from "@/types";
+import { PARAMS, PRODUCT } from "@/types";
 import useSingleProduct from "@/hooks/products/useSingleProduct";
 import Loading from "@/lib/Loading";
 import makeDateDaysAfter from "@/utils/javascript/makeDateDaysAfter";
@@ -14,7 +13,7 @@ import ImagePart from "./ImagePart";
 
 const SingleProduct = () => {
   const { id } = useParams() as PARAMS;
-  const { symbol, exchangeRate } = useSelector(currencyState);
+  const { symbol, currency_code } = useSelector(currencyState);
   const { isLoading, error, data } = useSingleProduct(id);
 
   useEffect(() => {
@@ -36,18 +35,11 @@ const SingleProduct = () => {
     );
   }
 
-  const {
-    title,
-    description,
-    price,
-    category,
-    discountPercentage,
-    deliveredBy,
-    thumbnail,
-  } = data;
+  const { title, description, price, category, deliveredBy, thumbnail } =
+    data as PRODUCT;
 
   const { discountedPrice, exchangeRatePrice, roundDiscountPercent } =
-    changePriceDiscountByExchangeRate(price, discountPercentage, exchangeRate);
+    price[currency_code];
 
   return (
     <>

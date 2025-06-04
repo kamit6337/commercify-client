@@ -1,7 +1,6 @@
 import { useSelector } from "react-redux";
 import { currencyState } from "../redux/slice/currencySlice";
 import amountToWordsInternational from "../utils/javascript/amountToWordsInternational";
-import changePriceDiscountByExchangeRate from "../utils/javascript/changePriceDiscountByExchangeRate";
 import { useMemo } from "react";
 import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { loadStripe } from "@stripe/stripe-js";
@@ -21,8 +20,9 @@ const PriceList = ({ products }: Props) => {
   const { data: addresses } = useUserAddress();
   const { cart } = useSelector(cartAndWishlistState);
 
-  const { symbol, exchangeRate, country, name, code } =
+  const { symbol, currency_code, country, currency_name, conversionRate } =
     useSelector(currencyState);
+
   const { pathname } = useLocation();
   const { showErrorMessage } = Toastify();
   const addressId = useSearchParams()[0].get("address") as string;
@@ -46,18 +46,14 @@ const PriceList = ({ products }: Props) => {
     const filterData = products.filter((obj) => obj);
 
     filterData.forEach((product) => {
-      const { _id, price, discountPercentage } = product;
+      const { _id, price } = product;
 
       const findProduct = cart.find((obj) => obj.id === _id);
 
       if (!findProduct) return;
 
       const { discountedPrice, discountPercentCost, exchangeRatePrice } =
-        changePriceDiscountByExchangeRate(
-          price,
-          discountPercentage,
-          exchangeRate
-        );
+        price[currency_code];
 
       actualProductPrice =
         actualProductPrice + findProduct.quantity * exchangeRatePrice;
@@ -68,7 +64,7 @@ const PriceList = ({ products }: Props) => {
     });
 
     return { actualProductPrice, sellingPrice, productsDiscount };
-  }, [products, cart, exchangeRate]);
+  }, [products, cart]);
 
   const makePayment = async () => {
     try {
@@ -77,8 +73,7 @@ const PriceList = ({ products }: Props) => {
       const checkoutSession = await postReq("/payment", {
         products: cart,
         address: selectedAddress,
-        code,
-        exchangeRate,
+        currency_code,
       });
 
       stripe?.redirectToCheckout({
@@ -98,7 +93,7 @@ const PriceList = ({ products }: Props) => {
     return prev + current.quantity;
   }, 0);
 
-  const deliveryCharges = Math.round(products.length * exchangeRate * 0.48); //  dollars
+  const deliveryCharges = Math.round(products.length * conversionRate * 0.48); //  dollars
 
   const productSellingPrice = sellingPrice + deliveryCharges;
   return (
@@ -143,11 +138,11 @@ const PriceList = ({ products }: Props) => {
         <>
           {country === "India" ? (
             <p className="text-xs self-end">
-              {rupeesToWords(productSellingPrice)} {name}s
+              {rupeesToWords(productSellingPrice)} {currency_name}s
             </p>
           ) : (
             <p className="text-xs self-end">
-              {amountToWordsInternational(productSellingPrice)} {name}s
+              {amountToWordsInternational(productSellingPrice)} {currency_name}s
             </p>
           )}
         </>

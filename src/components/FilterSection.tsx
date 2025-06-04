@@ -17,19 +17,15 @@ type Props = {
 const FilterSection = ({ id, products, filterProductsFn }: Props) => {
   const { pathname } = useLocation();
   const { data: allCategory } = useAllCategory();
-  const { exchangeRate } = useSelector(currencyState);
+  const { currency_code } = useSelector(currencyState);
 
   const { maxPrice, minPrice } = useMemo(() => {
-    return findMaxPrice(products, exchangeRate);
-  }, [products, exchangeRate]);
+    return findMaxPrice(products, currency_code);
+  }, [products]);
 
   const handlePriceChange = (value: number) => {
     const filter = products.filter((product) => {
-      const { discountedPrice } = changePriceDiscountByExchangeRate(
-        product.price,
-        product.discountPercentage,
-        exchangeRate
-      );
+      const { discountedPrice } = product.price[currency_code];
 
       return discountedPrice <= value;
     });

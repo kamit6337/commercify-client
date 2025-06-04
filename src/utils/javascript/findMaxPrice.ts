@@ -1,15 +1,11 @@
 import { PRODUCT } from "@/types";
 
-const findMinMaxPrice = (products: PRODUCT[], exchangeRate: number) => {
+const findMinMaxPrice = (products: PRODUCT[], currency_code: string) => {
   let maxPrice = 0;
   let minPrice = 0;
 
   for (const product of products) {
-    const exchangeRatePrice = Math.round(product.price * exchangeRate);
-    const roundDiscountPercent = Math.round(product.discountPercentage);
-    const discountedPrice = Math.round(
-      (exchangeRatePrice * (100 - roundDiscountPercent)) / 100
-    );
+    const { discountedPrice } = product.price[currency_code];
 
     if (discountedPrice >= maxPrice) {
       maxPrice = discountedPrice;
@@ -19,9 +15,6 @@ const findMinMaxPrice = (products: PRODUCT[], exchangeRate: number) => {
       minPrice = discountedPrice;
     }
   }
-
-  console.log("maxPrice", maxPrice);
-  console.log("minPrice", minPrice);
 
   return { maxPrice, minPrice };
 };

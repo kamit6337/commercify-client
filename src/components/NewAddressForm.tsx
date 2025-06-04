@@ -2,7 +2,6 @@ import { useEffect, useMemo } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Toastify from "../lib/Toastify";
-import countries from "../data/countries";
 import { useSelector } from "react-redux";
 import { currencyState } from "@/redux/slice/currencySlice";
 import {
@@ -18,6 +17,7 @@ import useStateCities from "@/hooks/countryAndCurrency/useStateCities";
 import useUserAddressCreated from "@/hooks/address/useUserAddressCreated";
 import { ADDRESS, COUNTRY } from "@/types";
 import useUserAddressUpdate from "@/hooks/address/useUserAddressUpdate";
+import useAllCountry from "@/hooks/countryAndCurrency/useAllCountry";
 
 type Props = {
   handleCancel: () => void;
@@ -38,10 +38,12 @@ type STATE = {
 const NewAddressForm = ({ handleCancel, prevAddress = null }: Props) => {
   const { id, dial_code } = useSelector(currencyState);
 
+  const { data: countries } = useAllCountry();
+
   const [countryId, setCountryId] = useState<string>(id.toString());
 
   const selectedCountry = useMemo<COUNTRY | undefined>(() => {
-    return countries.find((country) => country.id === Number(countryId));
+    return countries.find((country: COUNTRY) => country._id === countryId);
   }, [countryId]);
 
   const selectedDialCode = selectedCountry?.dial_code || dial_code;
@@ -50,7 +52,7 @@ const NewAddressForm = ({ handleCancel, prevAddress = null }: Props) => {
     isLoading,
     data: states,
     error,
-  } = useCountryStates(selectedCountry?.name, selectedCountry?.code);
+  } = useCountryStates(selectedCountry?.name, selectedCountry?.isoAlpha2);
 
   const [stateCode, setStateCode] = useState<string>("");
 
@@ -63,7 +65,11 @@ const NewAddressForm = ({ handleCancel, prevAddress = null }: Props) => {
     isLoading: isLoadingStateCities,
     data: stateCities,
     error: errorStateCities,
-  } = useStateCities(selectedCountry?.code, selectedState?.name, stateCode);
+  } = useStateCities(
+    selectedCountry?.isoAlpha2,
+    selectedState?.name,
+    stateCode
+  );
 
   const [selectedDistrict, setSelectedDistrict] = useState("");
 
@@ -99,12 +105,12 @@ const NewAddressForm = ({ handleCancel, prevAddress = null }: Props) => {
       });
 
       const findCountry = countries.find(
-        (country) =>
+        (country: COUNTRY) =>
           country.name.toLowerCase() === prevAddress.country.toLowerCase()
-      );
+      ) as COUNTRY;
 
       if (findCountry) {
-        setCountryId(findCountry.id.toString());
+        setCountryId(findCountry._id.toString());
       }
 
       if (states && states.length > 0) {
@@ -230,10 +236,10 @@ const NewAddressForm = ({ handleCancel, prevAddress = null }: Props) => {
                 <SelectValue placeholder="--select-country-code" />
               </SelectTrigger>
               <SelectContent>
-                {countries.map((obj) => {
-                  const { id, name, dial_code } = obj;
+                {countries.map((obj: COUNTRY) => {
+                  const { _id, name, dial_code } = obj;
                   return (
-                    <SelectItem key={id} value={id.toString()}>
+                    <SelectItem key={_id} value={_id.toString()}>
                       {name} ({dial_code})
                     </SelectItem>
                   );
@@ -292,10 +298,10 @@ const NewAddressForm = ({ handleCancel, prevAddress = null }: Props) => {
               <SelectValue placeholder="--select-country" />
             </SelectTrigger>
             <SelectContent>
-              {countries.map((obj) => {
-                const { id, name } = obj;
+              {countries.map((obj: COUNTRY) => {
+                const { _id, name } = obj;
                 return (
-                  <SelectItem key={id} value={id.toString()}>
+                  <SelectItem key={_id} value={_id.toString()}>
                     {name}
                   </SelectItem>
                 );

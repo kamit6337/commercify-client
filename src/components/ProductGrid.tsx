@@ -1,14 +1,8 @@
 import { useEffect, useState } from "react";
 import ProductCard from "./ProductCard";
 import { PRODUCT } from "@/types";
-
-const returnDiscountedPrice = (product: PRODUCT) => {
-  const roundDiscountPercent = Math.round(product.discountPercentage);
-  const discountedPrice = Math.round(
-    (product.price * (100 - roundDiscountPercent)) / 100
-  );
-  return discountedPrice;
-};
+import { useSelector } from "react-redux";
+import { currencyState } from "@/redux/slice/currencySlice";
 
 type Props = {
   products: PRODUCT[];
@@ -17,6 +11,7 @@ type Props = {
 const ProductGrid = ({ products }: Props) => {
   const [defaultSort, setDefaultSort] = useState(1);
   const [sortProducts, setSortProducts] = useState(products);
+  const { currency_code } = useSelector(currencyState);
 
   useEffect(() => {
     if (!products) return;
@@ -24,7 +19,19 @@ const ProductGrid = ({ products }: Props) => {
     if (defaultSort === 1) {
       const beforeSort = [...products];
       beforeSort.sort((a, b) => {
-        return returnDiscountedPrice(a) - returnDiscountedPrice(b);
+        console.log(
+          "a.price[currency_code].exchangeRatePrice",
+          a.price[currency_code].exchangeRatePrice
+        );
+        console.log(
+          "b.price[currency_code].exchangeRatePrice",
+          b.price[currency_code].exchangeRatePrice
+        );
+
+        return (
+          a.price[currency_code].exchangeRatePrice -
+          b.price[currency_code].exchangeRatePrice
+        );
       });
 
       setSortProducts(beforeSort);
@@ -34,13 +41,36 @@ const ProductGrid = ({ products }: Props) => {
     if (defaultSort === 2) {
       const beforeSort = [...products];
       beforeSort.sort((a, b) => {
-        return returnDiscountedPrice(b) - returnDiscountedPrice(a);
+        return (
+          b.price[currency_code].exchangeRatePrice -
+          a.price[currency_code].exchangeRatePrice
+        );
       });
 
       setSortProducts(beforeSort);
     }
   }, [defaultSort, products]);
 
+  const handleLowToHigh = () => {
+    const beforeSort = [...products];
+    beforeSort.sort((a, b) => {
+      console.log(
+        "a.price[currency_code].exchangeRatePrice",
+        a.price[currency_code].exchangeRatePrice
+      );
+      console.log(
+        "b.price[currency_code].exchangeRatePrice",
+        b.price[currency_code].exchangeRatePrice
+      );
+
+      return (
+        a.price[currency_code].exchangeRatePrice -
+        b.price[currency_code].exchangeRatePrice
+      );
+    });
+
+    setSortProducts(beforeSort);
+  };
   return (
     <section>
       <div className="w-full h-10 border-b px-4 text-sm  flex items-center gap-5">
@@ -49,7 +79,7 @@ const ProductGrid = ({ products }: Props) => {
           className={`${
             defaultSort === 1 && "border-b-2 text-blue-600 border-blue-600"
           } cursor-pointer  h-full flex items-center`}
-          onClick={() => setDefaultSort(1)}
+          onClick={() => handleLowToHigh()}
         >
           Price - Low to High
         </p>

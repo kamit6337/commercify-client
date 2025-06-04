@@ -27,7 +27,7 @@ type OUTLET = {
 const Checkout = () => {
   const queryClient = useQueryClient();
   const { cart, products, addresses } = useOutletContext<OUTLET>();
-  const { code, symbol } = useSelector(currencyState);
+  const { currency_code, id } = useSelector(currencyState);
   const { showErrorMessage } = Toastify();
   const [isPending, setIsPending] = useState(false);
 
@@ -59,8 +59,8 @@ const Checkout = () => {
       const checkoutSession = await postReq("/payment", {
         products: cart,
         address: selectedAddressId,
-        code,
-        symbol,
+        currency_code,
+        countryId: id,
       });
 
       queryClient.invalidateQueries({

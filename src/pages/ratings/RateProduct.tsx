@@ -1,7 +1,6 @@
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import Toastify from "../../lib/Toastify";
-import changePriceDiscountByExchangeRate from "../../utils/javascript/changePriceDiscountByExchangeRate";
 import { useSelector } from "react-redux";
 import { currencyState } from "../../redux/slice/currencySlice";
 import { useEffect, useState } from "react";
@@ -19,7 +18,7 @@ const RateProduct = () => {
   const navigate = useNavigate();
   const productId = useSearchParams()[0].get("product") as string;
 
-  const { symbol, exchangeRate } = useSelector(currencyState);
+  const { symbol, currency_code } = useSelector(currencyState);
   const { isLoading, error, data } = useSingleProduct(productId);
   const [starSelected, setStarSelected] = useState(0);
   const { showAlertMessage } = Toastify();
@@ -62,7 +61,7 @@ const RateProduct = () => {
     );
   }
 
-  const { title, description, price, discountPercentage, thumbnail } = data;
+  const { title, description, price, thumbnail } = data;
 
   const onSubmit = async (data: Form) => {
     if (starSelected === 0) {
@@ -83,7 +82,7 @@ const RateProduct = () => {
   };
 
   const { exchangeRatePrice, discountedPrice, roundDiscountPercent } =
-    changePriceDiscountByExchangeRate(price, discountPercentage, exchangeRate);
+    price[currency_code];
 
   return (
     <section className="bg-gray-100 p-5">

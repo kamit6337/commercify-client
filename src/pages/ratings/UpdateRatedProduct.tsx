@@ -3,7 +3,6 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Toastify from "../../lib/Toastify";
 import { currencyState } from "../../redux/slice/currencySlice";
-import changePriceDiscountByExchangeRate from "../../utils/javascript/changePriceDiscountByExchangeRate";
 import { useForm } from "react-hook-form";
 import useSingleProduct from "@/hooks/products/useSingleProduct";
 import useGetProductRatings from "@/hooks/ratings/useGetProductRatings";
@@ -22,7 +21,7 @@ const UpdateRatedProduct = () => {
   const navigate = useNavigate();
   const ratingId = useSearchParams()[0].get("rating") as string;
   const productId = useSearchParams()[0].get("product") as string;
-  const { symbol, exchangeRate } = useSelector(currencyState);
+  const { symbol, currency_code } = useSelector(currencyState);
   const { showAlertMessage, showSuccessMessage } = Toastify();
   const [starSelected, setStarSelected] = useState(0);
   const { data: ratingData } = useGetProductRatings(productId);
@@ -126,16 +125,10 @@ const UpdateRatedProduct = () => {
     mutate(obj);
   };
 
-  const {
-    title: productTitle,
-    description,
-    price,
-    discountPercentage,
-    thumbnail,
-  } = data;
+  const { title: productTitle, description, price, thumbnail } = data;
 
   const { exchangeRatePrice, discountedPrice, roundDiscountPercent } =
-    changePriceDiscountByExchangeRate(price, discountPercentage, exchangeRate);
+    price[currency_code];
 
   return (
     <section className="bg-gray-100 p-5">

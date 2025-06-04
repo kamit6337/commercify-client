@@ -1,6 +1,4 @@
-import countries from "@/data/countries";
 import useCountryFromLatLan from "@/hooks/countryAndCurrency/useCountryFromLatLan";
-import useCurrencyExchange from "@/hooks/countryAndCurrency/useCurrencyExchange";
 import Loading from "@/lib/Loading";
 import {
   currencyState,
@@ -15,57 +13,78 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import Toastify from "@/lib/Toastify";
+import useAllCountry from "@/hooks/countryAndCurrency/useAllCountry";
+import { COUNTRY } from "@/types";
+import useCurrencyExchange from "@/hooks/countryAndCurrency/useCurrencyExchange";
+import VirtualList from "@/lib/VirtualList";
 
 const UserCountry = () => {
   const dispatch = useDispatch();
   const [lan, setLan] = useState(0);
   const [lon, setLon] = useState(0);
-  const { id: countryId, name, flag } = useSelector(currencyState);
-  const { data, error, isLoading } = useCountryFromLatLan(lan, lon);
-
-  const { showErrorMessage } = Toastify();
+  const { id: countryId, currency_name, flag } = useSelector(currencyState);
+  const {
+    isLoading: isLoadingAllCountry,
+    error: errorAllCountry,
+    data: countries,
+    isSuccess: isSuccessAllCountry,
+  } = useAllCountry();
 
   const {
+    isLoading: isLoadingCurrency,
+    error: errorCurrency,
     data: currencyExchange,
-    error: errorCurrencyExchange,
-    isLoading: isLoadingCurrencyExchange,
-  } = useCurrencyExchange();
+    isSuccess: isSuccessCurrency,
+  } = useCurrencyExchange(isSuccessAllCountry);
+
+  const { data, error, isLoading } = useCountryFromLatLan(
+    isSuccessAllCountry && isSuccessCurrency,
+    lan,
+    lon
+  );
+
+  const { showErrorMessage } = Toastify();
 
   useEffect(() => {
     if (error) {
       showErrorMessage({ message: error.message });
       return;
     }
-    if (errorCurrencyExchange) {
-      showErrorMessage({ message: errorCurrencyExchange.message });
+    if (errorAllCountry) {
+      showErrorMessage({ message: errorAllCountry.message });
+      return;
     }
-  }, [error, errorCurrencyExchange]);
+    if (errorCurrency) {
+      showErrorMessage({ message: errorCurrency.message });
+    }
+  }, [error, errorAllCountry, errorCurrency]);
 
   useEffect(() => {
-    if (data && currencyExchange) {
+    if (data) {
       const countryName = data.country;
 
-      const countryInfo = countries.find(
-        (country) => country.name.toLowerCase() === countryName?.toLowerCase()
-      );
+      const findCountry = countries.find(
+        (country: COUNTRY) =>
+          country.name.toLowerCase() === countryName?.toLowerCase()
+      ) as COUNTRY;
 
-      const currencyCode = countryInfo?.currency.code;
+      if (!findCountry) return;
 
-      const getExchangeRate = currencyExchange[currencyCode || "INR"];
+      const conversionRate = currencyExchange[findCountry.currency.code];
 
       const obj = {
-        id: countryInfo?.id,
-        code: currencyCode,
-        name: countryInfo?.currency.name,
-        symbol: countryInfo?.currency.symbol,
-        exchangeRate: getExchangeRate,
-        country: countryInfo?.name,
-        dial_code: countryInfo?.dial_code,
-        flag: countryInfo?.flag,
+        id: findCountry._id,
+        code: findCountry.currency.code,
+        name: findCountry.currency.name,
+        symbol: findCountry.currency.symbol,
+        country: findCountry.name,
+        dial_code: findCountry.dial_code,
+        flag: findCountry.flag,
+        conversionRate,
       };
       dispatch(initialCurrencyData(obj));
     }
-  }, [data, currencyExchange]);
+  }, [data]);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -84,28 +103,25 @@ const UserCountry = () => {
     }
   }, []);
 
-  if (isLoading || isLoadingCurrencyExchange) {
+  if (isLoadingAllCountry || isLoadingCurrency || isLoading) {
     return <Loading height={"full"} small={true} />;
   }
 
-  const handleCountryChange = (id: number) => {
-    if (errorCurrencyExchange) {
-      showErrorMessage({ message: errorCurrencyExchange.message });
-      return;
-    }
+  const handleCountryChange = (id: string) => {
+    const findCountry = countries.find(
+      (country: COUNTRY) => country._id === id
+    );
 
-    const countryInfo = countries.find((country) => country.id === id);
-    const currencyCode = countryInfo?.currency.code;
-    const getExchangeRate = currencyExchange[currencyCode || "INR"];
+    if (!findCountry) return;
 
     const obj = {
-      id: countryInfo?.id,
-      code: currencyCode,
-      country: countryInfo?.name,
-      exchangeRate: getExchangeRate,
-      name: countryInfo?.currency.name,
-      symbol: countryInfo?.currency.symbol,
-      flag: countryInfo?.flag,
+      id: findCountry._id,
+      code: findCountry.currency.code,
+      name: findCountry.currency.name,
+      symbol: findCountry.currency.symbol,
+      country: findCountry.name,
+      dial_code: findCountry.dial_code,
+      flag: findCountry.flag,
     };
     dispatch(initialCurrencyData(obj));
   };
@@ -114,38 +130,53 @@ const UserCountry = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <div className="w-10">
-          <img
-            src={`data:image/png;base64,${flag}`}
-            alt={name}
-            className="w-full object-cover"
-          />
+          <img src={flag} alt={currency_name} className="w-full object-cover" />
         </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-72" align="end">
-        {countries.map((country) => {
-          const { id, name, flag } = country;
-
-          return (
+      <DropdownMenuContent className="w-72 p-0" align="end">
+        <VirtualList
+          items={countries}
+          itemHeight={50}
+          renderItem={(country: COUNTRY) => (
             <DropdownMenuCheckboxItem
-              key={id}
-              checked={id === countryId}
+              key={country._id}
+              checked={country._id === countryId}
               className="flex items-center justify-center gap-2"
-              onClick={() => handleCountryChange(id)}
+              onClick={() => handleCountryChange(country._id)}
             >
               <div className="w-10">
                 <img
-                  src={`data:image/png;base64,${flag}`}
-                  alt={name}
+                  src={country.flag}
+                  alt={country.name}
+                  loading="lazy"
                   className="w-full object-cover"
                 />
               </div>
-              <p className="flex-1">{name}</p>
+              <p className="flex-1">{country.name}</p>
             </DropdownMenuCheckboxItem>
-          );
-        })}
+          )}
+        />
       </DropdownMenuContent>
     </DropdownMenu>
   );
 };
 
 export default UserCountry;
+
+// {countries.map((country: COUNTRY) => {
+//     const { _id, name, flag } = country;
+
+//     return (
+//       <DropdownMenuCheckboxItem
+//         key={_id}
+//         checked={_id === countryId}
+//         className="flex items-center justify-center gap-2"
+//         onClick={() => handleCountryChange(_id)}
+//       >
+//         <div className="w-10">
+//           <img src={flag} alt={name} className="w-full object-cover" />
+//         </div>
+//         <p className="flex-1">{name}</p>
+//       </DropdownMenuCheckboxItem>
+//     );
+//   })}

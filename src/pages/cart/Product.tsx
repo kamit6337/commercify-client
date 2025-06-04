@@ -21,7 +21,7 @@ type Props = {
 
 const Product = ({ product, wishlist: isWishlist = true }: Props) => {
   const dispatch = useDispatch();
-  const { symbol, exchangeRate } = useSelector(currencyState);
+  const { symbol, currency_code } = useSelector(currencyState);
   const { wishlist, cart } = useSelector(cartAndWishlistState);
 
   const {
@@ -60,7 +60,7 @@ const Product = ({ product, wishlist: isWishlist = true }: Props) => {
   };
 
   const { discountedPrice, exchangeRatePrice, roundDiscountPercent } =
-    changePriceDiscountByExchangeRate(price, discountPercentage, exchangeRate);
+    price[currency_code];
 
   return (
     <div className="w-full border-b-2 last:border-none lg:p-7 p-4 flex lg:gap-10 gap-5">

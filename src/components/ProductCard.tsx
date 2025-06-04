@@ -1,7 +1,6 @@
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { currencyState } from "../redux/slice/currencySlice";
-import changePriceDiscountByExchangeRate from "../utils/javascript/changePriceDiscountByExchangeRate";
 import { PRODUCT } from "@/types";
 
 type Props = {
@@ -9,23 +8,11 @@ type Props = {
 };
 
 const ProductCard = ({ product }: Props) => {
-  const { symbol, exchangeRate } = useSelector(currencyState);
+  const { symbol, currency_code } = useSelector(currencyState);
 
-  const {
-    _id,
-    title,
-    description,
-    price,
-    discountPercentage,
-    category,
-    thumbnail,
-  } = product;
+  const { _id, title, description, price, category, thumbnail } = product;
 
-  const { discountedPrice } = changePriceDiscountByExchangeRate(
-    price,
-    discountPercentage,
-    exchangeRate
-  );
+  const { discountedPrice } = price[currency_code];
 
   return (
     <div className="xl:w-80 lg:w-64 md:w-52 w-56 lg:h-[420px] h-96 flex flex-col rounded-xl hover:shadow-2xl duration-200">

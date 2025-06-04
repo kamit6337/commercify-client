@@ -3,7 +3,6 @@ import { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { currencyState } from "../../redux/slice/currencySlice";
 import makeDateDaysAfter from "../../utils/javascript/makeDateDaysAfter";
-import changePriceDiscountByExchangeRate from "../../utils/javascript/changePriceDiscountByExchangeRate";
 import { ADDRESS, PRODUCT } from "@/types";
 
 type Product = {
@@ -18,14 +17,13 @@ type Props = {
 };
 
 const CheckoutProduct = ({ product, selectedAddress, cart }: Props) => {
-  const { symbol, exchangeRate } = useSelector(currencyState);
+  const { symbol, currency_code } = useSelector(currencyState);
 
   const {
     _id: id,
     title,
     description,
     price,
-    discountPercentage,
     thumbnail,
     deliveredBy,
   } = product;
@@ -39,14 +37,7 @@ const CheckoutProduct = ({ product, selectedAddress, cart }: Props) => {
   }, [cart, id]);
 
   const { discountedPrice, exchangeRatePrice, roundDiscountPercent } =
-    changePriceDiscountByExchangeRate(price, discountPercentage, exchangeRate);
-
-  console.log("price", price);
-  console.log("discountPercentage", discountPercentage);
-  console.log("exchangeRate", exchangeRate);
-  console.log("discountedPrice", discountedPrice);
-  console.log("exchangeRatePrice", exchangeRatePrice);
-  console.log("roundDiscountPercent", roundDiscountPercent);
+    price[currency_code];
 
   if (!selectedAddress) return;
 

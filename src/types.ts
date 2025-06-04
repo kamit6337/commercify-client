@@ -17,7 +17,7 @@ export type ORDER_STATUS_COUNT = {
 };
 
 export type COUNTRY = {
-  id: number;
+  _id: string;
   name: string;
   isoAlpha2: string;
   isoAlpha3: string;
@@ -29,7 +29,6 @@ export type COUNTRY = {
   };
   flag: string;
   dial_code: string;
-  code: string;
 };
 
 export type BUY = {
@@ -90,11 +89,24 @@ export type NEW_REVIEW = {
   comment: string;
 };
 
+export type PRICE_VALUE = {
+  price: number;
+  exchangeRate: number;
+  exchangeRatePrice: number;
+  roundDiscountPercent: number;
+  discountedPrice: number;
+  discountPercentCost: number;
+};
+
+export type PRICE = {
+  [key: string]: PRICE_VALUE;
+};
+
 export type PRODUCT = {
   _id: string;
   title: string;
   description: string;
-  price: number;
+  price: PRICE;
   discountPercentage: number;
   deliveredBy: number;
   category: CATEGORY;
