@@ -1,5 +1,7 @@
 import ReactIcons from "@/assets/icons";
 import UpdateProduct from "@/components/admin/products/UpdateProduct";
+import UpdateSale from "@/components/admin/products/UpdateSale";
+import UpdateStock from "@/components/admin/products/UpdateStock";
 import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import {
   DropdownMenu,
@@ -7,17 +9,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { currencyState } from "@/redux/slice/currencySlice";
 import { PRODUCT } from "@/types";
-import changePriceDiscountByExchangeRate from "@/utils/javascript/changePriceDiscountByExchangeRate";
-import { useSelector } from "react-redux";
+import { useState } from "react";
 
 type Props = {
   product: PRODUCT;
 };
 
 const AdminSingleProduct = ({ product }: Props) => {
-  const { symbol, exchangeRate } = useSelector(currencyState);
+  const [openDialog, setOpenDialog] = useState("");
 
   const {
     _id,
@@ -25,22 +25,20 @@ const AdminSingleProduct = ({ product }: Props) => {
     deliveredBy,
     description,
     title,
-    discountPercentage,
     price,
     rate,
     rateCount,
     thumbnail,
+    stock,
+    deliveryCharge,
+    isReadyToSale,
   } = product;
 
   const rateValue = Math.floor(rate);
   let fraction = rate - rateValue;
   fraction = parseFloat(fraction.toFixed(2));
 
-  const { exchangeRatePrice } = changePriceDiscountByExchangeRate(
-    price,
-    0,
-    exchangeRate
-  );
+  const { priceInUSD, discountPercent } = price;
 
   return (
     <div
@@ -105,26 +103,63 @@ const AdminSingleProduct = ({ product }: Props) => {
           <p className="font-semibold">{title}</p>
           <p>{description}</p>
         </div>
-        <p className="capitalize">Category : {categoryTitle}</p>
-        <p>Delivered by Days : {deliveredBy}</p>
-        <p>Discount : {discountPercentage}%</p>
-        <p>
-          Price : {symbol}
-          {exchangeRatePrice}
-        </p>
+
+        <div className="space-y-2">
+          <div className="flex items-center gap-1">
+            <p className="text-sm text-gray-500">Category : </p>
+            <p className="font-semibold">{categoryTitle}</p>
+          </div>
+          <div className="flex items-center gap-1">
+            <p className="text-sm text-gray-500">Delivered by : </p>
+            <p className="font-semibold">{deliveredBy} days</p>
+          </div>
+          <div className="flex items-center gap-1">
+            <p className="text-sm text-gray-500">Discount : </p>
+            <p className="font-semibold">{discountPercent}%</p>
+          </div>
+          <div className="flex items-center gap-1">
+            <p className="text-sm text-gray-500">Price : </p>
+            <p className="font-semibold">${priceInUSD}</p>
+          </div>
+          <div className="flex items-center gap-1">
+            <p className="text-sm text-gray-500">Delivery Charge : </p>
+            <p className="font-semibold">${deliveryCharge}</p>
+          </div>
+          <div className="flex items-center gap-1">
+            <p className="text-sm text-gray-500">Current Stock : </p>
+            <p className="font-semibold">{stock}</p>
+          </div>
+          {isReadyToSale ? (
+            <p className="border rounded px-5 py-2 bg-green-400 text-white w-max">
+              Currently on Sale
+            </p>
+          ) : (
+            <p className="border rounded px-5 py-2 bg-red-400 text-white w-max">
+              Stopped the Sale
+            </p>
+          )}
+        </div>
       </div>
       <AlertDialog>
         <DropdownMenu>
           <DropdownMenuTrigger className="hidden self-start w-20 lg:flex justify-end">
             <ReactIcons.options />
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <AlertDialogTrigger className="w-full">
-              <DropdownMenuItem className="w-full">Update</DropdownMenuItem>
+          <DropdownMenuContent align="end" className="flex flex-col">
+            <AlertDialogTrigger onClick={() => setOpenDialog("details")}>
+              <DropdownMenuItem>Update Details</DropdownMenuItem>
+            </AlertDialogTrigger>
+            <AlertDialogTrigger onClick={() => setOpenDialog("stock")}>
+              <DropdownMenuItem>Update Stock</DropdownMenuItem>
+            </AlertDialogTrigger>
+            <AlertDialogTrigger onClick={() => setOpenDialog("sale")}>
+              <DropdownMenuItem>Update Sale</DropdownMenuItem>
             </AlertDialogTrigger>
           </DropdownMenuContent>
         </DropdownMenu>
-        <UpdateProduct product={product} />
+        {openDialog === "details" ? <UpdateProduct product={product} /> : ""}
+        {openDialog === "stock" ? <UpdateStock product={product} /> : ""}
+        {openDialog === "sale" ? <UpdateSale product={product} /> : ""}
       </AlertDialog>
     </div>
   );

@@ -1,4 +1,3 @@
-import useCountryFromLatLan from "@/hooks/countryAndCurrency/useCountryFromLatLan";
 import Loading from "@/lib/Loading";
 import {
   currencyState,
@@ -13,170 +12,128 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import Toastify from "@/lib/Toastify";
-import useAllCountry from "@/hooks/countryAndCurrency/useAllCountry";
 import { COUNTRY } from "@/types";
 import useCurrencyExchange from "@/hooks/countryAndCurrency/useCurrencyExchange";
 import VirtualList from "@/lib/VirtualList";
+import useAllCountry from "@/hooks/countryAndCurrency/useAllCountry";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
 
 const UserCountry = () => {
+  const [countrySelected, setCountrySelected] = useState<COUNTRY | null>(null);
   const dispatch = useDispatch();
-  const [lan, setLan] = useState(0);
-  const [lon, setLon] = useState(0);
-  const { id: countryId, currency_name, flag } = useSelector(currencyState);
   const {
-    isLoading: isLoadingAllCountry,
-    error: errorAllCountry,
-    data: countries,
-    isSuccess: isSuccessAllCountry,
-  } = useAllCountry();
+    id: countryId,
+    currency_name,
+    flag,
+    currency_code,
+  } = useSelector(currencyState);
+
+  const { data: countries } = useAllCountry();
 
   const {
     isLoading: isLoadingCurrency,
     error: errorCurrency,
     data: currencyExchange,
-    isSuccess: isSuccessCurrency,
-  } = useCurrencyExchange(isSuccessAllCountry);
+  } = useCurrencyExchange();
 
-  const { data, error, isLoading } = useCountryFromLatLan(
-    isSuccessAllCountry && isSuccessCurrency,
-    lan,
-    lon
-  );
+  useEffect(() => {
+    if (currencyExchange) {
+      const conversionRate = currencyExchange[currency_code];
+      dispatch(initialCurrencyData(conversionRate));
+    }
+  }, [currencyExchange]);
 
   const { showErrorMessage } = Toastify();
 
   useEffect(() => {
-    if (error) {
-      showErrorMessage({ message: error.message });
-      return;
-    }
-    if (errorAllCountry) {
-      showErrorMessage({ message: errorAllCountry.message });
-      return;
-    }
     if (errorCurrency) {
       showErrorMessage({ message: errorCurrency.message });
     }
-  }, [error, errorAllCountry, errorCurrency]);
+  }, [errorCurrency]);
 
-  useEffect(() => {
-    if (data) {
-      const countryName = data.country;
-
-      const findCountry = countries.find(
-        (country: COUNTRY) =>
-          country.name.toLowerCase() === countryName?.toLowerCase()
-      ) as COUNTRY;
-
-      if (!findCountry) return;
-
-      const conversionRate = currencyExchange[findCountry.currency.code];
-
-      const obj = {
-        id: findCountry._id,
-        code: findCountry.currency.code,
-        name: findCountry.currency.name,
-        symbol: findCountry.currency.symbol,
-        country: findCountry.name,
-        dial_code: findCountry.dial_code,
-        flag: findCountry.flag,
-        conversionRate,
-      };
-      dispatch(initialCurrencyData(obj));
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setLan(latitude);
-          setLon(longitude);
-        },
-        (error) => {
-          console.error("Error getting location:", error);
-        }
-      );
-    } else {
-      console.error("Geolocation is not supported by this browser.");
-    }
-  }, []);
-
-  if (isLoadingAllCountry || isLoadingCurrency || isLoading) {
+  if (isLoadingCurrency) {
     return <Loading height={"full"} small={true} />;
   }
 
-  const handleCountryChange = (id: string) => {
-    const findCountry = countries.find(
-      (country: COUNTRY) => country._id === id
-    );
+  const handleCountryChange = (country: COUNTRY) => {
+    setCountrySelected(country);
+  };
 
-    if (!findCountry) return;
+  const handleSubmit = () => {
+    localStorage.setItem("country", countrySelected?._id || "");
 
-    const obj = {
-      id: findCountry._id,
-      code: findCountry.currency.code,
-      name: findCountry.currency.name,
-      symbol: findCountry.currency.symbol,
-      country: findCountry.name,
-      dial_code: findCountry.dial_code,
-      flag: findCountry.flag,
-    };
-    dispatch(initialCurrencyData(obj));
+    window.location.reload();
   };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <div className="w-10">
-          <img src={flag} alt={currency_name} className="w-full object-cover" />
+    <AlertDialog>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <div className="w-10">
+            <img
+              src={flag}
+              alt={currency_name}
+              loading="lazy"
+              className="w-full object-cover"
+            />
+          </div>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-72 p-0" align="end">
+          <VirtualList
+            items={countries}
+            itemHeight={50}
+            renderItem={(country: COUNTRY) => (
+              <AlertDialogTrigger className="w-full">
+                <DropdownMenuCheckboxItem
+                  key={country._id}
+                  checked={country._id === countryId}
+                  className="flex items-center gap-2"
+                  onClick={() => handleCountryChange(country)}
+                >
+                  <div className="w-10">
+                    <img
+                      src={country.flag}
+                      alt={country.name}
+                      loading="lazy"
+                      className="w-full object-cover"
+                    />
+                  </div>
+                  <p className="">{country.name}</p>
+                </DropdownMenuCheckboxItem>
+              </AlertDialogTrigger>
+            )}
+          />
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <AlertDialogContent>
+        <div className="space-y-5">
+          <p className="font-semibold text-lg">
+            You have selected : {countrySelected?.name}
+          </p>
+          <div>
+            <p>
+              The price of products will change according to country selected.
+            </p>
+            <p>
+              Are you sure to change the price as it will need complete reload
+              on pages.
+            </p>
+          </div>
         </div>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-72 p-0" align="end">
-        <VirtualList
-          items={countries}
-          itemHeight={50}
-          renderItem={(country: COUNTRY) => (
-            <DropdownMenuCheckboxItem
-              key={country._id}
-              checked={country._id === countryId}
-              className="flex items-center justify-center gap-2"
-              onClick={() => handleCountryChange(country._id)}
-            >
-              <div className="w-10">
-                <img
-                  src={country.flag}
-                  alt={country.name}
-                  loading="lazy"
-                  className="w-full object-cover"
-                />
-              </div>
-              <p className="flex-1">{country.name}</p>
-            </DropdownMenuCheckboxItem>
-          )}
-        />
-      </DropdownMenuContent>
-    </DropdownMenu>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={handleSubmit}>Submit</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };
 
 export default UserCountry;
-
-// {countries.map((country: COUNTRY) => {
-//     const { _id, name, flag } = country;
-
-//     return (
-//       <DropdownMenuCheckboxItem
-//         key={_id}
-//         checked={_id === countryId}
-//         className="flex items-center justify-center gap-2"
-//         onClick={() => handleCountryChange(_id)}
-//       >
-//         <div className="w-10">
-//           <img src={flag} alt={name} className="w-full object-cover" />
-//         </div>
-//         <p className="flex-1">{name}</p>
-//       </DropdownMenuCheckboxItem>
-//     );
-//   })}

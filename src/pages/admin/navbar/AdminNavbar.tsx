@@ -4,7 +4,6 @@ import useSearchProducts from "@/hooks/products/useSearchProducts";
 import useDebounce from "@/hooks/general/useDebounce";
 import Icons from "@/assets/icons";
 import UserProfile from "@/components/navbar/UserProfile";
-import UserCountry from "@/components/navbar/UserCountry";
 import Toastify from "@/lib/Toastify";
 import CustomImages from "@/assets/images";
 import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
@@ -121,7 +120,6 @@ const AdminNavbar = () => {
       </div>
 
       {/* MARK: USER PROFILE */}
-      <UserCountry />
       <UserProfile />
 
       {/* MARK: ALERT DIALOG */}

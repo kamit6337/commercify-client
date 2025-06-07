@@ -11,7 +11,8 @@ const CartLayout = () => {
   const { pathname } = useLocation();
   const { cart } = useSelector(cartAndWishlistState);
   const cartIds = cart.map((obj) => obj.id);
-  const { isLoading, error, data } = useProductsFromIDs(cartIds);
+  const { isLoading, error, data = [] } = useProductsFromIDs(cartIds);
+
   const {
     isLoading: isLoadingUserAddress,
     error: errorUserAddress,

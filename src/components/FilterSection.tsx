@@ -1,10 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { useMemo } from "react";
 import useAllCategory from "@/hooks/category/useAllCategory";
-import findMaxPrice from "@/utils/javascript/findMaxPrice";
-import changePriceDiscountByExchangeRate from "@/utils/javascript/changePriceDiscountByExchangeRate";
-import { currencyState } from "@/redux/slice/currencySlice";
 import { CATEGORY, PRODUCT } from "@/types";
 import RangeSliderWithTooltip from "@/lib/RangeSliderWithTooltip";
 
@@ -17,15 +13,24 @@ type Props = {
 const FilterSection = ({ id, products, filterProductsFn }: Props) => {
   const { pathname } = useLocation();
   const { data: allCategory } = useAllCategory();
-  const { currency_code } = useSelector(currencyState);
 
   const { maxPrice, minPrice } = useMemo(() => {
-    return findMaxPrice(products, currency_code);
+    const discountedPriceList = products.map(
+      (product) => product.price.discountedPrice
+    );
+
+    const maxValue = Math.max(...discountedPriceList);
+    const minValue = Math.min(...discountedPriceList);
+
+    return {
+      maxPrice: maxValue + 1,
+      minPrice: minValue + 1,
+    };
   }, [products]);
 
   const handlePriceChange = (value: number) => {
     const filter = products.filter((product) => {
-      const { discountedPrice } = product.price[currency_code];
+      const { discountedPrice } = product.price;
 
       return discountedPrice <= value;
     });

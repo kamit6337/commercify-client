@@ -1,36 +1,40 @@
+import Toastify from "@/lib/Toastify";
 import {
   cartAndWishlistState,
   updateCart,
   updateWishlist,
 } from "@/redux/slice/cartAndWishlistSlice";
-import { useEffect, useState } from "react";
+import { postReq } from "@/utils/api/api";
+import { useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 type Props = {
-  image: string;
-  title: string;
   id: string;
+  isProductOutOfStock: boolean;
+  noSale: boolean;
 };
 
-const ImagePart = ({ image, title, id }: Props) => {
-  const dispatch = useDispatch();
-  const [isAddedToCart, setIsAddedToCart] = useState(false);
-  const [isAddedToWatchlist, setIsAddedToWatchlist] = useState(false);
-  const { cart, wishlist } = useSelector(cartAndWishlistState);
+type NOTIFY_TYPE = "out_of_sale" | "out_of_stock";
 
-  useEffect(() => {
+const ImagePart = ({ id, isProductOutOfStock, noSale }: Props) => {
+  const dispatch = useDispatch();
+  const { cart, wishlist } = useSelector(cartAndWishlistState);
+  const { showErrorMessage, showSuccessMessage } = Toastify();
+  const [isPending, setIsPending] = useState(false);
+
+  const isAddedToCart = useMemo(() => {
     if (cart.find((obj) => obj.id === id)) {
-      setIsAddedToCart(true);
+      return true;
     } else {
-      setIsAddedToCart(false);
+      return false;
     }
   }, [id, cart]);
 
-  useEffect(() => {
+  const isAddedToWishlist = useMemo(() => {
     if (wishlist.find((obj) => obj.id === id)) {
-      setIsAddedToWatchlist(true);
+      return true;
     } else {
-      setIsAddedToWatchlist(false);
+      return false;
     }
   }, [id, wishlist]);
 
@@ -50,44 +54,123 @@ const ImagePart = ({ image, title, id }: Props) => {
     dispatch(updateWishlist({ id }));
   };
 
+  const handleNotifyUser = async (type: NOTIFY_TYPE) => {
+    try {
+      setIsPending(true);
+      const response = await postReq("/notify", { productId: id, type });
+      showSuccessMessage({ message: response });
+    } catch (error) {
+      showErrorMessage({
+        message:
+          error instanceof Error ? error.message : "Something went wrong",
+      });
+    } finally {
+      setIsPending(false);
+    }
+  };
+
+  // MARK: NO SALE NOTIFY
+  if (noSale) {
+    return (
+      <>
+        <div className="grid grid-cols-2 gap-4 mt-4 md:text-lg lg:text-base text-sm">
+          <button
+            disabled={isPending}
+            className="border p-3 w-full  rounded-md cursor-pointer text-center bg-product_addToCart hover:bg-gray-100"
+            onClick={() => handleNotifyUser("out_of_sale")}
+          >
+            Notify Me
+          </button>
+
+          {isAddedToWishlist ? (
+            <button
+              className="border p-3 sm_lap:text-sm  w-full rounded-md cursor-pointer bg-gray-400 text-center flex items-center justify-center hover:brightness-95"
+              onClick={removeFromWatchlist}
+            >
+              Added To Wishlist
+            </button>
+          ) : (
+            <button
+              className="  border p-3 sm_lap:text-sm w-full rounded-md cursor-pointer text-center text-black flex items-center justify-center hover:bg-gray-100"
+              onClick={addToWatchlist}
+            >
+              Add to Wishlist
+            </button>
+          )}
+        </div>
+      </>
+    );
+  }
+
+  // MARK: PRODUCT OUT OF STOCK NOTIFY
+  if (isProductOutOfStock) {
+    return (
+      <>
+        <div className="grid grid-cols-2 gap-4 mt-4 md:text-lg lg:text-base text-sm">
+          <button
+            disabled={isPending}
+            className="border p-3 w-full  rounded-md cursor-pointer text-center bg-product_addToCart hover:bg-gray-100"
+            onClick={() => handleNotifyUser("out_of_stock")}
+          >
+            Notify Me
+          </button>
+
+          {isAddedToWishlist ? (
+            <button
+              className="border p-3 sm_lap:text-sm  w-full rounded-md cursor-pointer bg-gray-400 text-center flex items-center justify-center hover:brightness-95"
+              onClick={removeFromWatchlist}
+            >
+              Added To Wishlist
+            </button>
+          ) : (
+            <button
+              className="  border p-3 sm_lap:text-sm w-full rounded-md cursor-pointer text-center text-black flex items-center justify-center hover:bg-gray-100"
+              onClick={addToWatchlist}
+            >
+              Add to Wishlist
+            </button>
+          )}
+        </div>
+      </>
+    );
+  }
+
+  // MARK: STOCK AND SALE IS READY
   return (
-    <div className="w-full">
-      <div className="border w-full h-96 flex justify-center py-2">
-        <img src={image} alt={title} className="h-full object-cover" />
-      </div>
+    <>
       <div className="grid grid-cols-2 gap-4 mt-4 md:text-lg lg:text-base text-sm">
         {isAddedToCart ? (
-          <p
+          <button
             className=" border p-3 w-full  rounded-md cursor-pointer  text-center bg-green-600"
             onClick={removeFromCart}
           >
             Added To Cart
-          </p>
+          </button>
         ) : (
-          <p
-            className="border p-3 w-full  rounded-md cursor-pointer text-center bg-product_addToCart"
+          <button
+            className="border p-3 w-full  rounded-md cursor-pointer text-center bg-product_addToCart hover:bg-gray-100"
             onClick={addToCart}
           >
             Add to Cart
-          </p>
+          </button>
         )}
-        {isAddedToWatchlist ? (
-          <p
-            className="border p-3 sm_lap:text-sm  w-full rounded-md cursor-pointer bg-gray-400 text-center flex items-center justify-center "
+        {isAddedToWishlist ? (
+          <button
+            className="border p-3 sm_lap:text-sm  w-full rounded-md cursor-pointer bg-gray-400 text-center flex items-center justify-center hover:brightness-95"
             onClick={removeFromWatchlist}
           >
-            Added To Watchlist
-          </p>
+            Added To Wishlist
+          </button>
         ) : (
-          <p
-            className="  border p-3 sm_lap:text-sm w-full rounded-md cursor-pointer text-center text-black flex items-center justify-center"
+          <button
+            className="  border p-3 sm_lap:text-sm w-full rounded-md cursor-pointer text-center text-black flex items-center justify-center hover:bg-gray-100"
             onClick={addToWatchlist}
           >
-            Add to Watchlist
-          </p>
+            Add to Wishlist
+          </button>
         )}
       </div>
-    </div>
+    </>
   );
 };
 

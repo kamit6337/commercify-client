@@ -1,6 +1,7 @@
 import useProductsFromIDs from "@/hooks/products/useProductsFromIDs";
 import Loading from "@/lib/Loading";
 import Product from "./Product";
+import { PRODUCT } from "@/types";
 
 type Product = {
   id: string;
@@ -24,9 +25,13 @@ const Products = ({ list }: Props) => {
     return <p>{error}</p>;
   }
 
+  const products = data as PRODUCT[];
+
+  console.log("products", products);
+
   return (
     <div className="flex flex-col border">
-      {data.map((product, i) => {
+      {products.map((product, i) => {
         return <Product key={i} product={product} />;
       })}
     </div>

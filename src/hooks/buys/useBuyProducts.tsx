@@ -3,7 +3,7 @@ import { getReq } from "../../utils/api/api";
 
 const useBuyProducts = (id: string) => {
   const query = useQuery({
-    queryKey: ["Buy Products"],
+    queryKey: ["Buy Products", id],
     queryFn: () =>
       getReq("/payment/success", {
         orderId: id,

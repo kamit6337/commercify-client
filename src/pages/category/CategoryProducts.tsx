@@ -44,10 +44,16 @@ const CategoryProducts = () => {
     (category: CATEGORY) => category._id === id
   ) as CATEGORY;
 
+  console.log(
+    "activeCategory.title.toUpperCase()",
+    activeCategory.title.toUpperCase()
+  );
+  console.log("products", products);
+
   return (
     <>
       <Helmet>
-        <title className="capitalize">Category | {activeCategory.title}</title>
+        <title>Category | {activeCategory.title.toUpperCase()}</title>
         <meta name="description" content="Category products of this App" />
       </Helmet>
 

@@ -1,99 +1,68 @@
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import ProductCard from "./ProductCard";
 import { PRODUCT } from "@/types";
-import { useSelector } from "react-redux";
-import { currencyState } from "@/redux/slice/currencySlice";
+
+type SORT_OPTION = "popularity" | "low_to_high" | "high_to_low";
 
 type Props = {
   products: PRODUCT[];
+  sortOption: SORT_OPTION;
+  setSortOption: (value: SORT_OPTION) => void;
 };
 
-const ProductGrid = ({ products }: Props) => {
-  const [defaultSort, setDefaultSort] = useState(1);
-  const [sortProducts, setSortProducts] = useState(products);
-  const { currency_code } = useSelector(currencyState);
-
-  useEffect(() => {
-    if (!products) return;
-
-    if (defaultSort === 1) {
-      const beforeSort = [...products];
-      beforeSort.sort((a, b) => {
-        console.log(
-          "a.price[currency_code].exchangeRatePrice",
-          a.price[currency_code].exchangeRatePrice
-        );
-        console.log(
-          "b.price[currency_code].exchangeRatePrice",
-          b.price[currency_code].exchangeRatePrice
-        );
-
-        return (
-          a.price[currency_code].exchangeRatePrice -
-          b.price[currency_code].exchangeRatePrice
-        );
-      });
-
-      setSortProducts(beforeSort);
-      return;
+const ProductGrid = ({ products, sortOption, setSortOption }: Props) => {
+  const sortedProducts = useMemo(() => {
+    if (sortOption === "popularity") {
+      return products;
     }
 
-    if (defaultSort === 2) {
-      const beforeSort = [...products];
-      beforeSort.sort((a, b) => {
-        return (
-          b.price[currency_code].exchangeRatePrice -
-          a.price[currency_code].exchangeRatePrice
-        );
-      });
+    const cloned = [...products];
+    cloned.sort((a, b) => {
+      const priceA = a.price.exchangeRatePrice ?? 0;
+      const priceB = b.price.exchangeRatePrice ?? 0;
 
-      setSortProducts(beforeSort);
-    }
-  }, [defaultSort, products]);
-
-  const handleLowToHigh = () => {
-    const beforeSort = [...products];
-    beforeSort.sort((a, b) => {
-      console.log(
-        "a.price[currency_code].exchangeRatePrice",
-        a.price[currency_code].exchangeRatePrice
-      );
-      console.log(
-        "b.price[currency_code].exchangeRatePrice",
-        b.price[currency_code].exchangeRatePrice
-      );
-
-      return (
-        a.price[currency_code].exchangeRatePrice -
-        b.price[currency_code].exchangeRatePrice
-      );
+      if (sortOption === "low_to_high") return priceA - priceB;
+      if (sortOption === "high_to_low") return priceB - priceA;
+      return 0;
     });
 
-    setSortProducts(beforeSort);
-  };
+    return cloned;
+  }, [products, sortOption]);
+
   return (
     <section>
       <div className="w-full h-10 border-b px-4 text-sm  flex items-center gap-5">
         <p className="font-semibold text-important_black">Sort By</p>
         <p
           className={`${
-            defaultSort === 1 && "border-b-2 text-blue-600 border-blue-600"
+            sortOption === "popularity" &&
+            "border-b-2 text-blue-600 border-blue-600"
           } cursor-pointer  h-full flex items-center`}
-          onClick={() => handleLowToHigh()}
+          onClick={() => setSortOption("popularity")}
+        >
+          Popularity
+        </p>
+        <p
+          className={`${
+            sortOption === "low_to_high" &&
+            "border-b-2 text-blue-600 border-blue-600"
+          } cursor-pointer  h-full flex items-center`}
+          onClick={() => setSortOption("low_to_high")}
         >
           Price - Low to High
         </p>
         <p
           className={`${
-            defaultSort === 2 && "border-b-2 text-blue-600 border-blue-600"
+            sortOption === "high_to_low" &&
+            "border-b-2 text-blue-600 border-blue-600"
           } cursor-pointer  h-full flex items-center`}
-          onClick={() => setDefaultSort(2)}
+          onClick={() => setSortOption("high_to_low")}
         >
           Price - High to Low
         </p>
       </div>
       <div className="py-10 w-full grid md:grid-cols-3 grid-cols-2 justify-items-center lg:gap-y-8 gap-y-6  ">
-        {sortProducts.map((product) => {
+        {sortedProducts.map((product) => {
           return <ProductCard key={product._id} product={product} />;
         })}
       </div>

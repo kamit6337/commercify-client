@@ -72,13 +72,13 @@ const Router = () => {
           <Route path="checkout" element={<Checkout />} />
         </Route>
 
-        {/* NOTE: PRODUCT RATING */}
-        <Route path="ratings/create" element={<RateProduct />} />
-        <Route path="ratings/update" element={<UpdateRatedProduct />} />
-
         {/* NOTE: PAYMENT SUCCESS AND FAILURE */}
         <Route path="payment/success" element={<PaymentSuccess />} />
         <Route path="payment/cancel" element={<PaymentCancel />} />
+
+        {/* NOTE: PRODUCT RATING */}
+        <Route path="ratings/create" element={<RateProduct />} />
+        <Route path="ratings/update" element={<UpdateRatedProduct />} />
 
         {/* NOTE: USER ROUTES */}
         <Route path="user" element={<UserLayout />}>

@@ -16,32 +16,35 @@ const currencySlice = createSlice({
   name: "CurrencySlice",
   initialState,
   reducers: {
-    initialCurrencyData: (state, { payload }) => {
+    initialCountryData: (state, { payload }) => {
       const {
         id,
-        code,
-        name,
+        currency_code,
+        currency_name,
         symbol,
-        conversionRate,
         country,
         flag,
         dial_code,
       } = payload;
 
       state.id = id;
-      state.currency_code = code;
-      state.currency_name = name;
+      state.currency_code = currency_code;
+      state.currency_name = currency_name;
       state.symbol = symbol;
       state.country = country;
       state.dial_code = dial_code;
       state.flag = flag;
-      state.conversionRate = conversionRate;
+      return state;
+    },
+    initialCurrencyData: (state, { payload }) => {
+      state.conversionRate = payload;
       return state;
     },
   },
 });
 
-export const { initialCurrencyData } = currencySlice.actions;
+export const { initialCountryData, initialCurrencyData } =
+  currencySlice.actions;
 
 export const currencyReducer = currencySlice.reducer;
 

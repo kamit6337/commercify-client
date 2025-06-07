@@ -1,39 +1,18 @@
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { currencyState } from "../../redux/slice/currencySlice";
-import changePriceDiscountByExchangeRate from "../../utils/javascript/changePriceDiscountByExchangeRate";
 import { BUY } from "@/types";
 import makeDateFromUTC from "@/utils/javascript/makeDateFromUTC";
-import { useMemo } from "react";
-import countries from "@/data/countries";
 
 type Props = {
   buyProduct: BUY;
 };
 
 const Product = ({ buyProduct }: Props) => {
-  const { symbol } = useSelector(currencyState);
+  const {
+    currency: { symbol },
+  } = buyProduct.country;
   const { _id: id, title, thumbnail } = buyProduct.product;
-  const { price, exchangeRate, quantity, deliveredDate } = buyProduct;
+  const { buyPrice, quantity, deliveredDate } = buyProduct;
   const { country, district, state, address } = buyProduct.address;
-
-  const countrySymbol = useMemo(() => {
-    if (!country) return symbol;
-
-    const findCountry = countries.find(
-      (countryObj) => countryObj.name.toLowerCase() === country.toLowerCase()
-    );
-
-    if (!findCountry) return symbol;
-
-    return findCountry.currency.symbol;
-  }, [country]);
-
-  const { exchangeRatePrice } = changePriceDiscountByExchangeRate(
-    price,
-    0,
-    exchangeRate
-  );
 
   return (
     <div className="w-full border-b-2 lg:p-7 p-2 flex justify-between lg:gap-10 gap-5">
@@ -54,8 +33,8 @@ const Product = ({ buyProduct }: Props) => {
 
             <div className="flex gap-2 items-center">
               <p className="text-2xl font-semibold tracking-wide">
-                {countrySymbol}
-                {exchangeRatePrice}
+                {symbol}
+                {buyPrice}
               </p>
             </div>
             <div className="text-xs">Qty : {quantity}</div>

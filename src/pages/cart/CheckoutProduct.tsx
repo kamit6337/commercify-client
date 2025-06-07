@@ -17,7 +17,7 @@ type Props = {
 };
 
 const CheckoutProduct = ({ product, selectedAddress, cart }: Props) => {
-  const { symbol, currency_code } = useSelector(currencyState);
+  const { symbol } = useSelector(currencyState);
 
   const {
     _id: id,
@@ -36,8 +36,7 @@ const CheckoutProduct = ({ product, selectedAddress, cart }: Props) => {
     return findProduct.quantity;
   }, [cart, id]);
 
-  const { discountedPrice, exchangeRatePrice, roundDiscountPercent } =
-    price[currency_code];
+  const { discountedPrice, exchangeRatePrice, discountPercent } = price;
 
   if (!selectedAddress) return;
 
@@ -76,7 +75,7 @@ const CheckoutProduct = ({ product, selectedAddress, cart }: Props) => {
             {symbol}
             {exchangeRatePrice}
           </p>
-          <p className="text-xs">{roundDiscountPercent}% Off</p>
+          <p className="text-xs">{discountPercent}% Off</p>
         </div>
         <p className="text-sm text-gray-500">Qty: {productQuantity}</p>
         <div className="flex items-center gap-1 text-gray-500 text-sm">

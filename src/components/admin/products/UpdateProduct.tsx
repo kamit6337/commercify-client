@@ -320,7 +320,7 @@ const UpdateProduct = ({ product, handleCancel }: Props) => {
           >
             Cancel
           </AlertDialogCancel>
-          <Button className="w-full">
+          <Button className="w-full" disabled={isPending}>
             {isPending ? <Loading small={true} height={"full"} /> : "Submit"}
           </Button>
         </div>

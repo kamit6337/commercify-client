@@ -13,6 +13,8 @@ type Props = {
   id?: string;
 };
 
+type SORT_OPTION = "popularity" | "low_to_high" | "high_to_low";
+
 const ProductsAndFilter = ({
   products,
   isPagination = false,
@@ -21,6 +23,8 @@ const ProductsAndFilter = ({
   fetchNextPage,
   id,
 }: Props) => {
+  const [sortOption, setSortOption] = useState<SORT_OPTION>("popularity");
+
   const [filterProducts, setFilterProducts] = useState<PRODUCT[]>([]);
 
   const { ref, inView } = useInView({
@@ -57,10 +61,18 @@ const ProductsAndFilter = ({
 
         <main className="flex-1 bg-white">
           {filterProducts?.length > 0 ? (
-            <ProductGrid products={filterProducts} />
+            <ProductGrid
+              products={filterProducts}
+              sortOption={sortOption}
+              setSortOption={setSortOption}
+            />
           ) : products.length > 0 ? (
             <div>
-              <ProductGrid products={products} />
+              <ProductGrid
+                products={products}
+                sortOption={sortOption}
+                setSortOption={setSortOption}
+              />
               {isFetchingNextPage && (
                 <div className="text-gray-600 animate-pulse">
                   Loading more products...

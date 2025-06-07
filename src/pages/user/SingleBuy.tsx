@@ -1,51 +1,31 @@
 import { BUY } from "@/types";
-import changePriceDiscountByExchangeRate from "@/utils/javascript/changePriceDiscountByExchangeRate";
 import makeDateFromUTC from "@/utils/javascript/makeDateFromUTC";
 import { Link } from "react-router-dom";
 import OrderStatus from "./OrderStatus";
-import { useMemo } from "react";
-import countries from "@/data/countries";
-import { useSelector } from "react-redux";
-import { currencyState } from "@/redux/slice/currencySlice";
 
 type Props = {
   buy: BUY;
 };
 
 const SingleBuy = ({ buy }: Props) => {
-  const { symbol } = useSelector(currencyState);
-
   const {
     _id,
     product,
-    price,
+    buyPrice,
+    country: {
+      currency: { symbol },
+    },
     quantity,
     address: buyAddress,
+    isReviewed,
     isDelivered,
     isCancelled,
     isReturned,
     createdAt,
-    exchangeRate,
   } = buy;
 
   const { country, district, state, address } = buyAddress;
   const { _id: id, title, description, thumbnail } = product;
-
-  const countrySymbol = useMemo(() => {
-    if (!country) return symbol;
-
-    const findCountry = countries.find(
-      (countryObj) => countryObj.name.toLowerCase() === country.toLowerCase()
-    );
-    if (!findCountry) return symbol;
-    return findCountry.currency.symbol;
-  }, [country]);
-
-  const { exchangeRatePrice } = changePriceDiscountByExchangeRate(
-    price,
-    0,
-    exchangeRate
-  );
 
   return (
     <div
@@ -72,8 +52,8 @@ const SingleBuy = ({ buy }: Props) => {
           </div>
 
           <p className="text-2xl font-semibold tracking-wide">
-            {countrySymbol}
-            {exchangeRatePrice}
+            {symbol}
+            {Math.trunc(buyPrice)}
           </p>
           <div className="text-xs">Qty : {quantity}</div>
 

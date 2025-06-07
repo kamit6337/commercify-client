@@ -1,7 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useEffect, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { currencyState } from "../../redux/slice/currencySlice";
 import { PARAMS, PRODUCT } from "@/types";
 import useSingleProduct from "@/hooks/products/useSingleProduct";
@@ -10,11 +10,17 @@ import makeDateDaysAfter from "@/utils/javascript/makeDateDaysAfter";
 import CategoryProducts from "./CategoryProducts";
 import ProductReviews from "./ProductReviews";
 import ImagePart from "./ImagePart";
+import {
+  addSaleAndStock,
+  saleAndStockState,
+} from "@/redux/slice/saleAndStockSlice";
 
 const SingleProduct = () => {
+  const dispatch = useDispatch();
   const { id } = useParams() as PARAMS;
-  const { symbol, currency_code } = useSelector(currencyState);
+  const { symbol } = useSelector(currencyState);
   const { isLoading, error, data } = useSingleProduct(id);
+  const { zeroStock, notReadyToSale } = useSelector(saleAndStockState);
 
   useEffect(() => {
     window.scrollTo({
@@ -22,6 +28,26 @@ const SingleProduct = () => {
       behavior: "instant",
     });
   }, [id]);
+
+  useEffect(() => {
+    if (data) {
+      dispatch(
+        addSaleAndStock({
+          productId: data._id,
+          stock: data.stock,
+          isReadyToSale: data.isReadyToSale,
+        })
+      );
+    }
+  }, [id, data]);
+
+  const isProductOutOfStock = useMemo(() => {
+    return zeroStock.includes(id);
+  }, [id, zeroStock]);
+
+  const noSale = useMemo(() => {
+    return notReadyToSale.includes(id);
+  }, [id, notReadyToSale]);
 
   if (isLoading) {
     return <Loading />;
@@ -38,8 +64,7 @@ const SingleProduct = () => {
   const { title, description, price, category, deliveredBy, thumbnail } =
     data as PRODUCT;
 
-  const { discountedPrice, exchangeRatePrice, roundDiscountPercent } =
-    price[currency_code];
+  const { discountedPrice, exchangeRatePrice, discountPercent } = price;
 
   return (
     <>
@@ -51,7 +76,18 @@ const SingleProduct = () => {
       <main>
         <section className="flex md:flex-row flex-col gap-5 py-16 section_padding">
           <div className="flex-1 md:w-3/5 w-full">
-            <ImagePart image={thumbnail} title={title} id={id} />
+            <div className="border w-full h-96 flex justify-center py-2">
+              <img
+                src={thumbnail}
+                alt={title}
+                className="h-full object-cover"
+              />
+            </div>
+            <ImagePart
+              id={id}
+              isProductOutOfStock={isProductOutOfStock}
+              noSale={noSale}
+            />
           </div>
 
           <div className="flex-1 flex flex-col gap-4">
@@ -82,7 +118,7 @@ const SingleProduct = () => {
                   {symbol}
                   {exchangeRatePrice}
                 </p>
-                <p className="text-xs">{roundDiscountPercent}% Off</p>
+                <p className="text-xs">{discountPercent}% Off</p>
               </div>
             </div>
             <div className="flex items-center gap-1 text-gray-500 text-sm">
@@ -92,10 +128,30 @@ const SingleProduct = () => {
                 {makeDateDaysAfter(deliveredBy)}
               </p>
             </div>
+            {isProductOutOfStock && (
+              <div>
+                <p className="text-red-500 text-lg font-semibold tracking-wider">
+                  Sorry Product Unavailable. Out of stock.
+                </p>
+                <p className="text-gray-400">
+                  Click Notify me to send Notification when comes to stock.
+                </p>
+              </div>
+            )}
+            {noSale && (
+              <div>
+                <p className="text-red-500 text-lg font-semibold tracking-wider">
+                  Sorry Product currently out of sale.
+                </p>
+                <p className="text-gray-400">
+                  Click Notify me to send Notification when ready to sale.
+                </p>
+              </div>
+            )}
           </div>
         </section>
         <CategoryProducts category={category} productId={id} />
-        <ProductReviews product={data} />
+        {/* <ProductReviews product={data} /> */}
       </main>
     </>
   );

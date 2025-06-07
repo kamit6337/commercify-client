@@ -3,7 +3,6 @@ import { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { currencyState } from "../../redux/slice/currencySlice";
 import makeDateDaysAfter from "../../utils/javascript/makeDateDaysAfter";
-import changePriceDiscountByExchangeRate from "../../utils/javascript/changePriceDiscountByExchangeRate";
 import { PRODUCT } from "@/types";
 import {
   cartAndWishlistState,
@@ -21,7 +20,7 @@ type Props = {
 
 const Product = ({ product, wishlist: isWishlist = true }: Props) => {
   const dispatch = useDispatch();
-  const { symbol, currency_code } = useSelector(currencyState);
+  const { symbol } = useSelector(currencyState);
   const { wishlist, cart } = useSelector(cartAndWishlistState);
 
   const {
@@ -29,7 +28,6 @@ const Product = ({ product, wishlist: isWishlist = true }: Props) => {
     title,
     description,
     price,
-    discountPercentage,
     thumbnail,
     deliveredBy,
   } = product;
@@ -59,8 +57,7 @@ const Product = ({ product, wishlist: isWishlist = true }: Props) => {
     dispatch(updateWishlist({ id }));
   };
 
-  const { discountedPrice, exchangeRatePrice, roundDiscountPercent } =
-    price[currency_code];
+  const { discountedPrice, exchangeRatePrice, discountPercent } = price;
 
   return (
     <div className="w-full border-b-2 last:border-none lg:p-7 p-4 flex lg:gap-10 gap-5">
@@ -112,7 +109,7 @@ const Product = ({ product, wishlist: isWishlist = true }: Props) => {
               {symbol}
               {exchangeRatePrice}
             </p>
-            <p className="text-xs">{roundDiscountPercent}% Off</p>
+            <p className="text-xs">{discountPercent}% Off</p>
           </div>
           <div className="flex items-center gap-1 text-gray-500 text-sm">
             <p>Delivery</p>

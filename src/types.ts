@@ -1,5 +1,10 @@
 export type TimeScale = "day" | "month" | "year" | "6month" | "all";
 
+export type STOCK = {
+  product: string;
+  stock: number;
+};
+
 export type ORDERS_COUNT = {
   ordered: number;
   undelivered: number;
@@ -34,17 +39,19 @@ export type COUNTRY = {
 export type BUY = {
   _id: string;
   product: PRODUCT;
+  isReviewed: boolean;
   price: number;
+  buyPrice: number;
   exchangeRate: number;
   quantity: number;
   address: ADDRESS;
+  country: COUNTRY;
   isDelivered: boolean;
   deliveredDate: Date;
   isCancelled: boolean;
-  isReturned: boolean;
-  isDelievered: boolean;
-  reasonForReturned?: string;
   reasonForCancelled?: string;
+  isReturned: boolean;
+  reasonForReturned?: string;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -83,30 +90,27 @@ export type REVIEW = {
 };
 
 export type NEW_REVIEW = {
-  product: string;
+  buyId: string;
+  productId: string;
   rate: number;
   title: string;
   comment: string;
 };
 
 export type PRICE_VALUE = {
-  price: number;
+  priceInUSD: number;
   exchangeRate: number;
   exchangeRatePrice: number;
-  roundDiscountPercent: number;
+  discountPercent: number;
   discountedPrice: number;
   discountPercentCost: number;
-};
-
-export type PRICE = {
-  [key: string]: PRICE_VALUE;
 };
 
 export type PRODUCT = {
   _id: string;
   title: string;
   description: string;
-  price: PRICE;
+  price: PRICE_VALUE;
   discountPercentage: number;
   deliveredBy: number;
   category: CATEGORY;
@@ -114,6 +118,9 @@ export type PRODUCT = {
   images?: string[];
   rate: number;
   rateCount?: number;
+  stock: number;
+  isReadyToSale: boolean;
+  deliveryCharge: number;
   createdAt: Date;
   updatedAt: Date;
 };

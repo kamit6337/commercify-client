@@ -8,6 +8,7 @@ import useSingleProduct from "@/hooks/products/useSingleProduct";
 import Loading from "@/lib/Loading";
 import Icons from "@/assets/icons";
 import useNewRating from "@/hooks/ratings/useNewRating";
+import { PRODUCT } from "@/types";
 
 type Form = {
   title: string;
@@ -17,12 +18,13 @@ type Form = {
 const RateProduct = () => {
   const navigate = useNavigate();
   const productId = useSearchParams()[0].get("product") as string;
+  const buyId = useSearchParams()[0].get("buy") as string;
 
-  const { symbol, currency_code } = useSelector(currencyState);
+  const { symbol } = useSelector(currencyState);
   const { isLoading, error, data } = useSingleProduct(productId);
   const [starSelected, setStarSelected] = useState(0);
-  const { showAlertMessage } = Toastify();
-  const { mutate, isPending, isSuccess } = useNewRating(productId);
+  const { showAlertMessage, showSuccessMessage } = Toastify();
+  const { mutate, isPending, isSuccess } = useNewRating(productId, buyId);
 
   const {
     register,
@@ -45,9 +47,18 @@ const RateProduct = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      navigate(`/products/${productId}`);
+      showSuccessMessage({ message: "Successfully created new Rating" });
+      navigate("/user/orders");
     }
   }, [isSuccess]);
+
+  if (!productId || !buyId) {
+    return (
+      <div className="h-96 w-full flex justify-center items-center">
+        Something went wrong. Please try later
+      </div>
+    );
+  }
 
   if (isLoading) {
     return <Loading />;
@@ -61,9 +72,16 @@ const RateProduct = () => {
     );
   }
 
-  const { title, description, price, thumbnail } = data;
+  const { title, description, price, thumbnail } = data as PRODUCT;
+
+  const { exchangeRatePrice, discountedPrice, discountPercent } = price;
 
   const onSubmit = async (data: Form) => {
+    if (!buyId || !productId) {
+      showAlertMessage({ message: "Something went wrong. Please try later" });
+      return;
+    }
+
     if (starSelected === 0) {
       showAlertMessage({ message: "Please select star to rate product" });
       return;
@@ -72,7 +90,8 @@ const RateProduct = () => {
     const { title, comment } = data;
 
     const obj = {
-      product: productId,
+      buyId,
+      productId,
       rate: starSelected,
       title,
       comment,
@@ -80,9 +99,6 @@ const RateProduct = () => {
 
     mutate(obj);
   };
-
-  const { exchangeRatePrice, discountedPrice, roundDiscountPercent } =
-    price[currency_code];
 
   return (
     <section className="bg-gray-100 p-5">
@@ -120,7 +136,7 @@ const RateProduct = () => {
                     {symbol}
                     {exchangeRatePrice}
                   </p>
-                  <p className="text-xs">{roundDiscountPercent}% Off</p>
+                  <p className="text-xs">{discountPercent}% Off</p>
                 </div>
               </section>
             </div>

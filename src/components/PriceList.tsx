@@ -52,11 +52,11 @@ const PriceList = ({ products }: Props) => {
 
       if (!findProduct) return;
 
-      const { discountedPrice, discountPercentCost, exchangeRatePrice } =
-        price[currency_code];
+      const { discountedPrice, discountPercentCost, exchangeRatePrice } = price;
 
       actualProductPrice =
         actualProductPrice + findProduct.quantity * exchangeRatePrice;
+
       sellingPrice = sellingPrice + findProduct.quantity * discountedPrice;
 
       productsDiscount =
@@ -93,7 +93,11 @@ const PriceList = ({ products }: Props) => {
     return prev + current.quantity;
   }, 0);
 
-  const deliveryCharges = Math.round(products.length * conversionRate * 0.48); //  dollars
+  const deliveryCharges = Math.round(
+    products.reduce((acc, product) => {
+      return (acc += product.deliveryCharge);
+    }, 0) * conversionRate
+  );
 
   const productSellingPrice = sellingPrice + deliveryCharges;
   return (

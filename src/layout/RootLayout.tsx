@@ -1,6 +1,8 @@
 import Footer from "@/components/footer/Footer";
 import Navbar from "@/components/navbar/Navbar";
 import useLoginCheck from "@/hooks/auth/useLoginCheck";
+import useAllCountry from "@/hooks/countryAndCurrency/useAllCountry";
+import useCountryFromLatLan from "@/hooks/countryAndCurrency/useCountryFromLatLan";
 import InitialLoading from "@/lib/InitialLoading";
 import Loading from "@/lib/Loading";
 import OfflineDetector from "@/lib/OfflineDetector";
@@ -14,6 +16,18 @@ const RootLayout = () => {
   const navigate = useNavigate();
   const { isLoading, error, isSuccess } = useLoginCheck();
 
+  const {
+    isLoading: isLoadingAllCountry,
+    error: errorAllCountry,
+    isSuccess: isSuccessAllCountry,
+    isFindCountry,
+  } = useAllCountry(isSuccess);
+
+  const {
+    isLoading: isLoadingCountryFromLatLan,
+    error: errorCountryFromLatLan,
+  } = useCountryFromLatLan(isSuccess && !isFindCountry);
+
   const [showInitialLoading, setShowInitialLoading] = useState(() => {
     const value = sessionStorage.getItem("initialLoading");
     if (!value) return true;
@@ -26,7 +40,17 @@ const RootLayout = () => {
       setShowInitialLoading(false);
       navigate(`/login?msg=${error.message}`);
     }
-  }, [error]);
+    if (errorAllCountry) {
+      sessionStorage.setItem("initialLoading", "1");
+      setShowInitialLoading(false);
+      navigate(`/login?msg=${errorAllCountry.message}`);
+    }
+    if (errorCountryFromLatLan) {
+      sessionStorage.setItem("initialLoading", "1");
+      setShowInitialLoading(false);
+      navigate(`/login?msg=${errorCountryFromLatLan.message}`);
+    }
+  }, [error, errorAllCountry, errorCountryFromLatLan]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -43,11 +67,11 @@ const RootLayout = () => {
     return <InitialLoading onTimeout={handleInitialLoadingTimeout} />;
   }
 
-  if (isLoading) {
+  if (isLoading || isLoadingAllCountry || isLoadingCountryFromLatLan) {
     return <Loading />;
   }
 
-  if (!isSuccess) {
+  if (!isSuccess || !isSuccessAllCountry) {
     return <div>Error: Unable to login. Please try after sometime</div>; // Display error when isSuccess is false
   }
 

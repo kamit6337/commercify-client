@@ -18,7 +18,7 @@ type Props = {
 
 const Product = ({ product }: Props) => {
   const { cart } = useSelector(cartAndWishlistState);
-  const { symbol, currency_code } = useSelector(currencyState);
+  const { symbol } = useSelector(currencyState);
   const dispatch = useDispatch();
 
   const { _id: id, title, description, price, thumbnail } = product;
@@ -35,8 +35,7 @@ const Product = ({ product }: Props) => {
     dispatch(updateCart({ id, add: false }));
   };
 
-  const { discountedPrice, exchangeRatePrice, roundDiscountPercent } =
-    price[currency_code];
+  const { discountedPrice, exchangeRatePrice, discountPercent } = price;
 
   return (
     <div className="w-full h-48 border-b-2 last:border-none md:p-7 p-3 flex lg:gap-10 gap-5">
@@ -63,7 +62,7 @@ const Product = ({ product }: Props) => {
             {symbol}
             {exchangeRatePrice}
           </p>
-          <p className="text-xs">{roundDiscountPercent}% Off</p>
+          <p className="text-xs">{discountPercent}% Off</p>
         </div>
         <div className="sm:hidden flex  justify-end items-center gap-3">
           {isAddedToCart ? (
