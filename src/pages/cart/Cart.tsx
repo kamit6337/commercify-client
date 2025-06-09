@@ -1,16 +1,22 @@
 import { Helmet } from "react-helmet";
-import { Link, useOutletContext } from "react-router-dom";
+import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import { useEffect } from "react";
 import Product from "./Product";
 import { PRODUCT } from "@/types";
 import PriceList from "@/components/PriceList";
+import { useSelector } from "react-redux";
+import { saleAndStockState } from "@/redux/slice/saleAndStockSlice";
+import Toastify from "@/lib/Toastify";
 
 type OUTLET = {
   products: PRODUCT[];
 };
 
 const Cart = () => {
+  const navigate = useNavigate();
   const { products } = useOutletContext<OUTLET>();
+  const { zeroStock, notReadyToSale } = useSelector(saleAndStockState);
+  const { showErrorMessage } = Toastify();
 
   useEffect(() => {
     window.scrollTo({
@@ -18,6 +24,28 @@ const Cart = () => {
       behavior: "instant",
     });
   }, []);
+
+  const handlePlaceOrder = () => {
+    if (products.length === 0) return;
+
+    const filterProducts = products.filter(
+      (product) =>
+        zeroStock.includes(product._id) || notReadyToSale.includes(product._id)
+    );
+
+    if (filterProducts.length === 0) {
+      navigate(`/cart/address`);
+      return;
+    }
+
+    const productTitle = filterProducts
+      .map((product) => product.title)
+      .join(", ");
+
+    showErrorMessage({
+      message: `${productTitle} either out of stock or out of sale. Please remove this from your cart tp place order.`,
+    });
+  };
 
   return (
     <>
@@ -43,11 +71,12 @@ const Cart = () => {
               </div>
             </div>
             <div className="flex justify-end py-3 px-10 border-t-2 sticky bottom-0 bg-white">
-              <Link to={`/cart/address`}>
-                <button className="py-4 px-16 rounded-md bg-orange-400 text-white font-semibold tracking-wide">
-                  Placed Order
-                </button>
-              </Link>
+              <button
+                className="py-4 px-16 rounded-md bg-orange-400 text-white font-semibold tracking-wide"
+                onClick={() => handlePlaceOrder()}
+              >
+                Placed Order
+              </button>
             </div>
           </>
         ) : (

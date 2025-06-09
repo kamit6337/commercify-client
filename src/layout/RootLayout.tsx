@@ -2,7 +2,7 @@ import Footer from "@/components/footer/Footer";
 import Navbar from "@/components/navbar/Navbar";
 import useLoginCheck from "@/hooks/auth/useLoginCheck";
 import useAllCountry from "@/hooks/countryAndCurrency/useAllCountry";
-import useCountryFromLatLan from "@/hooks/countryAndCurrency/useCountryFromLatLan";
+import useCountryInfoFromIP from "@/hooks/countryAndCurrency/useCountryInfoFromIP";
 import InitialLoading from "@/lib/InitialLoading";
 import Loading from "@/lib/Loading";
 import OfflineDetector from "@/lib/OfflineDetector";
@@ -23,10 +23,9 @@ const RootLayout = () => {
     isFindCountry,
   } = useAllCountry(isSuccess);
 
-  const {
-    isLoading: isLoadingCountryFromLatLan,
-    error: errorCountryFromLatLan,
-  } = useCountryFromLatLan(isSuccess && !isFindCountry);
+  const { isLoading: isLoadingCountryFromLatLan } = useCountryInfoFromIP(
+    isSuccess && !isFindCountry
+  );
 
   const [showInitialLoading, setShowInitialLoading] = useState(() => {
     const value = sessionStorage.getItem("initialLoading");
@@ -45,12 +44,7 @@ const RootLayout = () => {
       setShowInitialLoading(false);
       navigate(`/login?msg=${errorAllCountry.message}`);
     }
-    if (errorCountryFromLatLan) {
-      sessionStorage.setItem("initialLoading", "1");
-      setShowInitialLoading(false);
-      navigate(`/login?msg=${errorCountryFromLatLan.message}`);
-    }
-  }, [error, errorAllCountry, errorCountryFromLatLan]);
+  }, [error, errorAllCountry]);
 
   useEffect(() => {
     if (isSuccess) {

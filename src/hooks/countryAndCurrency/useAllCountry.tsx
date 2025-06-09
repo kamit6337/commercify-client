@@ -18,7 +18,7 @@ const useAllCountry = (toggle = false) => {
 
   useEffect(() => {
     if (query.data) {
-      const localCountryId = localStorage.getItem("country");
+      const localCountryId = sessionStorage.getItem("country");
 
       if (!localCountryId) {
         setIsFindCountry(false);

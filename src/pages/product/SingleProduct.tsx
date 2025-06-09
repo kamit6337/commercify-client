@@ -1,7 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { useEffect, useMemo } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { currencyState } from "../../redux/slice/currencySlice";
 import { PARAMS, PRODUCT } from "@/types";
 import useSingleProduct from "@/hooks/products/useSingleProduct";
@@ -10,13 +10,9 @@ import makeDateDaysAfter from "@/utils/javascript/makeDateDaysAfter";
 import CategoryProducts from "./CategoryProducts";
 import ProductReviews from "./ProductReviews";
 import ImagePart from "./ImagePart";
-import {
-  addSaleAndStock,
-  saleAndStockState,
-} from "@/redux/slice/saleAndStockSlice";
+import { saleAndStockState } from "@/redux/slice/saleAndStockSlice";
 
 const SingleProduct = () => {
-  const dispatch = useDispatch();
   const { id } = useParams() as PARAMS;
   const { symbol } = useSelector(currencyState);
   const { isLoading, error, data } = useSingleProduct(id);
@@ -28,18 +24,6 @@ const SingleProduct = () => {
       behavior: "instant",
     });
   }, [id]);
-
-  useEffect(() => {
-    if (data) {
-      dispatch(
-        addSaleAndStock({
-          productId: data._id,
-          stock: data.stock,
-          isReadyToSale: data.isReadyToSale,
-        })
-      );
-    }
-  }, [id, data]);
 
   const isProductOutOfStock = useMemo(() => {
     return zeroStock.includes(id);
@@ -61,10 +45,14 @@ const SingleProduct = () => {
     );
   }
 
-  const { title, description, price, category, deliveredBy, thumbnail } =
-    data as PRODUCT;
-
-  const { discountedPrice, exchangeRatePrice, discountPercent } = price;
+  const {
+    title,
+    description,
+    price: { discountPercentage, price, discountedPrice },
+    category,
+    deliveredBy,
+    thumbnail,
+  } = data as PRODUCT;
 
   return (
     <>
@@ -116,9 +104,9 @@ const SingleProduct = () => {
                 </p>
                 <p className="line-through">
                   {symbol}
-                  {exchangeRatePrice}
+                  {price}
                 </p>
-                <p className="text-xs">{discountPercent}% Off</p>
+                <p className="text-xs">{discountPercentage}% Off</p>
               </div>
             </div>
             <div className="flex items-center gap-1 text-gray-500 text-sm">

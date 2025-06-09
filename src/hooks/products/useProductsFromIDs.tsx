@@ -1,15 +1,18 @@
 import { useQueries } from "@tanstack/react-query";
 import { getReq } from "../../utils/api/api";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { currencyState } from "@/redux/slice/currencySlice";
+import { useEffect } from "react";
+import { addSaleAndStock } from "@/redux/slice/saleAndStockSlice";
 
 const useProductsFromIDs = (ids: string[]) => {
-  const { currency_code } = useSelector(currencyState);
+  const dispatch = useDispatch();
+  const { id: countryId } = useSelector(currencyState);
 
   const query = useQueries({
     queries: ids.map((id) => ({
       queryKey: ["Single Product", id],
-      queryFn: () => getReq("/products/single", { id, currency_code }),
+      queryFn: () => getReq("/products/single", { id, countryId }),
       staleTime: Infinity,
     })),
     combine: (results) => {
@@ -20,6 +23,16 @@ const useProductsFromIDs = (ids: string[]) => {
       };
     },
   });
+
+  useEffect(() => {
+    if (query.data) {
+      const products = query.data;
+
+      if (products.length === 0) return;
+
+      dispatch(addSaleAndStock(products));
+    }
+  }, [query.data]);
 
   return query;
 };

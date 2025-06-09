@@ -1,36 +1,18 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { currencyState } from "../redux/slice/currencySlice";
 import { PRODUCT } from "@/types";
-import { useEffect } from "react";
-import { addSaleAndStock } from "@/redux/slice/saleAndStockSlice";
 
 type Props = {
   product: PRODUCT;
 };
 
 const ProductCard = ({ product }: Props) => {
-  const dispatch = useDispatch();
   const { symbol } = useSelector(currencyState);
 
-  const {
-    _id,
-    title,
-    description,
-    price,
-    category,
-    thumbnail,
-    stock,
-    isReadyToSale,
-  } = product;
+  const { _id, title, description, price, category, thumbnail } = product;
 
   const { discountedPrice } = price;
-
-  useEffect(() => {
-    if (_id) {
-      dispatch(addSaleAndStock({ productId: _id, stock, isReadyToSale }));
-    }
-  }, [_id]);
 
   return (
     <div className="xl:w-80 lg:w-64 md:w-52 w-56 lg:h-[420px] h-96 flex flex-col rounded-xl hover:shadow-2xl duration-200">

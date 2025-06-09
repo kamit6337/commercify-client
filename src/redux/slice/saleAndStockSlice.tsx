@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
+import { PRODUCT } from "@/types";
 
 type STOCK = {
   product: string;
@@ -23,22 +24,25 @@ const saleAndStockSlice = createSlice({
   initialState,
   reducers: {
     addSaleAndStock: (state, { payload }) => {
-      const productId = payload.productId;
-      const saleBoolean = payload.isReadyToSale;
-      const currentStock = payload.stock;
+      const products = payload as PRODUCT[];
 
-      if (state.productsSeen.includes(productId)) return state;
+      products.forEach((product) => {
+        const productId = product._id;
+        const currentStock = product.stock;
+        const saleBoolean = product.isReadyToSale;
 
-      state.productsSeen = [...state.productsSeen, productId];
+        if (state.productsSeen.includes(productId)) return state;
 
-      if (!saleBoolean) {
-        state.notReadyToSale = [...state.notReadyToSale, productId];
-      }
+        state.productsSeen = [...state.productsSeen, productId];
 
-      if (parseInt(currentStock) === 0) {
-        state.zeroStock = [...state.zeroStock, productId];
-      }
+        if (!saleBoolean) {
+          state.notReadyToSale = [...state.notReadyToSale, productId];
+        }
 
+        if (currentStock === 0) {
+          state.zeroStock = [...state.zeroStock, productId];
+        }
+      });
       return state;
     },
     updateSale: (state, { payload }) => {

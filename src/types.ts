@@ -98,12 +98,9 @@ export type NEW_REVIEW = {
 };
 
 export type PRICE_VALUE = {
-  priceInUSD: number;
-  exchangeRate: number;
-  exchangeRatePrice: number;
-  discountPercent: number;
+  price: number;
+  discountPercentage: number;
   discountedPrice: number;
-  discountPercentCost: number;
 };
 
 export type PRODUCT = {

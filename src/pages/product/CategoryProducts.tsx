@@ -36,6 +36,10 @@ const CategoryProducts = ({ category, productId }: Props) => {
 
   const filterProducts = products.filter((obj) => obj._id !== productId);
 
+  if (filterProducts.length === 0) {
+    return <div className="h-96" />;
+  }
+
   return (
     <HorizontalList
       products={filterProducts}
