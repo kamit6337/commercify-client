@@ -1,5 +1,5 @@
 import ReactIcons from "@/assets/icons";
-import UpdatePrice from "@/components/admin/products/UpdatePrice";
+import UpdatePrice from "@/components/admin/products/update_price/UpdatePrice";
 import UpdateProduct from "@/components/admin/products/UpdateProduct";
 import UpdateSale from "@/components/admin/products/UpdateSale";
 import UpdateStock from "@/components/admin/products/UpdateStock";
@@ -29,7 +29,7 @@ const AdminSingleProduct = ({ product }: Props) => {
     deliveredBy,
     description,
     title,
-    price: { price, discountPercentage, deliveryCharge },
+    price: { price, discountPercentage, deliveryCharge, discountedPrice },
     rate,
     rateCount,
     thumbnail,
@@ -108,21 +108,28 @@ const AdminSingleProduct = ({ product }: Props) => {
         <div className="space-y-2">
           <div className="flex items-center gap-1">
             <p className="text-sm text-gray-500">Category : </p>
-            <p className="font-semibold">{categoryTitle}</p>
+            <p className="font-semibold capitalize">{categoryTitle}</p>
           </div>
           <div className="flex items-center gap-1">
             <p className="text-sm text-gray-500">Delivered by : </p>
             <p className="font-semibold">{deliveredBy} days</p>
           </div>
           <div className="flex items-center gap-1">
+            <p className="text-sm text-gray-500">Base Price : </p>
+            <p className="font-semibold">
+              {symbol}
+              {price}
+            </p>
+          </div>
+          <div className="flex items-center gap-1">
             <p className="text-sm text-gray-500">Discount : </p>
             <p className="font-semibold">{discountPercentage}%</p>
           </div>
           <div className="flex items-center gap-1">
-            <p className="text-sm text-gray-500">Price : </p>
+            <p className="text-sm text-gray-500">Final Price : </p>
             <p className="font-semibold">
               {symbol}
-              {price}
+              {discountedPrice}
             </p>
           </div>
           <div className="flex items-center gap-1">
@@ -149,7 +156,7 @@ const AdminSingleProduct = ({ product }: Props) => {
       </div>
       <AlertDialog>
         <DropdownMenu>
-          <DropdownMenuTrigger className="hidden self-start w-20 lg:flex justify-end">
+          <DropdownMenuTrigger className="hidden self-start lg:flex justify-end p-2">
             <ReactIcons.options />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="flex flex-col">

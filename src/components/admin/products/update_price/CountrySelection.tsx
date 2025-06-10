@@ -36,7 +36,7 @@ const CountrySelection = ({
   };
 
   return (
-    <div className="w-52 shrink-0">
+    <div className="h-[375px]">
       <div className="h-12 flex items-center px-2">
         <input
           value={searchValue}
@@ -53,7 +53,7 @@ const CountrySelection = ({
                   key={country._id}
                   className={`${
                     countrySelected?._id === country._id ? "bg-gray-50" : ""
-                  }  flex relative items-center border-b last:border-none p-2 gap-2`}
+                  }  flex relative items-center border-b cursor-pointer last:border-none p-2 gap-2`}
                   onClick={() => handleCountrySelected(country)}
                 >
                   <div className="w-8 shrink-0">

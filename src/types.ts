@@ -97,6 +97,10 @@ export type NEW_REVIEW = {
   comment: string;
 };
 
+type ERRORS = {
+  [key: string]: string;
+};
+
 export type PRODUCT_PRICE = {
   _id: string;
   product: string;
@@ -106,20 +110,14 @@ export type PRODUCT_PRICE = {
   discountPercentage: number;
   discountedPrice: number;
   deliveryCharge: number;
-};
-
-export type PRICE_VALUE = {
-  price: number;
-  discountPercentage: number;
-  discountedPrice: number;
-  deliveryCharge: number;
+  errors?: ERRORS;
 };
 
 export type PRODUCT = {
   _id: string;
   title: string;
   description: string;
-  price: PRICE_VALUE;
+  price: PRODUCT_PRICE;
   discountPercentage: number;
   deliveredBy: number;
   category: CATEGORY;
