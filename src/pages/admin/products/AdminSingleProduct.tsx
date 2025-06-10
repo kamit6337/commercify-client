@@ -1,4 +1,5 @@
 import ReactIcons from "@/assets/icons";
+import UpdatePrice from "@/components/admin/products/UpdatePrice";
 import UpdateProduct from "@/components/admin/products/UpdateProduct";
 import UpdateSale from "@/components/admin/products/UpdateSale";
 import UpdateStock from "@/components/admin/products/UpdateStock";
@@ -9,14 +10,17 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { currencyState } from "@/redux/slice/currencySlice";
 import { PRODUCT } from "@/types";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 type Props = {
   product: PRODUCT;
 };
 
 const AdminSingleProduct = ({ product }: Props) => {
+  const { symbol } = useSelector(currencyState);
   const [openDialog, setOpenDialog] = useState("");
 
   const {
@@ -25,20 +29,17 @@ const AdminSingleProduct = ({ product }: Props) => {
     deliveredBy,
     description,
     title,
-    price,
+    price: { price, discountPercentage, deliveryCharge },
     rate,
     rateCount,
     thumbnail,
     stock,
-    deliveryCharge,
     isReadyToSale,
   } = product;
 
   const rateValue = Math.floor(rate);
   let fraction = rate - rateValue;
   fraction = parseFloat(fraction.toFixed(2));
-
-  const { priceInUSD, discountPercent } = price;
 
   return (
     <div
@@ -115,15 +116,21 @@ const AdminSingleProduct = ({ product }: Props) => {
           </div>
           <div className="flex items-center gap-1">
             <p className="text-sm text-gray-500">Discount : </p>
-            <p className="font-semibold">{discountPercent}%</p>
+            <p className="font-semibold">{discountPercentage}%</p>
           </div>
           <div className="flex items-center gap-1">
             <p className="text-sm text-gray-500">Price : </p>
-            <p className="font-semibold">${priceInUSD}</p>
+            <p className="font-semibold">
+              {symbol}
+              {price}
+            </p>
           </div>
           <div className="flex items-center gap-1">
             <p className="text-sm text-gray-500">Delivery Charge : </p>
-            <p className="font-semibold">${deliveryCharge}</p>
+            <p className="font-semibold">
+              {symbol}
+              {deliveryCharge}
+            </p>
           </div>
           <div className="flex items-center gap-1">
             <p className="text-sm text-gray-500">Current Stock : </p>
@@ -155,11 +162,15 @@ const AdminSingleProduct = ({ product }: Props) => {
             <AlertDialogTrigger onClick={() => setOpenDialog("sale")}>
               <DropdownMenuItem>Update Sale</DropdownMenuItem>
             </AlertDialogTrigger>
+            <AlertDialogTrigger onClick={() => setOpenDialog("price")}>
+              <DropdownMenuItem>Update Price</DropdownMenuItem>
+            </AlertDialogTrigger>
           </DropdownMenuContent>
         </DropdownMenu>
         {openDialog === "details" ? <UpdateProduct product={product} /> : ""}
         {openDialog === "stock" ? <UpdateStock product={product} /> : ""}
         {openDialog === "sale" ? <UpdateSale product={product} /> : ""}
+        {openDialog === "price" ? <UpdatePrice product={product} /> : ""}
       </AlertDialog>
     </div>
   );

@@ -56,6 +56,7 @@ import { FiMinus } from "react-icons/fi";
 import { CiFilter } from "react-icons/ci";
 
 import { PiNotepadFill } from "react-icons/pi";
+import { TiTick } from "react-icons/ti";
 
 const ReactIcons = {
   notepad: PiNotepadFill,
@@ -110,6 +111,7 @@ const ReactIcons = {
   history: MdOutlineHistory,
   cart: IoCart,
   refresh: MdRefresh,
+  tick: TiTick,
 };
 
 export default ReactIcons;

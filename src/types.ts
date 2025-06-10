@@ -97,10 +97,22 @@ export type NEW_REVIEW = {
   comment: string;
 };
 
+export type PRODUCT_PRICE = {
+  _id: string;
+  product: string;
+  country: string;
+  currency_code: string;
+  price: number;
+  discountPercentage: number;
+  discountedPrice: number;
+  deliveryCharge: number;
+};
+
 export type PRICE_VALUE = {
   price: number;
   discountPercentage: number;
   discountedPrice: number;
+  deliveryCharge: number;
 };
 
 export type PRODUCT = {

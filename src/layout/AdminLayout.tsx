@@ -1,6 +1,8 @@
 import Footer from "@/components/footer/Footer";
 import useProductsCount from "@/hooks/admin/useProductsCount";
 import useLoginCheck from "@/hooks/auth/useLoginCheck";
+import useAllCountry from "@/hooks/countryAndCurrency/useAllCountry";
+import useCountryInfoFromIP from "@/hooks/countryAndCurrency/useCountryInfoFromIP";
 import Loading from "@/lib/Loading";
 import ScrollToTop from "@/lib/ScrollToTop";
 import Toastify from "@/lib/Toastify";
@@ -20,6 +22,20 @@ const AdminLayout = () => {
     isSuccess,
   } = useLoginCheck();
 
+  const {
+    isLoading: isLoadingAllCountry,
+    error: errorAllCountry,
+    isSuccess: isSuccessAllCountry,
+    isFindCountry,
+  } = useAllCountry(isSuccess);
+
+  const { isLoading: isLoadingCountryInfoFromIP } = useCountryInfoFromIP(
+    isSuccessAllCountry && !isFindCountry
+  );
+
+  const { isLoading: isLoadingProductsCount, error: errorProductsCount } =
+    useProductsCount(isSuccess);
+
   useEffect(() => {
     if (errorLoginCheck) {
       showErrorMessage({ message: errorLoginCheck.message });
@@ -27,15 +43,17 @@ const AdminLayout = () => {
     }
   }, [errorLoginCheck]);
 
-  const { isLoading: isLoadingProductsCount, error: errorProductsCount } =
-    useProductsCount(isSuccess);
-
-  if (isLoadingProductsCount || isLoadingLoginCheck) {
+  if (
+    isLoadingProductsCount ||
+    isLoadingLoginCheck ||
+    isLoadingAllCountry ||
+    isLoadingCountryInfoFromIP
+  ) {
     return <Loading />;
   }
 
-  if (errorProductsCount) {
-    return <p>{errorProductsCount?.message}</p>;
+  if (errorProductsCount || errorAllCountry) {
+    return <p>{errorProductsCount?.message || errorAllCountry?.message}</p>;
   }
 
   if (!isSuccess) return;

@@ -24,7 +24,7 @@ const RootLayout = () => {
   } = useAllCountry(isSuccess);
 
   const { isLoading: isLoadingCountryFromLatLan } = useCountryInfoFromIP(
-    isSuccess && !isFindCountry
+    isSuccessAllCountry && !isFindCountry
   );
 
   const [showInitialLoading, setShowInitialLoading] = useState(() => {

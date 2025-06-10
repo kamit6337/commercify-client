@@ -54,6 +54,7 @@ declare module "@/assets/icons" {
     history: IconType;
     cart: IconType;
     refresh: IconType;
+    tick: IconType;
   };
 
   export default ReactIcons;
