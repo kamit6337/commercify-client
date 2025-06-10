@@ -9,6 +9,7 @@ import CustomImages from "@/assets/images";
 import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import UpdateProduct from "@/components/admin/products/UpdateProduct";
 import { PRODUCT } from "@/types";
+import UserCountry from "./UserCountry";
 
 const AdminNavbar = () => {
   const [showClearAll, setShowClearAll] = useState(false);
@@ -120,6 +121,7 @@ const AdminNavbar = () => {
       </div>
 
       {/* MARK: USER PROFILE */}
+      <UserCountry />
       <UserProfile />
 
       {/* MARK: ALERT DIALOG */}

@@ -36,7 +36,7 @@ export async function getCountryInfoOnce(
 const useCountryInfoFromIP = (toggle = false) => {
   const dispatch = useDispatch();
   const { data: countries } = useAllCountry(true);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (toggle && countries?.length > 0) {

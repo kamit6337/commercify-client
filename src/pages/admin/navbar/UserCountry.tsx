@@ -10,7 +10,7 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 import Toastify from "@/lib/Toastify";
 import { COUNTRY } from "@/types";
 import useCurrencyExchange from "@/hooks/countryAndCurrency/useCurrencyExchange";
@@ -23,7 +23,7 @@ import {
   AlertDialogContent,
   AlertDialogFooter,
   AlertDialogTrigger,
-} from "../ui/alert-dialog";
+} from "@/components/ui/alert-dialog";
 
 const UserCountry = () => {
   const [countrySelected, setCountrySelected] = useState<COUNTRY | null>(null);
@@ -67,7 +67,7 @@ const UserCountry = () => {
   };
 
   const handleSubmit = () => {
-    localStorage.setItem("country", countrySelected?._id || "");
+    sessionStorage.setItem("country", countrySelected?._id || "");
 
     window.location.reload();
   };
@@ -117,13 +117,13 @@ const UserCountry = () => {
           <p className="font-semibold text-lg">
             You have selected : {countrySelected?.name}
           </p>
-          <div>
+          <div className="space-y-5">
             <p>
-              The price of products will change according to country selected.
+              The price of products will change according to{" "}
+              {countrySelected?.name}.
             </p>
             <p>
-              Are you sure to change the price as it will need complete reload
-              on pages.
+              Are you sure to change ? It will need complete reload of pages.
             </p>
           </div>
         </div>

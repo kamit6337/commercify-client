@@ -8,7 +8,7 @@ import useSearchProducts from "@/hooks/products/useSearchProducts";
 import useDebounce from "@/hooks/general/useDebounce";
 import Icons from "@/assets/icons";
 import UserProfile from "@/components/navbar/UserProfile";
-import UserCountry from "@/components/navbar/UserCountry";
+import { currencyState } from "@/redux/slice/currencySlice";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -17,6 +17,7 @@ const Navbar = () => {
   const [searchText, setSearchText] = useState("");
   const [searchList, setSearchList] = useState([]);
   const { error, data, refetch } = useSearchProducts(searchText);
+  const { flag, country } = useSelector(currencyState);
 
   const debouncedSearch = useDebounce(() => {
     refetch();
@@ -120,7 +121,14 @@ const Navbar = () => {
       </div>
 
       {/* MARK: USER PROFILE */}
-      <UserCountry />
+      <div className="w-10">
+        <img
+          src={flag}
+          alt={country}
+          loading="lazy"
+          className="w-full object-cover"
+        />
+      </div>
       <UserProfile />
 
       {/* MARK: CART */}
