@@ -5,12 +5,13 @@ import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import useProductsCount from "@/hooks/admin/useProductsCount";
 import useAllCategory from "@/hooks/category/useAllCategory";
 import Loading from "@/lib/Loading";
+import { useMemo } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 type CATEGORY_PRODUCT = {
   _id: string;
   title: string;
-  categoryProductsCount: number;
+  counts: number;
 };
 
 const AdminProductsLayout = () => {
@@ -19,9 +20,18 @@ const AdminProductsLayout = () => {
   const { isLoading: isLoadingAllCategory, error: errorAllCategory } =
     useAllCategory();
 
-  const { data: productsCount } = useProductsCount();
+  const { data: categoryProducts } = useProductsCount();
 
-  const categoryProducts = productsCount.categoryProducts;
+  const totalProducts = useMemo(() => {
+    if (!categoryProducts || categoryProducts.length === 0) return 0;
+
+    return categoryProducts.reduce(
+      (acc: number, category: CATEGORY_PRODUCT) => {
+        return (acc += category.counts);
+      },
+      0
+    );
+  }, [categoryProducts]);
 
   if (isLoadingAllCategory) {
     return <Loading />;
@@ -74,11 +84,11 @@ const AdminProductsLayout = () => {
             }`}
             onClick={() => navigate("/admin/products")}
           >
-            All ({productsCount.products})
+            All ({totalProducts})
           </p>
           {categoryProducts?.length > 0 &&
             categoryProducts.map((obj: CATEGORY_PRODUCT) => {
-              const { _id, title, categoryProductsCount } = obj;
+              const { _id, title, counts } = obj;
 
               return (
                 <p
@@ -90,7 +100,7 @@ const AdminProductsLayout = () => {
                   key={_id}
                   onClick={() => navigate(`/admin/products/category/${_id}`)}
                 >
-                  {title} ({categoryProductsCount})
+                  {title} ({counts})
                 </p>
               );
             })}

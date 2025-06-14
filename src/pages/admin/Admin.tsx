@@ -17,13 +17,13 @@ import Toastify from "@/lib/Toastify";
 
 import { TimeScale } from "@/types";
 import timeAgoFrom from "@/utils/javascript/timeAgoFrom";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 type CATEGORY_PRODUCT = {
   _id: string;
   title: string;
-  categoryProductsCount: number;
+  counts: number;
 };
 
 const Admin = () => {
@@ -49,14 +49,23 @@ const Admin = () => {
   } = useOrdersCount(selectTimeScale);
 
   const {
-    data: productCounts,
+    data: categoryProducts,
     refetch: refetchProductCount,
     isLoading: isLoadingProductsCount,
     isSuccess: isSuccessProductsCount,
     dataUpdatedAt,
   } = useProductsCount();
 
-  const categoryProducts = productCounts.categoryProducts;
+  const totalProducts = useMemo(() => {
+    if (!categoryProducts || categoryProducts.length === 0) return 0;
+
+    return categoryProducts.reduce(
+      (acc: number, category: CATEGORY_PRODUCT) => {
+        return (acc += category.counts);
+      },
+      0
+    );
+  }, [categoryProducts]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -194,7 +203,7 @@ const Admin = () => {
                 Products
               </p>
               <p className="bg-gray-100 p-2 rounded w-max">
-                Total Products ({productCounts.products})
+                Total Products ({totalProducts})
               </p>
             </div>
 
@@ -205,14 +214,14 @@ const Admin = () => {
                 </p>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {categoryProducts.map((obj: CATEGORY_PRODUCT) => {
-                    const { _id, title, categoryProductsCount } = obj;
+                    const { _id, title, counts } = obj;
 
                     return (
                       <p
                         className="bg-gray-100 p-2 rounded capitalize"
                         key={_id}
                       >
-                        {title} ({categoryProductsCount})
+                        {title} ({counts})
                       </p>
                     );
                   })}

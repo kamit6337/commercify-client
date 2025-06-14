@@ -8,87 +8,77 @@ import { Button } from "@/components/ui/button";
 import Loading from "@/lib/Loading";
 import Toastify from "@/lib/Toastify";
 import { PRODUCT } from "@/types";
-import { patchReq } from "@/utils/api/api";
+import { deleteReq } from "@/utils/api/api";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
-
-type OLD_PRODUCTS = {
-  pages: PRODUCT[][];
-};
 
 type Props = {
   product: PRODUCT;
 };
 
-const UpdateSale = ({ product }: Props) => {
+type OLD_PRODUCTS = {
+  pages: PRODUCT[][];
+};
+
+const DeleteProduct = ({ product }: Props) => {
   const queryClient = useQueryClient();
   const closeRef = useRef<HTMLButtonElement>(null);
   const [isPending, setIsPending] = useState(false);
   const { showErrorMessage, showSuccessMessage } = Toastify();
 
-  const isReadyToSale = product.isReadyToSale;
-
   const handleSubmit = async () => {
     try {
       setIsPending(true);
 
-      const response = (await patchReq("/admin/products/sale", {
+      const response = await deleteReq("/admin/products", {
         productId: product._id,
-        toggle: !isReadyToSale,
-      })) as PRODUCT;
+      });
+
+      showSuccessMessage({ message: response });
 
       await queryClient.cancelQueries({
         queryKey: ["allProducts"],
         exact: true,
       });
 
-      await queryClient.cancelQueries({
-        queryKey: ["Category Products", response.category],
-      });
+      const checkAllProductsStatus = queryClient.getQueryState(["allProducts"]);
 
-      const checkStatus = queryClient.getQueryState(["allProducts"]);
-
-      const checkCategoryStatus = queryClient.getQueryState([
-        "Category Products",
-        response.category,
-      ]);
-
-      if (checkStatus?.status === "success") {
+      if (checkAllProductsStatus?.status === "success") {
         queryClient.setQueryData(["allProducts"], (old: OLD_PRODUCTS) => {
           const modifyPages = old.pages.map((page) =>
-            page.map((product) => {
-              if (product._id === response._id.toString()) {
-                return { ...product, isReadyToSale: response.isReadyToSale };
-              }
-
-              return product;
-            })
+            page.filter((prevProduct) => prevProduct._id !== product._id)
           );
-
           return { ...old, pages: modifyPages };
         });
       }
 
-      if (checkCategoryStatus?.status === "success") {
+      await queryClient.cancelQueries({
+        queryKey: ["Category Products", product.category._id],
+        exact: true,
+      });
+
+      const checkCategoryProductStatus = queryClient.getQueryState([
+        "Category Products",
+        product.category._id,
+      ]);
+
+      if (checkCategoryProductStatus?.status === "success") {
         queryClient.setQueryData(
-          ["Category Products", response.category],
+          ["Category Products", product.category._id],
           (old: OLD_PRODUCTS) => {
             const modifyPages = old.pages.map((page) =>
-              page.map((product) => {
-                if (product._id === response._id.toString()) {
-                  return { ...product, isReadyToSale: response.isReadyToSale };
-                }
-
-                return product;
-              })
+              page.filter((prevProduct) => prevProduct._id !== product._id)
             );
-
             return { ...old, pages: modifyPages };
           }
         );
       }
 
-      showSuccessMessage({ message: "Sale has been updated successfully" });
+      queryClient.invalidateQueries({
+        queryKey: ["products count details"],
+        exact: true,
+      });
+
       closeRef.current?.click();
     } catch (error) {
       showErrorMessage({
@@ -102,18 +92,16 @@ const UpdateSale = ({ product }: Props) => {
 
   return (
     <AlertDialogContent className="max-h-[500px] overflow-y-auto">
-      <AlertDialogTitle>Update Product Sale</AlertDialogTitle>
-
-      {isReadyToSale ? (
-        <p className="text-red-500">
-          Are you sure, you want to stop the sale of this product immediately
+      <AlertDialogTitle>Delete Product</AlertDialogTitle>
+      <div className="text-red-500 space-y-3">
+        <p>
+          Along with Product, its Stock and its Prices will also be deleted
+          permanently.
         </p>
-      ) : (
-        <p className="text-green-600">
-          Are you sure, ready to sale this product. Please check your stock
-          first.
+        <p className="font-semibold tracking-wide">
+          Are you sure to delete this product ?
         </p>
-      )}
+      </div>
       <AlertDialogFooter>
         <AlertDialogCancel ref={closeRef} className="w-full">
           Cancel
@@ -130,4 +118,4 @@ const UpdateSale = ({ product }: Props) => {
   );
 };
 
-export default UpdateSale;
+export default DeleteProduct;

@@ -10,13 +10,10 @@ type OLD = {
 type CATEGORY_PRODUCT = {
   _id: string;
   title: string;
-  categoryProductsCount: number;
+  counts: number;
 };
 
-type COUNT_OLD = {
-  products: number;
-  categoryProducts: CATEGORY_PRODUCT[];
-};
+type COUNT_OLD = CATEGORY_PRODUCT[];
 
 type ADD_NEW_PRODUCT = {
   title: string;
@@ -44,46 +41,21 @@ const useAddSingleProduct = () => {
       });
 
       await queryClient.cancelQueries({
-        queryKey: ["products count details"],
-        exact: true,
-      });
-
-      await queryClient.cancelQueries({
         queryKey: ["Category Products", data.category?._id?.toString()],
         exact: true,
       });
 
+      queryClient.invalidateQueries({
+        queryKey: ["products count details"],
+        exact: true,
+      });
+
       const checkStatus = queryClient.getQueryState(["allProducts"]);
-      const checkProductCountStatus = queryClient.getQueryState([
-        "products count details",
-      ]);
 
       const checkCategoryProductsStatus = queryClient.getQueryState([
         "Category Products",
         data.category?._id?.toString(),
       ]);
-
-      if (checkProductCountStatus?.status === "success") {
-        queryClient.setQueryData(
-          ["products count details"],
-          (old: COUNT_OLD) => {
-            const newCategory = old.categoryProducts.map((category) => {
-              if (category._id === data.category?._id?.toString()) {
-                return {
-                  ...category,
-                  categoryProductsCount: category.categoryProductsCount + 1,
-                };
-              }
-              return category;
-            });
-
-            return {
-              products: old.products + 1,
-              categoryProducts: newCategory,
-            };
-          }
-        );
-      }
 
       if (checkStatus?.status === "success") {
         queryClient.setQueryData(["allProducts"], (old: OLD) => {

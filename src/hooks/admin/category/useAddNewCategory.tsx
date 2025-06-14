@@ -6,12 +6,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 type CATEGORY_PRODUCT = {
   _id: string;
   title: string;
-  categoryProductsCount: number;
+  counts: number;
 };
 
-type OLD_COUNT = {
-  categoryProducts: CATEGORY_PRODUCT[];
-};
+type OLD_COUNT = CATEGORY_PRODUCT[];
 
 const useAddNewCategory = () => {
   const { showErrorMessage } = Toastify();
@@ -50,12 +48,12 @@ const useAddNewCategory = () => {
             const newCount = {
               _id: newCategory._id,
               title: newCategory.title,
-              categoryProductsCount: 0,
+              counts: 0,
             };
 
-            const modifyCategoryProducts = [newCount, ...old.categoryProducts];
+            const modifyCategoryProducts = [newCount, ...old];
 
-            return { ...old, categoryProducts: modifyCategoryProducts };
+            return modifyCategoryProducts;
           }
         );
       }

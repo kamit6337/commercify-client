@@ -1,4 +1,5 @@
 import ReactIcons from "@/assets/icons";
+import DeleteProduct from "@/components/admin/products/DeleteProduct";
 import UpdatePrice from "@/components/admin/products/update_price/UpdatePrice";
 import UpdateProduct from "@/components/admin/products/UpdateProduct";
 import UpdateSale from "@/components/admin/products/UpdateSale";
@@ -184,12 +185,16 @@ const AdminSingleProduct = ({ product }: Props) => {
             <AlertDialogTrigger onClick={() => setOpenDialog("price")}>
               <DropdownMenuItem>Update Price</DropdownMenuItem>
             </AlertDialogTrigger>
+            <AlertDialogTrigger onClick={() => setOpenDialog("delete")}>
+              <DropdownMenuItem>Delete Product</DropdownMenuItem>
+            </AlertDialogTrigger>
           </DropdownMenuContent>
         </DropdownMenu>
         {openDialog === "details" ? <UpdateProduct product={product} /> : ""}
         {openDialog === "stock" ? <UpdateStock product={product} /> : ""}
         {openDialog === "sale" ? <UpdateSale product={product} /> : ""}
         {openDialog === "price" ? <UpdatePrice product={product} /> : ""}
+        {openDialog === "delete" ? <DeleteProduct product={product} /> : ""}
       </AlertDialog>
     </div>
   );

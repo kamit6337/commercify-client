@@ -11,12 +11,10 @@ type BODY = {
 type CATEGORY_PRODUCT = {
   _id: string;
   title: string;
-  categoryProductsCount: number;
+  counts: number;
 };
 
-type OLD_COUNT = {
-  categoryProducts: CATEGORY_PRODUCT[];
-};
+type OLD_COUNT = CATEGORY_PRODUCT[];
 
 const useUpdateCategory = (categoryId: string) => {
   const { showErrorMessage } = Toastify();
@@ -56,14 +54,14 @@ const useUpdateCategory = (categoryId: string) => {
         queryClient.setQueryData(
           ["products count details"],
           (old: OLD_COUNT) => {
-            const modifyCategoryProducts = old.categoryProducts.map((obj) => {
+            const modifyCategoryProducts = old.map((obj) => {
               if (obj._id === updatedCategory._id) {
                 return { ...obj, title: updatedCategory.title };
               }
               return obj;
             });
 
-            return { ...old, categoryProducts: modifyCategoryProducts };
+            return modifyCategoryProducts;
           }
         );
       }
