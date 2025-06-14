@@ -52,16 +52,28 @@ const AdminSingleProduct = ({ product }: Props) => {
         </div>
         <AlertDialog>
           <DropdownMenu>
-            <DropdownMenuTrigger className="lg:hidden self-start w-20 flex justify-end">
+            <DropdownMenuTrigger className="lg:hidden self-start flex justify-end p-2">
               <ReactIcons.options />
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <AlertDialogTrigger className="w-full">
-                <DropdownMenuItem className="w-full">Update</DropdownMenuItem>
+            <DropdownMenuContent align="end" className="flex flex-col">
+              <AlertDialogTrigger onClick={() => setOpenDialog("details")}>
+                <DropdownMenuItem>Update Details</DropdownMenuItem>
+              </AlertDialogTrigger>
+              <AlertDialogTrigger onClick={() => setOpenDialog("stock")}>
+                <DropdownMenuItem>Update Stock</DropdownMenuItem>
+              </AlertDialogTrigger>
+              <AlertDialogTrigger onClick={() => setOpenDialog("sale")}>
+                <DropdownMenuItem>Update Sale</DropdownMenuItem>
+              </AlertDialogTrigger>
+              <AlertDialogTrigger onClick={() => setOpenDialog("price")}>
+                <DropdownMenuItem>Update Price</DropdownMenuItem>
               </AlertDialogTrigger>
             </DropdownMenuContent>
           </DropdownMenu>
-          <UpdateProduct product={product} />
+          {openDialog === "details" ? <UpdateProduct product={product} /> : ""}
+          {openDialog === "stock" ? <UpdateStock product={product} /> : ""}
+          {openDialog === "sale" ? <UpdateSale product={product} /> : ""}
+          {openDialog === "price" ? <UpdatePrice product={product} /> : ""}
         </AlertDialog>
       </div>
       <div className="flex-1">

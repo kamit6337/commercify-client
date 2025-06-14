@@ -97,7 +97,7 @@ export type NEW_REVIEW = {
   comment: string;
 };
 
-type ERRORS = {
+export type ERRORS = {
   [key: string]: string;
 };
 
@@ -113,12 +113,22 @@ export type PRODUCT_PRICE = {
   errors?: ERRORS;
 };
 
+export type ADD_PRODUCT_PRICE = {
+  country: string;
+  currency_code: string;
+  exchangeRate: number;
+  price: number;
+  discountPercentage: number;
+  discountedPrice: number;
+  deliveryCharge: number;
+  errors?: ERRORS;
+};
+
 export type PRODUCT = {
   _id: string;
   title: string;
   description: string;
   price: PRODUCT_PRICE;
-  discountPercentage: number;
   deliveredBy: number;
   category: CATEGORY;
   thumbnail: string;
@@ -127,20 +137,8 @@ export type PRODUCT = {
   rateCount?: number;
   stock: number;
   isReadyToSale: boolean;
-  deliveryCharge: number;
   createdAt: Date;
   updatedAt: Date;
-};
-
-export type ADD_PRODUCT = {
-  title: string;
-  description: string;
-  price: number;
-  discountPercentage: number;
-  deliveredBy: number;
-  category: string;
-  thumbnail: string;
-  images?: string[];
 };
 
 export type CATEGORY = {

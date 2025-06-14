@@ -35,8 +35,9 @@ const CountrySelection = ({
     setSearchCountries(findCountries);
   };
 
+  // className="h-[375px]"
   return (
-    <div className="h-[375px]">
+    <div className="w-52 shrink-0 flex flex-col">
       <div className="h-12 flex items-center px-2">
         <input
           value={searchValue}
@@ -45,7 +46,7 @@ const CountrySelection = ({
           onChange={(e) => handleSearchCountry(e.target.value)}
         />
       </div>
-      <div className="flex flex-col h-[327px] overflow-y-auto">
+      <div className="flex flex-col max-h-[380px] overflow-y-auto">
         {searchCountries.length > 0
           ? searchCountries.map((country) => {
               return (

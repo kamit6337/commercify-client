@@ -1,5 +1,5 @@
 import Toastify from "@/lib/Toastify";
-import { ADD_PRODUCT, PRODUCT } from "@/types";
+import { ADD_PRODUCT_PRICE, PRODUCT } from "@/types";
 import { postReq } from "@/utils/api/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -18,14 +18,26 @@ type COUNT_OLD = {
   categoryProducts: CATEGORY_PRODUCT[];
 };
 
+type ADD_NEW_PRODUCT = {
+  title: string;
+  description: string;
+  deliveredBy: number;
+  category: string;
+  stock: number;
+  productPrice: ADD_PRODUCT_PRICE[];
+  baseCountryId: string;
+};
+
 const useAddSingleProduct = () => {
   const { showErrorMessage } = Toastify();
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationKey: ["add product"],
-    mutationFn: (obj: ADD_PRODUCT) => postReq("/admin/products", obj),
+    mutationFn: (obj: ADD_NEW_PRODUCT) => postReq("/admin/products", obj),
     async onSuccess(data: PRODUCT) {
+      console.log("new Product", data);
+
       await queryClient.cancelQueries({
         queryKey: ["allProducts"],
         exact: true,
@@ -37,7 +49,7 @@ const useAddSingleProduct = () => {
       });
 
       await queryClient.cancelQueries({
-        queryKey: ["Category Products", data.category?.toString()],
+        queryKey: ["Category Products", data.category?._id?.toString()],
         exact: true,
       });
 
@@ -48,7 +60,7 @@ const useAddSingleProduct = () => {
 
       const checkCategoryProductsStatus = queryClient.getQueryState([
         "Category Products",
-        data.category?.toString(),
+        data.category?._id?.toString(),
       ]);
 
       if (checkProductCountStatus?.status === "success") {
@@ -56,7 +68,7 @@ const useAddSingleProduct = () => {
           ["products count details"],
           (old: COUNT_OLD) => {
             const newCategory = old.categoryProducts.map((category) => {
-              if (category._id === data.category?.toString()) {
+              if (category._id === data.category?._id?.toString()) {
                 return {
                   ...category,
                   categoryProductsCount: category.categoryProductsCount + 1,
@@ -85,7 +97,7 @@ const useAddSingleProduct = () => {
 
       if (checkCategoryProductsStatus?.status === "success") {
         queryClient.setQueryData(
-          ["Category Products", data.category?.toString()],
+          ["Category Products", data.category?._id?.toString()],
           (old: OLD) => {
             const modifyPages = old.pages.map((page) => [...page]);
 

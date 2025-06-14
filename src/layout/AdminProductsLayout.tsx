@@ -1,6 +1,6 @@
 import AddCategory from "@/components/admin/category/AddCategory";
 import UpdateCategory from "@/components/admin/category/UpdateCategory";
-import AddProduct from "@/components/admin/products/AddProduct";
+import AddProduct from "@/components/admin/products/add_product/AddProduct";
 import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import useProductsCount from "@/hooks/admin/useProductsCount";
 import useAllCategory from "@/hooks/category/useAllCategory";

@@ -1,13 +1,6 @@
-import {
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+import { AlertDialogContent } from "@/components/ui/alert-dialog";
 import useAllCountry from "@/hooks/countryAndCurrency/useAllCountry";
 import useProductPrice from "@/hooks/products/useProductPrice";
-import Loading from "@/lib/Loading";
 import { currencyState } from "@/redux/slice/currencySlice";
 import { COUNTRY, PRODUCT, PRODUCT_PRICE } from "@/types";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -30,9 +23,11 @@ type PRODUCT_PRICE_VALUE = {
   [key: string]: PRODUCT_PRICE;
 };
 
+type STAGE = "part1" | "part2";
+
 const UpdatePrice = ({ product }: Props) => {
   const queryClient = useQueryClient();
-  const [stage, setStage] = useState<"part1" | "part2">("part1");
+  const [stage, setStage] = useState<STAGE>("part1");
   const { data } = useAllCountry();
   const countries = data as COUNTRY[];
   countries.sort((a, b) =>
@@ -43,7 +38,6 @@ const UpdatePrice = ({ product }: Props) => {
     return new Map(countries.map((country) => [country._id, country]));
   }, [countries]);
 
-  const [isSubmit, setIsSubmit] = useState(false);
   const closeRef = useRef<HTMLButtonElement>(null);
   const [isPending, setIsPending] = useState(false);
   const { id } = useSelector(currencyState);
@@ -192,78 +186,27 @@ const UpdatePrice = ({ product }: Props) => {
   };
 
   return (
-    <AlertDialogContent className="p-0 h-[500px] overflow-y-auto gap-0">
+    <AlertDialogContent className="p-0 h-[550px] ">
       {stage === "part1" && (
-        <AlertDialogTitle className="h-10 flex justify-center items-center border-b">
-          Update Product Price
-        </AlertDialogTitle>
+        <PriceUpdatePart1
+          countries={countries}
+          productPriceValue={productPriceValue}
+          setProductPriceValue={setProductPriceValue}
+          isLoading={isLoading}
+          setFetchCountryId={setFetchCountryId}
+          handleNext={handleNext}
+        />
       )}
       {stage === "part2" && (
-        <AlertDialogTitle className="h-10 flex justify-center items-center border-b">
-          Updated Price Summary
-        </AlertDialogTitle>
+        <PriceConfirmPart2
+          updatedPriceValue={updatedPriceValue}
+          countries={countries}
+          handleSubmit={handleSubmit}
+          isPending={isPending}
+          closeRef={closeRef}
+          setStage={setStage}
+        />
       )}
-
-      {stage === "part1" && (
-        <div className="h-[375px]">
-          <PriceUpdatePart1
-            countries={countries}
-            productPriceValue={productPriceValue}
-            setProductPriceValue={setProductPriceValue}
-            isLoading={isLoading}
-            setFetchCountryId={setFetchCountryId}
-          />
-        </div>
-      )}
-      {stage === "part2" && (
-        <div className="h-[375px]">
-          <PriceConfirmPart2
-            updatedPriceValue={updatedPriceValue}
-            countries={countries}
-            setIsSubmit={setIsSubmit}
-          />
-        </div>
-      )}
-      <AlertDialogFooter className="h-20 flex px-2 items-center">
-        <AlertDialogCancel
-          ref={closeRef}
-          className={`${stage === "part1" ? "flex" : "hidden"}  w-full`}
-        >
-          Cancel
-        </AlertDialogCancel>
-
-        {stage === "part2" && (
-          <AlertDialogCancel
-            className="w-full"
-            onClick={(e) => {
-              e.preventDefault();
-              setStage("part1");
-            }}
-          >
-            Back
-          </AlertDialogCancel>
-        )}
-
-        {stage === "part1" && (
-          <Button
-            disabled={isLoading}
-            className="w-full"
-            onClick={() => handleNext()}
-          >
-            Next
-          </Button>
-        )}
-        {stage === "part2" && (
-          <Button
-            className="w-full"
-            type="submit"
-            disabled={!isSubmit || isPending}
-            onClick={() => handleSubmit()}
-          >
-            {isPending ? <Loading small={true} height={"full"} /> : "Submit"}
-          </Button>
-        )}
-      </AlertDialogFooter>
     </AlertDialogContent>
   );
 };

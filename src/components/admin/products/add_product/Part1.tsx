@@ -1,29 +1,38 @@
-import { CATEGORY, PRODUCT } from "@/types";
+import ImageCrop from "@/components/ImageCrop";
 import {
   AlertDialogCancel,
-  AlertDialogContent,
+  AlertDialogFooter,
   AlertDialogTitle,
-} from "../../ui/alert-dialog";
-import { useForm } from "react-hook-form";
-import { useEffect, useRef, useState } from "react";
-import { Button } from "../../ui/button";
-import Loading from "@/lib/Loading";
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../ui/select";
+} from "@/components/ui/select";
 import useAllCategory from "@/hooks/category/useAllCategory";
 import Toastify from "@/lib/Toastify";
-import useUpdateSingleProduct from "@/hooks/admin/products/useUpdateSingleProduct";
-import uploadImageToCLoud from "@/lib/uploadImageToCLoud";
-import ImageCrop from "@/components/ImageCrop";
+import { CATEGORY } from "@/types";
+import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+
+type Part1DataType = {
+  title: string;
+  description: string;
+  deliveredBy: number;
+  category: string;
+};
+
+type PARTS = "part1" | "part2" | "part3";
 
 type Props = {
-  product: PRODUCT;
-  handleCancel?: () => void;
+  selectedImage: File | null;
+  setSelectedImage: (value: File) => void;
+  part1Data: Part1DataType;
+  setPart1Data: (value: Part1DataType) => void;
+  setStage: (value: PARTS) => void;
 };
 
 type FormDataType = {
@@ -31,25 +40,20 @@ type FormDataType = {
   description: string;
 };
 
-const UpdateProduct = ({ product, handleCancel }: Props) => {
-  const [selectedCategoryId, setSelectedCategoryId] = useState("no");
-  const [selectedDeliveryDay, setSelectedDeliveryDay] = useState("");
-  const { data: allCategory } = useAllCategory();
-  const { showAlertMessage, showSuccessMessage, showErrorMessage } = Toastify();
-  const closeRef = useRef<HTMLButtonElement>(null);
+const Part1 = ({
+  selectedImage,
+  setSelectedImage,
+  part1Data,
+  setPart1Data,
+  setStage,
+}: Props) => {
   const imageRef = useRef<HTMLInputElement>(null);
-  const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [cropImage, setCropImage] = useState<File | null>(null);
+  const [selectedCategoryId, setSelectedCategoryId] = useState("");
+  const [selectedDeliveryDay, setSelectedDeliveryDay] = useState("");
+  const { showAlertMessage } = Toastify();
+  const { data: allCategory } = useAllCategory();
   const mainRef = useRef<HTMLDivElement>(null);
-
-  const {
-    _id,
-    category: { _id: categoryId },
-    deliveredBy,
-    description,
-    title,
-    thumbnail,
-  } = product;
 
   const {
     register,
@@ -63,39 +67,15 @@ const UpdateProduct = ({ product, handleCancel }: Props) => {
     },
   });
 
-  const { mutate, isPending, isSuccess } = useUpdateSingleProduct(_id);
-
   useEffect(() => {
-    if (product && _id) {
-      reset({
-        title,
-        description,
-      });
-
-      setSelectedCategoryId(categoryId);
-      setSelectedDeliveryDay(deliveredBy.toString());
-    }
-  }, [_id]);
-
-  useEffect(() => {
-    if (isSuccess) {
-      showSuccessMessage({ message: "Product updated Successfully" });
-      if (closeRef?.current) {
-        closeRef.current.click();
-      }
-    }
-  }, [isSuccess]);
-
-  const resetField = () => {
     reset({
-      title,
-      description,
+      title: part1Data.title,
+      description: part1Data.description,
     });
 
-    setSelectedImage(null);
-    setSelectedCategoryId(categoryId);
-    setSelectedDeliveryDay(deliveredBy.toString());
-  };
+    setSelectedCategoryId(part1Data.category);
+    setSelectedDeliveryDay(part1Data.deliveredBy.toString());
+  }, []);
 
   const handleOnCrop = (croppedFile: File) => {
     setSelectedImage(croppedFile);
@@ -117,50 +97,38 @@ const UpdateProduct = ({ product, handleCancel }: Props) => {
     mainRef.current?.scrollTo({ top: 0, behavior: "instant" });
   };
 
-  const onSubmit = async (data: FormDataType) => {
-    try {
-      if (
-        title === data.title &&
-        description === data.description &&
-        deliveredBy === parseFloat(selectedDeliveryDay) &&
-        categoryId === selectedCategoryId &&
-        !selectedImage
-      ) {
-        showAlertMessage({ message: "Please update data to submit" });
-        return;
-      }
+  const onSubmit = (data: FormDataType) => {
+    console.log("selectedCategoryId", selectedCategoryId);
 
-      const getImageUrl = await uploadImageToCLoud(selectedImage);
-
-      const obj = {
-        _id: product._id,
-        title: data.title,
-        description: data.description,
-        deliveredBy: parseFloat(selectedDeliveryDay),
-        category: selectedCategoryId,
-        thumbnail: getImageUrl || thumbnail,
-      };
-
-      mutate(obj);
-    } catch (error) {
-      showErrorMessage({
-        message: error instanceof Error ? error?.message : "",
-      });
+    if (!selectedCategoryId || selectedDeliveryDay === "" || !selectedImage) {
+      showAlertMessage({ message: "Please fill all data" });
+      return;
     }
+
+    const obj = {
+      title: data.title,
+      description: data.description,
+      deliveredBy: parseFloat(selectedDeliveryDay),
+      category: selectedCategoryId,
+    };
+
+    setPart1Data(obj);
+    setStage("part2");
   };
 
   return (
-    <AlertDialogContent className={`p-0 h-[550px]  `}>
-      <main ref={mainRef} className="h-full overflow-y-auto p-4">
-        <AlertDialogTitle>Update Product</AlertDialogTitle>
+    <>
+      <main ref={mainRef} className="h-full overflow-y-auto p-4 space-y-3">
+        <AlertDialogTitle>Add Product</AlertDialogTitle>
 
         <div className="w-[400px] grow-0 shrink-0">
-          <img
-            src={selectedImage ? URL.createObjectURL(selectedImage) : thumbnail}
-            alt={title}
-            className="w-full object-cover"
-          />
-
+          {selectedImage && (
+            <img
+              src={URL.createObjectURL(selectedImage)}
+              alt="Selected"
+              className="w-full object-cover rounded mb-2"
+            />
+          )}
           <p
             className="border rounded py-2 cursor-pointer hover:bg-gray-100 text-center"
             onClick={() => imageRef.current?.click()}
@@ -181,16 +149,21 @@ const UpdateProduct = ({ product, handleCancel }: Props) => {
           />
         </div>
 
-        <form className="flex flex-col gap-3" onSubmit={handleSubmit(onSubmit)}>
+        <form
+          className="flex flex-col gap-3 text-sm"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           {/* MARK: TITLE */}
           <div>
-            <p className="font-semibold ml-1">Title</p>
+            <p className="font-semibold ml-1 ">Title</p>
             <div className="border rounded">
               <input
                 {...register("title", {
                   required: "Please provide title",
                 })}
                 className="w-full p-2"
+                spellCheck="false"
+                autoComplete="off"
               />
             </div>
             <p className="h-1 text-red-500 text-xs">{errors?.title?.message}</p>
@@ -206,12 +179,15 @@ const UpdateProduct = ({ product, handleCancel }: Props) => {
                 })}
                 className="w-full p-2 resize-none"
                 rows={7}
+                spellCheck="false"
+                autoComplete="off"
               />
             </div>
             <p className="h-1 text-red-500 text-xs">
               {errors?.description?.message}
             </p>
           </div>
+
           {/* MARK: CATEGORY */}
           <div className="">
             <p className="font-semibold ml-1">Category : </p>
@@ -224,18 +200,14 @@ const UpdateProduct = ({ product, handleCancel }: Props) => {
                 <SelectValue placeholder="--select-category" />
               </SelectTrigger>
               <SelectContent>
-                {allCategory?.length > 0 ? (
-                  allCategory.map((obj: CATEGORY) => {
-                    const { _id, title } = obj;
-                    return (
-                      <SelectItem key={_id} value={_id} className="capitalize">
-                        {title}
-                      </SelectItem>
-                    );
-                  })
-                ) : (
-                  <SelectItem value={"no"}>No Category Present</SelectItem>
-                )}
+                {allCategory.map((obj: CATEGORY) => {
+                  const { _id, title } = obj;
+                  return (
+                    <SelectItem key={_id} value={_id} className="capitalize">
+                      {title}
+                    </SelectItem>
+                  );
+                })}
               </SelectContent>
             </Select>
           </div>
@@ -249,7 +221,7 @@ const UpdateProduct = ({ product, handleCancel }: Props) => {
               onValueChange={(value) => setSelectedDeliveryDay(value)}
             >
               <SelectTrigger className="w-60 capitalize">
-                <SelectValue placeholder="--select-category" />
+                <SelectValue placeholder="--select-delivery-day" />
               </SelectTrigger>
               <SelectContent className="max-h-60">
                 {Array.from({ length: 30 }).map((_, i) => {
@@ -266,24 +238,14 @@ const UpdateProduct = ({ product, handleCancel }: Props) => {
           </div>
 
           {/* MARK: SUBMIT AND CANCEL BUTTON */}
-          <div className="space-y-3 mt-10">
-            <Button type="button" className="w-full" onClick={resetField}>
-              Reset
+          <AlertDialogFooter>
+            <AlertDialogCancel className="w-full">Cancel</AlertDialogCancel>
+            <Button type="submit" className="w-full">
+              Next
             </Button>
-            <AlertDialogCancel
-              ref={closeRef}
-              className="w-full"
-              onClick={() => (handleCancel ? handleCancel() : "")}
-            >
-              Cancel
-            </AlertDialogCancel>
-            <Button className="w-full" disabled={isPending}>
-              {isPending ? <Loading small={true} height={"full"} /> : "Submit"}
-            </Button>
-          </div>
+          </AlertDialogFooter>
         </form>
       </main>
-
       {cropImage ? (
         <ImageCrop
           image={cropImage}
@@ -293,8 +255,8 @@ const UpdateProduct = ({ product, handleCancel }: Props) => {
       ) : (
         ""
       )}
-    </AlertDialogContent>
+    </>
   );
 };
 
-export default UpdateProduct;
+export default Part1;
