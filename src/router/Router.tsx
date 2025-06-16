@@ -18,7 +18,6 @@ import Cart from "@/pages/cart/Cart";
 import AddressInCart from "@/pages/cart/AddressInCart";
 import Checkout from "@/pages/cart/Checkout";
 import RateProduct from "@/pages/ratings/RateProduct";
-import UpdateRatedProduct from "@/pages/ratings/UpdateRatedProduct";
 import PaymentSuccess from "@/pages/payment/PaymentSuccess";
 import PaymentCancel from "@/pages/payment/PaymentCancel";
 import UserLayout from "@/layout/UserLayout";
@@ -78,7 +77,6 @@ const Router = () => {
 
         {/* NOTE: PRODUCT RATING */}
         <Route path="ratings/create" element={<RateProduct />} />
-        <Route path="ratings/update" element={<UpdateRatedProduct />} />
 
         {/* NOTE: USER ROUTES */}
         <Route path="user" element={<UserLayout />}>
