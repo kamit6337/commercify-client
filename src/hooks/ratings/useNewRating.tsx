@@ -11,11 +11,6 @@ type OLD_USER_BUY = {
   pages: BUY[][];
 };
 
-type RESPONSE_DATA = {
-  buy: BUY;
-  rating: REVIEW;
-};
-
 const useNewRating = (productId: string, buyId: string) => {
   const queryClient = useQueryClient();
   const { showErrorMessage } = Toastify();
@@ -24,7 +19,7 @@ const useNewRating = (productId: string, buyId: string) => {
     mutationKey: ["new product rating", productId, buyId],
     mutationFn: (obj: NEW_REVIEW) => postReq("/ratings", obj),
     onSuccess: async (data) => {
-      const response = data as RESPONSE_DATA;
+      const response = data as REVIEW;
 
       await queryClient.cancelQueries({
         queryKey: ["Product Rating", productId],
@@ -44,7 +39,7 @@ const useNewRating = (productId: string, buyId: string) => {
       if (checkState?.status === "success") {
         queryClient.setQueryData(["Product Rating", productId], (old: OLD) => {
           const newPages = [...old.pages];
-          newPages[0] = [response.rating, ...newPages[0]];
+          newPages[0] = [response, ...newPages[0]];
           return { ...old, pages: newPages };
         });
       }
@@ -59,8 +54,10 @@ const useNewRating = (productId: string, buyId: string) => {
           (old: OLD_USER_BUY) => {
             const modifyPages = old.pages.map((page) =>
               page.map((buy) => {
-                if (response.buy._id === buy._id) {
-                  return { ...buy, isReviewed: true };
+                const updateResponse = { ...response, user: response.user._id };
+
+                if (buyId === buy._id) {
+                  return { ...buy, rating: updateResponse };
                 }
 
                 return buy;

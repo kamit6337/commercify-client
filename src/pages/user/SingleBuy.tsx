@@ -75,11 +75,11 @@ const SingleBuy = ({ buy }: Props) => {
       {/* NOTE: RIGHT SIDE, DELIVERY, ORDER, CANCEL OR RETURNED */}
       <div className="flex flex-row lg:flex-col justify-between items-center w-full gap-3 whitespace-nowrap lg:w-60 grow-0 shrink-0">
         <div className="space-y-2 text-xs md:text-sm">
-          <OrderStatus {...buy} />
           <div className="flex items-center gap-3">
             <p>Ordered on:</p>
             <p className="">{makeDateFromUTC(createdAt)}</p>
           </div>
+          <OrderStatus {...buy} />
         </div>
         {/* MARK: CANCEL ORDER */}
         <div className="flex gap-2 lg:mt-2">

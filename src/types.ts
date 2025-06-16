@@ -36,10 +36,21 @@ export type COUNTRY = {
   dial_code: string;
 };
 
+export type BUY_REVIEW = {
+  _id: string;
+  product: string;
+  rate: number;
+  title: string;
+  comment: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  user: string;
+};
+
 export type BUY = {
   _id: string;
   product: PRODUCT;
-  isReviewed: boolean;
+  rating: BUY_REVIEW;
   price: number;
   buyPrice: number;
   currency_code: string;
@@ -124,6 +135,13 @@ export type ADD_PRODUCT_PRICE = {
   errors?: ERRORS;
 };
 
+export type RATING_COUNT = {
+  product: string;
+  totalRatings: number;
+  totalComments: number;
+  avgRating: number;
+};
+
 export type PRODUCT = {
   _id: string;
   title: string;
@@ -137,6 +155,7 @@ export type PRODUCT = {
   rateCount?: number;
   stock: number;
   isReadyToSale: boolean;
+  rating?: RATING_COUNT;
   createdAt: Date;
   updatedAt: Date;
 };

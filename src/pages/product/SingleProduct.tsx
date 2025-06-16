@@ -139,7 +139,7 @@ const SingleProduct = () => {
           </div>
         </section>
         <CategoryProducts category={category} productId={id} />
-        {/* <ProductReviews product={data} /> */}
+        <ProductReviews product={data} />
       </main>
     </>
   );

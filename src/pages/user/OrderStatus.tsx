@@ -1,11 +1,13 @@
 import { BUY } from "@/types";
 import makeDateFromUTC from "../../utils/javascript/makeDateFromUTC";
 import { useNavigate } from "react-router-dom";
+import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import ShowRating from "./ShowRating";
 
 type Props = BUY;
 
 const OrderStatus = ({
-  isReviewed,
+  rating,
   isDelivered,
   isCancelled,
   isReturned,
@@ -15,10 +17,6 @@ const OrderStatus = ({
   updatedAt,
 }: Props) => {
   const navigate = useNavigate();
-
-  if (isDelivered) {
-    console.log(isReviewed, productId);
-  }
 
   if (isReturned) {
     return (
@@ -48,9 +46,13 @@ const OrderStatus = ({
     );
   }
 
-  if (isDelivered && !isReviewed) {
+  if (isDelivered && !rating) {
     return (
       <div className="space-y-1">
+        <div className="flex items-center gap-3 text-xs md:text-sm">
+          <p>On: </p>
+          <p>{makeDateFromUTC(deliveredDate)}</p>
+        </div>
         <div className="border rounded bg-green-500 text-white py-2 px-5 text-center">
           Delievered
         </div>
@@ -62,23 +64,41 @@ const OrderStatus = ({
         >
           Rate this Product
         </button>
-        <div className="flex items-center gap-3 text-xs md:text-sm">
-          <p>On: </p>
-          <p>{makeDateFromUTC(deliveredDate)}</p>
-        </div>
       </div>
+    );
+  }
+
+  if (isDelivered && rating) {
+    return (
+      <AlertDialog>
+        <div className="space-y-1">
+          <div className="flex items-center gap-3 text-xs md:text-sm">
+            <p>On: </p>
+            <p>{makeDateFromUTC(deliveredDate)}</p>
+          </div>
+          <div className="border rounded bg-green-500 text-white py-2 px-5 text-center">
+            Delievered
+          </div>
+          <AlertDialogTrigger>
+            <button className="border rounded hover:bg-green-400 bg-green-200 py-2 px-5 text-center font-semibold text-green-800">
+              Your Rating
+            </button>
+          </AlertDialogTrigger>
+        </div>
+        <ShowRating rating={rating} buyId={buyId} />
+      </AlertDialog>
     );
   }
 
   if (isDelivered) {
     return (
       <div>
-        <div className="border rounded bg-green-500 text-white py-2 px-5 text-center">
-          Delievered
-        </div>
         <div className="flex items-center gap-3 text-xs md:text-sm mt-1">
           <p>On: </p>
           <p>{makeDateFromUTC(deliveredDate)}</p>
+        </div>
+        <div className="border rounded bg-green-500 text-white py-2 px-5 text-center">
+          Delievered
         </div>
       </div>
     );
