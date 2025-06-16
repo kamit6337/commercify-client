@@ -17,7 +17,6 @@ const SingleBuy = ({ buy }: Props) => {
     },
     quantity,
     address: buyAddress,
-    isReviewed,
     isDelivered,
     isCancelled,
     isReturned,

@@ -23,7 +23,7 @@ const CheckoutProduct = ({ product, selectedAddress, cart }: Props) => {
     _id: id,
     title,
     description,
-    price,
+    price: { price, discountedPrice, discountPercentage },
     thumbnail,
     deliveredBy,
   } = product;
@@ -35,8 +35,6 @@ const CheckoutProduct = ({ product, selectedAddress, cart }: Props) => {
     if (!findProduct) return 1;
     return findProduct.quantity;
   }, [cart, id]);
-
-  const { discountedPrice, exchangeRatePrice, discountPercent } = price;
 
   if (!selectedAddress) return;
 
@@ -73,9 +71,9 @@ const CheckoutProduct = ({ product, selectedAddress, cart }: Props) => {
           </p>
           <p className="line-through">
             {symbol}
-            {exchangeRatePrice}
+            {price}
           </p>
-          <p className="text-xs">{discountPercent}% Off</p>
+          <p className="text-xs">{discountPercentage}% Off</p>
         </div>
         <p className="text-sm text-gray-500">Qty: {productQuantity}</p>
         <div className="flex items-center gap-1 text-gray-500 text-sm">

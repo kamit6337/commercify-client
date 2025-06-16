@@ -67,22 +67,28 @@ const OrderStatusGraph = ({
         </div>
       </div>
       {selectGraphType === "bar" && (
-        <BarGraph
-          data={chartData(orderCounts)}
-          topLabel={`${topLabel} Overview`}
-          hoverText="orders"
-          yLabel="Number of Orders"
-        />
+        <div className="w-full h-96">
+          <BarGraph
+            data={chartData(orderCounts)}
+            topLabel={`${topLabel} Overview`}
+            hoverText="orders"
+            yLabel="Number of Orders"
+          />
+        </div>
       )}
       {selectGraphType === "pie" && (
-        <DoughnutGraph
-          data={chartData(orderCounts).slice(1)}
-          topLabel="My Doughnut"
-          hoverText="items"
-        />
+        <div className="w-[500px] h-[500px] self-center">
+          <DoughnutGraph
+            data={chartData(orderCounts).slice(1)}
+            topLabel="My Doughnut"
+            hoverText="items"
+          />
+        </div>
       )}
       {selectGraphType === "line" && (
-        <LineGraph orders={timeOrdersCount} timeScale={selectTimeScale} />
+        <div className="w-full h-96">
+          <LineGraph orders={timeOrdersCount} timeScale={selectTimeScale} />
+        </div>
       )}
     </>
   );

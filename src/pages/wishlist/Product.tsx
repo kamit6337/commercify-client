@@ -21,7 +21,13 @@ const Product = ({ product }: Props) => {
   const { symbol } = useSelector(currencyState);
   const dispatch = useDispatch();
 
-  const { _id: id, title, description, price, thumbnail } = product;
+  const {
+    _id: id,
+    title,
+    description,
+    price: { price, discountPercentage, discountedPrice },
+    thumbnail,
+  } = product;
 
   const isAddedToCart = useMemo(() => {
     return !!cart.find((obj) => obj.id === id);
@@ -34,8 +40,6 @@ const Product = ({ product }: Props) => {
   const removeFromCart = () => {
     dispatch(updateCart({ id, add: false }));
   };
-
-  const { discountedPrice, exchangeRatePrice, discountPercent } = price;
 
   return (
     <div className="w-full h-48 border-b-2 last:border-none md:p-7 p-3 flex lg:gap-10 gap-5">
@@ -60,9 +64,9 @@ const Product = ({ product }: Props) => {
           </p>
           <p className="line-through">
             {symbol}
-            {exchangeRatePrice}
+            {price}
           </p>
-          <p className="text-xs">{discountPercent}% Off</p>
+          <p className="text-xs">{discountPercentage}% Off</p>
         </div>
         <div className="sm:hidden flex  justify-end items-center gap-3">
           {isAddedToCart ? (

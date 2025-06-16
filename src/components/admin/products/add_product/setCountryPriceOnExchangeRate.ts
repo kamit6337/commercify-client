@@ -64,10 +64,10 @@ const setCountryPriceOnExchangeRate = ({
     const updated = {
       country: country._id,
       currency_code: country.currency.code,
-      exchangeRate: roundFinalExchangeValue,
-      price: selectedCountryProductPrice,
-      discountPercentage: discountPercentage,
-      discountedPrice: selectedCountryProductFinalPrice,
+      exchangeRate: parseFloat(roundFinalExchangeValue.toFixed(2)),
+      price: Math.trunc(selectedCountryProductPrice),
+      discountPercentage: Math.trunc(discountPercentage),
+      discountedPrice: Math.trunc(selectedCountryProductFinalPrice),
       deliveryCharge: Math.trunc(selectedCountryProductDeliveryCharge),
     };
 

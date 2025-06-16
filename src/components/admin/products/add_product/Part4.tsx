@@ -41,15 +41,6 @@ type Props = {
   closeRef: React.RefObject<HTMLButtonElement>;
 };
 
-const sample = {
-  title:
-    "new product bgbkd gkg;odfgkdf kdfg;ldkfg;ldf gdf gkdfl;gkdfsg;lkdfsg kl;gd",
-  description:
-    "brand new product sdfgfdjkgldf gdfljgdflkgjdfgg ldfkjgkldfgjdf glkfdjgldfkg gjdflk",
-  deliveredBy: 10,
-  category: "6819d90d5a48d59dcb5b8f3a",
-};
-
 const Part4 = ({
   selectedImage,
   part1Data,

@@ -42,7 +42,7 @@ export type BUY = {
   isReviewed: boolean;
   price: number;
   buyPrice: number;
-  exchangeRate: number;
+  currency_code: string;
   quantity: number;
   address: ADDRESS;
   country: COUNTRY;

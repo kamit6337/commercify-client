@@ -20,7 +20,7 @@ const PriceList = ({ products }: Props) => {
   const { data: addresses } = useUserAddress();
   const { cart } = useSelector(cartAndWishlistState);
 
-  const { symbol, currency_code, country, currency_name, conversionRate } =
+  const { symbol, currency_code, country, currency_name } =
     useSelector(currencyState);
 
   const { pathname } = useLocation();
@@ -46,16 +46,18 @@ const PriceList = ({ products }: Props) => {
     const filterData = products.filter((obj) => obj);
 
     filterData.forEach((product) => {
-      const { _id, price } = product;
+      const {
+        _id,
+        price: { price, discountedPrice },
+      } = product;
 
       const findProduct = cart.find((obj) => obj.id === _id);
 
       if (!findProduct) return;
 
-      const { discountedPrice, discountPercentCost, exchangeRatePrice } = price;
+      const discountPercentCost = price - discountedPrice;
 
-      actualProductPrice =
-        actualProductPrice + findProduct.quantity * exchangeRatePrice;
+      actualProductPrice = actualProductPrice + findProduct.quantity * price;
 
       sellingPrice = sellingPrice + findProduct.quantity * discountedPrice;
 
@@ -93,11 +95,9 @@ const PriceList = ({ products }: Props) => {
     return prev + current.quantity;
   }, 0);
 
-  const deliveryCharges = Math.round(
-    products.reduce((acc, product) => {
-      return (acc += product.deliveryCharge);
-    }, 0) * conversionRate
-  );
+  const deliveryCharges = products.reduce((acc, product) => {
+    return (acc += product.price.deliveryCharge);
+  }, 0);
 
   const productSellingPrice = sellingPrice + deliveryCharges;
   return (

@@ -22,7 +22,7 @@ const ProductCard = ({ product }: Props) => {
             src={thumbnail}
             alt="product"
             loading="lazy"
-            className="w-full h-full rounded-t-xl"
+            className="w-full h-full rounded-xl"
           />
         </Link>
       </div>

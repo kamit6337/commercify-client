@@ -27,7 +27,7 @@ const Product = ({ product, wishlist: isWishlist = true }: Props) => {
     _id: id,
     title,
     description,
-    price,
+    price: { price, discountedPrice, discountPercentage },
     thumbnail,
     deliveredBy,
   } = product;
@@ -56,8 +56,6 @@ const Product = ({ product, wishlist: isWishlist = true }: Props) => {
   const addToWishlist = () => {
     dispatch(updateWishlist({ id }));
   };
-
-  const { discountedPrice, exchangeRatePrice, discountPercent } = price;
 
   return (
     <div className="w-full border-b-2 last:border-none lg:p-7 p-4 flex lg:gap-10 gap-5">
@@ -107,9 +105,9 @@ const Product = ({ product, wishlist: isWishlist = true }: Props) => {
             </p>
             <p className="line-through">
               {symbol}
-              {exchangeRatePrice}
+              {price}
             </p>
-            <p className="text-xs">{discountPercent}% Off</p>
+            <p className="text-xs">{discountPercentage}% Off</p>
           </div>
           <div className="flex items-center gap-1 text-gray-500 text-sm">
             <p>Delivery</p>

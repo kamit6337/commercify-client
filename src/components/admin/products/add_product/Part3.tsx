@@ -117,8 +117,8 @@ const Part3 = ({ setStage, countries, part3Data, setPart3Data }: Props) => {
 
     const updated = {
       ...selectedCountryProduct,
-      price: selectedCountryProductPrice,
-      discountedPrice: selectedCountryProductFinalPrice,
+      price: Math.trunc(selectedCountryProductPrice),
+      discountedPrice: Math.trunc(selectedCountryProductFinalPrice),
     };
 
     setPart3Data((prev) => ({
@@ -319,7 +319,7 @@ const Part3 = ({ setStage, countries, part3Data, setPart3Data }: Props) => {
                         defaultPrice = 0;
                       } else {
                         error = "";
-                        defaultPrice = number;
+                        defaultPrice = Math.trunc(number);
                       }
 
                       const { discountPercentage, exchangeRate } =
@@ -379,7 +379,7 @@ const Part3 = ({ setStage, countries, part3Data, setPart3Data }: Props) => {
 
                       const number = parseFloat(e.target.value);
 
-                      const discount = number || 0;
+                      const discount = number ? Math.trunc(number) : 0;
 
                       let error = "";
 
@@ -458,7 +458,7 @@ const Part3 = ({ setStage, countries, part3Data, setPart3Data }: Props) => {
                         defaultPrice = 0;
                       } else {
                         error = "";
-                        defaultPrice = number;
+                        defaultPrice = Math.trunc(number);
                       }
 
                       const { discountedPrice } = part3Data[countryId];

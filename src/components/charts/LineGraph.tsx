@@ -3,10 +3,10 @@ import { ChartOptions } from "chart.js";
 import {
   parseISO,
   format,
-  startOfDay,
-  eachHourOfInterval,
+  // startOfDay,
+  // eachHourOfInterval,
   eachDayOfInterval,
-  eachMonthOfInterval,
+  // eachMonthOfInterval,
 } from "date-fns";
 import { TimeScale } from "@/types";
 
@@ -22,13 +22,13 @@ type Props = {
 
 const LineGraph = ({ orders, timeScale }: Props) => {
   const now = new Date();
-  const createdDates = orders.map((o) => parseISO(o.createdAt));
-  const minDate = createdDates.length
-    ? new Date(Math.min(...createdDates.map(Number)))
-    : now;
-  const maxDate = createdDates.length
-    ? new Date(Math.max(...createdDates.map(Number)))
-    : now;
+  // const createdDates = orders.map((o) => parseISO(o.createdAt));
+  // const minDate = createdDates.length
+  //   ? new Date(Math.min(...createdDates.map(Number)))
+  //   : now;
+  // const maxDate = createdDates.length
+  //   ? new Date(Math.max(...createdDates.map(Number)))
+  //   : now;
 
   let baseUnits: string[] = [];
 

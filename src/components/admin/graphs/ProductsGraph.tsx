@@ -1,10 +1,11 @@
 import BarGraph from "@/components/charts/BarGraph";
 import useProductsCount from "@/hooks/admin/useProductsCount";
+import { useMemo } from "react";
 
 type CATEGORY_PRODUCT = {
   _id: string;
   title: string;
-  categoryProductsCount: number;
+  counts: number;
 };
 
 const COLORS = [
@@ -27,27 +28,36 @@ const BORDER_COLORS = [
 ];
 
 const ProductsGraph = () => {
-  const { data: productCounts } = useProductsCount();
-
-  const categoryProducts = productCounts.categoryProducts;
+  const { data: categoryProducts } = useProductsCount();
 
   const chartCategoryData = categoryProducts.map(
     (obj: CATEGORY_PRODUCT, i: number) => {
-      const { title, categoryProductsCount } = obj;
+      const { title, counts } = obj;
 
       return {
         name: title,
-        count: categoryProductsCount,
+        count: counts,
         color: COLORS[i % COLORS.length],
         borderColor: BORDER_COLORS[i % BORDER_COLORS.length],
       };
     }
   );
 
+  const allProducts = useMemo(() => {
+    if (!categoryProducts || categoryProducts.length === 0) return 0;
+
+    return categoryProducts.reduce(
+      (acc: number, category: CATEGORY_PRODUCT) => {
+        return (acc += category.counts);
+      },
+      0
+    );
+  }, [categoryProducts]);
+
   const chartData = [
     {
       name: "All Products",
-      count: productCounts.products,
+      count: allProducts,
       color: "rgba(75, 192, 192, 0.7)",
       borderColor: "rgba(75, 192, 192, 1)",
     },
@@ -55,12 +65,14 @@ const ProductsGraph = () => {
   ];
 
   return (
-    <BarGraph
-      data={chartData}
-      topLabel="Products Overview"
-      hoverText="products"
-      yLabel="Number of Products"
-    />
+    <div className="w-full h-96">
+      <BarGraph
+        data={chartData}
+        topLabel="Products Overview"
+        hoverText="products"
+        yLabel="Number of Products"
+      />
+    </div>
   );
 };
 

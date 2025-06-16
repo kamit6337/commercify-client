@@ -4,7 +4,6 @@ import countries from "@/data/countries";
 import OrderStatus from "@/pages/user/OrderStatus";
 import { currencyState } from "@/redux/slice/currencySlice";
 import { BUY } from "@/types";
-import changePriceDiscountByExchangeRate from "@/utils/javascript/changePriceDiscountByExchangeRate";
 import makeDateFromUTC from "@/utils/javascript/makeDateFromUTC";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
@@ -20,14 +19,14 @@ const SingleBuy = ({ buy }: Props) => {
   const {
     _id,
     product,
-    price,
+    buyPrice,
     quantity,
+    currency_code,
     address: buyAddress,
     isDelivered,
     isCancelled,
     isReturned,
     createdAt,
-    exchangeRate,
     reasonForReturned,
     reasonForCancelled,
   } = buy;
@@ -45,23 +44,13 @@ const SingleBuy = ({ buy }: Props) => {
     return findCountry.currency.symbol;
   }, [country]);
 
-  const { exchangeRatePrice } = changePriceDiscountByExchangeRate(
-    price,
-    0,
-    exchangeRate
-  );
-
   return (
     <div className="border-b-2 last:border-none lg:p-7 p-4 flex flex-col lg:flex-row lg:justify-between lg:gap-10 gap-6">
       {/* MARK: FIRST PORTION */}
       <div className="flex gap-10 ">
-        <div className="h-full lg:w-48 md:w-40 w-32">
+        <div className="lg:w-48 md:w-40 w-32">
           <Link to={`/products/${id}`}>
-            <img
-              src={thumbnail}
-              alt={title}
-              className="h-full w-full object-cover"
-            />
+            <img src={thumbnail} alt={title} className="w-full object-cover" />
           </Link>
         </div>
         <div className="flex-1 flex flex-col gap-2">
@@ -74,12 +63,23 @@ const SingleBuy = ({ buy }: Props) => {
 
           <p className="text-2xl font-semibold tracking-wide">
             {countrySymbol}
-            {exchangeRatePrice}
+            {buyPrice}
           </p>
           <div className="text-xs">Qty : {quantity}</div>
 
+          <div>
+            <div className="flex gap-1">
+              <p className="text-sm">Currency Code :</p>
+              <p className="font-semibold">{currency_code}</p>
+            </div>
+
+            <div className="flex gap-1">
+              <p className="text-sm">Country :</p>
+              <p className="font-semibold">{country}</p>
+            </div>
+          </div>
           {/* MARK: ADDRESS */}
-          <div className="flex flex-col md:flex-row mt-1 md:gap-3 gap-1 text-sm">
+          <div className="flex flex-col md:flex-row md:gap-3 gap-1 text-sm">
             <p>Address:</p>
             <div className="cursor-pointer">
               <p className="text-sm">{address}</p>

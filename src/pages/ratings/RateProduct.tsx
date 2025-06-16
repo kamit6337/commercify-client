@@ -72,9 +72,12 @@ const RateProduct = () => {
     );
   }
 
-  const { title, description, price, thumbnail } = data as PRODUCT;
-
-  const { exchangeRatePrice, discountedPrice, discountPercent } = price;
+  const {
+    title,
+    description,
+    price: { price, discountPercentage, discountedPrice },
+    thumbnail,
+  } = data as PRODUCT;
 
   const onSubmit = async (data: Form) => {
     if (!buyId || !productId) {
@@ -134,9 +137,9 @@ const RateProduct = () => {
                   </p>
                   <p className="line-through">
                     {symbol}
-                    {exchangeRatePrice}
+                    {price}
                   </p>
-                  <p className="text-xs">{discountPercent}% Off</p>
+                  <p className="text-xs">{discountPercentage}% Off</p>
                 </div>
               </section>
             </div>

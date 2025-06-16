@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet";
-import { Link, useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { useEffect } from "react";
 import Product from "./Product";
 import { PRODUCT } from "@/types";

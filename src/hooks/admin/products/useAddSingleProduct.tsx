@@ -7,14 +7,6 @@ type OLD = {
   pages: PRODUCT[][];
 };
 
-type CATEGORY_PRODUCT = {
-  _id: string;
-  title: string;
-  counts: number;
-};
-
-type COUNT_OLD = CATEGORY_PRODUCT[];
-
 type ADD_NEW_PRODUCT = {
   title: string;
   description: string;

@@ -20,19 +20,20 @@ const useProductsFromIDs = (ids: string[]) => {
         data: results.map((result) => result.data),
         isLoading: results.some((result) => result.isLoading),
         error: results.some((result) => result.error?.message),
+        isSuccess: results.every((result) => result.isSuccess),
       };
     },
   });
 
   useEffect(() => {
-    if (query.data) {
+    if (query.isSuccess) {
       const products = query.data;
 
-      if (products.length === 0) return;
+      if (!products || products.length === 0) return;
 
       dispatch(addSaleAndStock(products));
     }
-  }, [query.data]);
+  }, [query]);
 
   return query;
 };

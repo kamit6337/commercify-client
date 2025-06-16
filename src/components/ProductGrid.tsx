@@ -18,8 +18,8 @@ const ProductGrid = ({ products, sortOption, setSortOption }: Props) => {
 
     const cloned = [...products];
     cloned.sort((a, b) => {
-      const priceA = a.price.exchangeRatePrice ?? 0;
-      const priceB = b.price.exchangeRatePrice ?? 0;
+      const priceA = a.price.discountedPrice ?? 0;
+      const priceB = b.price.discountedPrice ?? 0;
 
       if (sortOption === "low_to_high") return priceA - priceB;
       if (sortOption === "high_to_low") return priceB - priceA;

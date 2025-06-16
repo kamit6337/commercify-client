@@ -139,7 +139,7 @@ const Admin = () => {
         {/* MARK: ORDER STATUS */}
         {(isLoading || isLoadingOrdersCount) && <Loading />}
         {isSuccess && isSuccessOrdersCount && (
-          <div className="p-10 border-b-2 space-y-10">
+          <div className="p-10 border-b-2 flex flex-col gap-10">
             <div className="flex items-center justify-between">
               <p className="font-semibold text-xl tracking-wide underline underline-offset-4">
                 Order Status
