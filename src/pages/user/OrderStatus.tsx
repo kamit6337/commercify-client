@@ -1,6 +1,6 @@
 import { BUY } from "@/types";
 import makeDateFromUTC from "../../utils/javascript/makeDateFromUTC";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import ShowRating from "./ShowRating";
 
@@ -17,6 +17,9 @@ const OrderStatus = ({
   updatedAt,
 }: Props) => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+
+  const isAdminRoute = pathname.startsWith("/admin");
 
   if (isReturned) {
     return (
@@ -46,7 +49,7 @@ const OrderStatus = ({
     );
   }
 
-  if (isDelivered && !rating) {
+  if (isDelivered && !isAdminRoute && !rating) {
     return (
       <div className="space-y-1">
         <div className="flex items-center gap-3 text-xs md:text-sm">
@@ -68,7 +71,7 @@ const OrderStatus = ({
     );
   }
 
-  if (isDelivered && rating) {
+  if (isDelivered && !isAdminRoute && rating) {
     return (
       <AlertDialog>
         <div className="space-y-1">
