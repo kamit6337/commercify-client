@@ -23,7 +23,17 @@ const useUpdateDeliver = (socket: Socket) => {
       if (checkStatus?.status === "success") {
         queryClient.setQueryData(["buy products of user"], (old: OLD) => {
           const modifyPages = old.pages.map((page) =>
-            page.map((buy) => (buy._id === updateBuy._id ? updateBuy : buy))
+            page.map((buy) => {
+              if (buy._id === updateBuy._id) {
+                return {
+                  ...buy,
+                  isDelivered: true,
+                  deliveredDate: updateBuy.deliveredDate,
+                };
+              }
+
+              return buy;
+            })
           );
 
           return { ...old, pages: modifyPages };
