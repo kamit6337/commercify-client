@@ -3,6 +3,7 @@ import Navbar from "@/components/navbar/Navbar";
 import useLoginCheck from "@/hooks/auth/useLoginCheck";
 import useAllCountry from "@/hooks/countryAndCurrency/useAllCountry";
 import useCountryInfoFromIP from "@/hooks/countryAndCurrency/useCountryInfoFromIP";
+import usePingServer from "@/hooks/general/usePingServer";
 import InitialLoading from "@/lib/InitialLoading";
 import Loading from "@/lib/Loading";
 import OfflineDetector from "@/lib/OfflineDetector";
@@ -14,6 +15,9 @@ import { ToastContainer } from "react-toastify";
 
 const RootLayout = () => {
   const navigate = useNavigate();
+
+  usePingServer();
+
   const { isLoading, error, isSuccess } = useLoginCheck();
 
   const {
