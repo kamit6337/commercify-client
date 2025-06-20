@@ -80,10 +80,12 @@ const UpdatePrice = ({ product }: Props) => {
         countryId,
       ]) as PRODUCT_PRICE;
 
+      if (!productPrice) return;
+
       if (
-        priceObj.price !== productPrice.price ||
-        priceObj.discountPercentage !== productPrice.discountPercentage ||
-        priceObj.deliveryCharge !== productPrice.deliveryCharge
+        priceObj.price !== productPrice?.price ||
+        priceObj.discountPercentage !== productPrice?.discountPercentage ||
+        priceObj.deliveryCharge !== productPrice?.deliveryCharge
       ) {
         setUpdatedPriceValue((prev) => ({
           ...prev,

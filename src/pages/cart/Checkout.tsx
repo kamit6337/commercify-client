@@ -97,7 +97,7 @@ const Checkout = () => {
         {products.length > 0 ? (
           <>
             <div className="space-y-5">
-              <div className="bg-white">
+              <div className="bg-background">
                 {products.map((product) => {
                   return (
                     <CheckoutProduct
@@ -109,11 +109,11 @@ const Checkout = () => {
                   );
                 })}
               </div>
-              <div className="md:hidden bg-white">
+              <div className="md:hidden bg-background">
                 <PriceList products={products} />
               </div>
             </div>
-            <div className="flex justify-end py-3 px-10 border-t-2 sticky bottom-0 bg-white">
+            <div className="flex justify-end py-3 px-10 border-t-2 sticky bottom-0 bg-background">
               <button
                 className="py-4 px-16 rounded-md bg-orange-400 text-white font-semibold tracking-wider"
                 disabled={isPending}

@@ -21,7 +21,7 @@ const ClickToDeliver = ({ buyId }: Props) => {
 
   useEffect(() => {
     if (isSuccess) {
-      showSuccessMessage({ message: "User order order-status has changed." });
+      showSuccessMessage({ message: "Product has been delivered" });
       closeRef.current?.click();
     }
   }, [isSuccess]);

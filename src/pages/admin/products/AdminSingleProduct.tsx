@@ -69,12 +69,16 @@ const AdminSingleProduct = ({ product }: Props) => {
               <AlertDialogTrigger onClick={() => setOpenDialog("price")}>
                 <DropdownMenuItem>Update Price</DropdownMenuItem>
               </AlertDialogTrigger>
+              <AlertDialogTrigger onClick={() => setOpenDialog("delete")}>
+                <DropdownMenuItem>Delete Product</DropdownMenuItem>
+              </AlertDialogTrigger>
             </DropdownMenuContent>
           </DropdownMenu>
           {openDialog === "details" ? <UpdateProduct product={product} /> : ""}
           {openDialog === "stock" ? <UpdateStock product={product} /> : ""}
           {openDialog === "sale" ? <UpdateSale product={product} /> : ""}
           {openDialog === "price" ? <UpdatePrice product={product} /> : ""}
+          {openDialog === "delete" ? <DeleteProduct product={product} /> : ""}
         </AlertDialog>
       </div>
       <div className="flex-1">

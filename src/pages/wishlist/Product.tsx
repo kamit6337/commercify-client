@@ -102,7 +102,7 @@ const Product = ({ product }: Props) => {
 
         {isAddedToCart ? (
           <p
-            className="border p-3 w-max rounded-md cursor-pointer bg-gray-200 tablet:text-sm tablet:p-1"
+            className="border p-3 w-max rounded-md cursor-pointer bg-bg_bg tablet:text-sm tablet:p-1"
             onClick={removeFromCart}
           >
             Added To Cart

@@ -38,6 +38,7 @@ import AdminProductsLayout from "@/layout/AdminProductsLayout";
 import AdminProducts from "@/pages/admin/products/AdminProducts";
 import AdminCategoryProducts from "@/pages/admin/products/AdminCategoryProducts";
 import UnDelivered from "@/pages/admin/orderStatus/UnDelivered";
+import SingleProductAdmin from "@/pages/admin/SingleProductAdmin";
 
 const Router = () => {
   return (
@@ -105,6 +106,7 @@ const Router = () => {
           <Route index element={<AdminProducts />} />
           <Route path="category/:id" element={<AdminCategoryProducts />} />
         </Route>
+        <Route path="products/:id" element={<SingleProductAdmin />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />

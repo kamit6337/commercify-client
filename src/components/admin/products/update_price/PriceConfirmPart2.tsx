@@ -61,11 +61,14 @@ const PriceConfirmPart2 = ({
   }
 
   return (
-    <main className="h-full overflow-y-auto">
+    <main className="h-full">
       <AlertDialogTitle className="h-10 flex justify-center items-center border-b">
         Updated Price Summary
       </AlertDialogTitle>
-      <div className="h-full overflow-y-auto">
+      <div
+        className="overflow-y-auto h-[430px]"
+        style={{ scrollbarWidth: "none" }}
+      >
         {countryIds.map((countryId) => {
           const country = countryMap.get(countryId);
 
@@ -129,7 +132,7 @@ const PriceConfirmPart2 = ({
         })}
         <div ref={ref} />
       </div>
-      <AlertDialogFooter className="h-20 grid grid-cols-2 items-center px-2">
+      <AlertDialogFooter className="h-20 grid grid-cols-2 items-center px-2 ">
         <AlertDialogCancel ref={closeRef} className={`hidden`}>
           Cancel
         </AlertDialogCancel>

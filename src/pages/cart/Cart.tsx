@@ -55,24 +55,24 @@ const Cart = () => {
       </Helmet>
 
       <section className="">
-        <p className="py-5 px-10 text-xl border-b bg-white">
+        <p className="py-5 px-10 text-xl border-b bg-background">
           My Cart <span className="text-sm">({products.length})</span>
         </p>
         {products.length > 0 ? (
           <>
             <div className="space-y-5">
-              <div className="bg-white">
+              <div className="bg-background">
                 {products.map((product) => {
                   return <Product key={product._id} product={product} />;
                 })}
               </div>
-              <div className="md:hidden bg-white">
+              <div className="md:hidden bg-background">
                 <PriceList products={products} />
               </div>
             </div>
-            <div className="flex justify-end py-3 px-10 border-t-2 sticky bottom-0 bg-white">
+            <div className="flex justify-end py-3 px-10 border-t-2 sticky bottom-0 bg-background">
               <button
-                className="py-4 px-16 rounded-md bg-orange-400 text-white font-semibold tracking-wide"
+                className="py-4 px-16 rounded-md bg-orange-400 text-white font-semibold tracking-wide hover:brightness-90"
                 onClick={() => handlePlaceOrder()}
               >
                 Placed Order

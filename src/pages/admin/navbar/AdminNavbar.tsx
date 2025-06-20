@@ -6,9 +6,6 @@ import Icons from "@/assets/icons";
 import UserProfile from "@/components/navbar/UserProfile";
 import Toastify from "@/lib/Toastify";
 import CustomImages from "@/assets/images";
-import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import UpdateProduct from "@/components/admin/products/UpdateProduct";
-import { PRODUCT } from "@/types";
 import UserCountry from "./UserCountry";
 
 const AdminNavbar = () => {
@@ -16,8 +13,6 @@ const AdminNavbar = () => {
   const [searchText, setSearchText] = useState("");
   const [searchList, setSearchList] = useState([]);
   const { error, data, refetch } = useSearchProducts(searchText);
-  const [product, setProduct] = useState<PRODUCT | null>(null);
-  const [isOpen, setIsOpen] = useState(false);
 
   const debouncedSearch = useDebounce(() => {
     refetch();
@@ -37,12 +32,6 @@ const AdminNavbar = () => {
     }
   }, [error]);
 
-  const handleClickProduct = (product: PRODUCT) => {
-    resetSearch();
-    setProduct(product);
-    setIsOpen(true);
-  };
-
   const handleChange = (value: string) => {
     if (!value) {
       resetSearch();
@@ -57,10 +46,6 @@ const AdminNavbar = () => {
     setSearchText("");
     setSearchList([]);
     setShowClearAll(false);
-  };
-
-  const handleCancel = () => {
-    setIsOpen(false);
   };
 
   return (
@@ -109,10 +94,11 @@ const AdminNavbar = () => {
               return (
                 <div
                   key={_id}
-                  className={` p-2 border-b last:border-none cursor-pointer  `}
-                  onClick={() => handleClickProduct(product)}
+                  className={` p-2 border-b last:border-none cursor-pointer hover:bg-bg_bg  `}
                 >
-                  {title}
+                  <Link to={`/admin/products/${_id}`} onClick={resetSearch}>
+                    {title}
+                  </Link>
                 </div>
               );
             })}
@@ -123,15 +109,6 @@ const AdminNavbar = () => {
       {/* MARK: USER PROFILE */}
       <UserCountry />
       <UserProfile />
-
-      {/* MARK: ALERT DIALOG */}
-
-      <AlertDialog open={isOpen}>
-        <AlertDialogTrigger className="hidden"></AlertDialogTrigger>
-        {product && (
-          <UpdateProduct product={product} handleCancel={handleCancel} />
-        )}
-      </AlertDialog>
     </section>
   );
 };

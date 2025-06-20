@@ -64,10 +64,10 @@ const ShowProducts = ({
 
   return (
     <div className="space-y-5">
-      <div className="bg-white w-full p-3 text-lg">
+      <div className="bg-background w-full p-3 text-lg">
         Products ({products.length})
       </div>
-      <div className="bg-white">
+      <div className="bg-background">
         {products.length > 0 ? (
           products.map((product) => {
             return <AdminSingleProduct product={product} key={product._id} />;
@@ -79,7 +79,7 @@ const ShowProducts = ({
         )}
       </div>
       <div className="mt-10 h-20  text-center flex justify-center items-center">
-        <div className="w-max bg-white h-full flex justify-center items-center gap-10 px-10">
+        <div className="w-max bg-background h-full flex justify-center items-center gap-10 px-10">
           <button
             disabled={page === 1}
             onClick={handlePrevFetch}

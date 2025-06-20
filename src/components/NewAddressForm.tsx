@@ -4,13 +4,6 @@ import { useForm } from "react-hook-form";
 import Toastify from "../lib/Toastify";
 import { useSelector } from "react-redux";
 import { currencyState } from "@/redux/slice/currencySlice";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./ui/select";
 import Loading from "@/lib/Loading";
 import useCountryStates from "@/hooks/countryAndCurrency/useCountryStates";
 import useStateCities from "@/hooks/countryAndCurrency/useStateCities";
@@ -18,6 +11,8 @@ import useUserAddressCreated from "@/hooks/address/useUserAddressCreated";
 import { ADDRESS, COUNTRY } from "@/types";
 import useUserAddressUpdate from "@/hooks/address/useUserAddressUpdate";
 import useAllCountry from "@/hooks/countryAndCurrency/useAllCountry";
+import VirtualizedSelect from "./customUI/Select";
+import { CountryCode, isValidPhoneNumber } from "libphonenumber-js";
 
 type Props = {
   handleCancel: () => void;
@@ -35,26 +30,26 @@ type STATE = {
   isoCode: string;
 };
 
-const NewAddressForm = ({ handleCancel, prevAddress = null }: Props) => {
-  const { id, dial_code } = useSelector(currencyState);
+type CITY = {
+  name: string;
+};
 
+const NewAddressForm = ({ handleCancel, prevAddress = null }: Props) => {
+  const { id, dial_code, country } = useSelector(currencyState);
   const { data: countries } = useAllCountry();
 
-  const [countryId, setCountryId] = useState<string>(id.toString());
-
   const selectedCountry = useMemo<COUNTRY | undefined>(() => {
-    return countries.find((country: COUNTRY) => country._id === countryId);
-  }, [countryId]);
+    return countries.find((country: COUNTRY) => country._id === id);
+  }, [id]);
 
-  const selectedDialCode = selectedCountry?.dial_code || dial_code;
+  const [stateCode, setStateCode] = useState<string>("");
+  const [selectedDistrict, setSelectedDistrict] = useState<string>("");
 
   const {
     isLoading,
     data: states,
     error,
   } = useCountryStates(selectedCountry?.name, selectedCountry?.isoAlpha2);
-
-  const [stateCode, setStateCode] = useState<string>("");
 
   const selectedState = useMemo<STATE | null>(() => {
     if (!stateCode || !states || states.length === 0) return null;
@@ -70,8 +65,6 @@ const NewAddressForm = ({ handleCancel, prevAddress = null }: Props) => {
     selectedState?.name,
     stateCode
   );
-
-  const [selectedDistrict, setSelectedDistrict] = useState("");
 
   const { mutate, isPending, isSuccess } = useUserAddressCreated();
 
@@ -104,14 +97,14 @@ const NewAddressForm = ({ handleCancel, prevAddress = null }: Props) => {
         address: prevAddress.address,
       });
 
-      const findCountry = countries.find(
-        (country: COUNTRY) =>
-          country.name.toLowerCase() === prevAddress.country.toLowerCase()
-      ) as COUNTRY;
+      // const findCountry = countries.find(
+      //   (country: COUNTRY) =>
+      //     country.name.toLowerCase() === prevAddress.country.toLowerCase()
+      // ) as COUNTRY;
 
-      if (findCountry) {
-        setCountryId(findCountry._id.toString());
-      }
+      // if (findCountry) {
+      //   setCountryId(findCountry._id.toString());
+      // }
 
       if (states && states.length > 0) {
         const findState = states.find(
@@ -157,7 +150,27 @@ const NewAddressForm = ({ handleCancel, prevAddress = null }: Props) => {
   }, [error, showErrorMessage, errorStateCities]);
 
   const onSubmit = async (data: Form) => {
-    if (!selectedCountry || !selectedState || !selectedDistrict) {
+    if (!selectedCountry) {
+      showErrorMessage({
+        message:
+          "Error in creating new Address. Either refresh page or try later",
+      });
+      return;
+    }
+
+    const mobileWithDialCode = dial_code + data.mobile;
+
+    if (
+      !isValidPhoneNumber(
+        mobileWithDialCode,
+        selectedCountry?.isoAlpha2 as CountryCode
+      )
+    ) {
+      showErrorMessage({ message: "Please type correct Mobile Number" });
+      return;
+    }
+
+    if (!selectedState || !selectedDistrict) {
       showAlertMessage({ message: "Fill all the field" });
       return;
     }
@@ -169,19 +182,20 @@ const NewAddressForm = ({ handleCancel, prevAddress = null }: Props) => {
         data.address === prevAddress.address &&
         selectedCountry.name === prevAddress.country &&
         selectedState.name === prevAddress.state &&
-        selectedDistrict === prevAddress.district &&
-        selectedDialCode === prevAddress.dial_code
+        selectedDistrict === prevAddress.district
       ) {
         showAlertMessage({ message: "Please update profile to update" });
         return;
       }
+
       const postData = {
         ...prevAddress,
         ...data,
-        dial_code: selectedDialCode,
+        dial_code: selectedCountry.dial_code,
         country: selectedCountry.name,
         state: selectedState.name,
         district: selectedDistrict,
+        country_code: selectedCountry.isoAlpha2,
       };
       updateAddress(postData);
       return;
@@ -190,18 +204,18 @@ const NewAddressForm = ({ handleCancel, prevAddress = null }: Props) => {
     const postData = {
       ...data,
       _id: Date.now().toString(),
-      dial_code: selectedDialCode,
+      dial_code: selectedCountry.dial_code,
       country: selectedCountry.name,
       state: selectedState.name,
       district: selectedDistrict,
+      country_code: selectedCountry.isoAlpha2,
     };
 
-    console.log("postData", postData);
     mutate(postData);
   };
 
   return (
-    <div className="bg-sky-50 border max-w-4xl">
+    <div className="bg-sky-50 dark:bg-slate-900 border max-w-4xl">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="w-full py-5 px-5 md:px-10  flex flex-col gap-10"
@@ -210,15 +224,15 @@ const NewAddressForm = ({ handleCancel, prevAddress = null }: Props) => {
         <div className="flex flex-col lg:flex-row lg:items-center items-start gap-5">
           {/* MARK: TYPE NAME */}
           <div className="flex-1">
-            <div className="border border-black flex items-center">
+            <div className=" flex items-center">
               <input
                 {...register("name", {
-                  required: true,
+                  required: "Please provide Name",
                 })}
                 spellCheck="false"
                 autoComplete="off"
                 placeholder="Name"
-                className="w-full bg-inherit p-4"
+                className="w-full border border-foreground rounded bg-inherit p-4"
               />
             </div>
             <p className="h-1 mt-1 ml-1 text-xs text-red-500">
@@ -228,27 +242,10 @@ const NewAddressForm = ({ handleCancel, prevAddress = null }: Props) => {
 
           {/* MARK: TYPE MOBILE */}
           <div className="flex-1 flex  gap-2 items-start">
-            <Select
-              value={countryId}
-              onValueChange={(value) => setCountryId(value)}
-            >
-              <SelectTrigger className="w-40">
-                <SelectValue placeholder="--select-country-code" />
-              </SelectTrigger>
-              <SelectContent>
-                {countries.map((obj: COUNTRY) => {
-                  const { _id, name, dial_code } = obj;
-                  return (
-                    <SelectItem key={_id} value={_id.toString()}>
-                      {name} ({dial_code})
-                    </SelectItem>
-                  );
-                })}
-              </SelectContent>
-            </Select>
+            <p className="border px-3 py-2 rounded">{dial_code}</p>
 
             <div className="flex-1 flex flex-col ">
-              <p className="w-full border flex items-center border-black">
+              <p className="w-full flex items-center">
                 <input
                   {...register("mobile", {
                     required: true,
@@ -261,7 +258,7 @@ const NewAddressForm = ({ handleCancel, prevAddress = null }: Props) => {
                       return true;
                     },
                   })}
-                  className="w-full bg-inherit p-4"
+                  className="w-full bg-inherit p-4 border border-foreground rounded"
                   placeholder="Mobile Number"
                   autoComplete="off"
                   spellCheck="false"
@@ -275,14 +272,14 @@ const NewAddressForm = ({ handleCancel, prevAddress = null }: Props) => {
         </div>
 
         {/* MARK: TYPE ADDRESS */}
-        <div className="border border-black">
+        <div className="">
           <textarea
             {...register("address", {
-              required: true,
+              required: "Please provide Flat no, Street or Landmark",
             })}
             spellCheck="false"
             autoComplete="off"
-            className="w-full bg-inherit p-4 overflow-y-hidden resize-none h-full"
+            className="w-full bg-inherit p-4 overflow-y-hidden resize-none h-full border border-foreground rounded"
             placeholder="Address"
             rows={5}
           />
@@ -290,76 +287,55 @@ const NewAddressForm = ({ handleCancel, prevAddress = null }: Props) => {
 
         <div className="grid grid-rows-4 items-start gap-5 lg:grid-cols-2 lg:items-center justify-between">
           {/* MARK: SELECT COUNTRY */}
-          <Select
-            value={countryId}
-            onValueChange={(value) => setCountryId(value)}
-          >
-            <SelectTrigger className="w-[280px]">
-              <SelectValue placeholder="--select-country" />
-            </SelectTrigger>
-            <SelectContent>
-              {countries.map((obj: COUNTRY) => {
-                const { _id, name } = obj;
-                return (
-                  <SelectItem key={_id} value={_id.toString()}>
-                    {name}
-                  </SelectItem>
-                );
-              })}
-            </SelectContent>
-          </Select>
+          <p className="w-60 border py-2 px-3  rounded">{country}</p>
 
           {/* MARK: SELECT STATE */}
           {isLoading && <Loading height={"full"} small={true} />}
 
           {states && (
-            <Select
-              value={stateCode}
-              onValueChange={(value) => setStateCode(value)}
-            >
-              <SelectTrigger className="w-[280px]">
-                <SelectValue placeholder="--select-state" />
-              </SelectTrigger>
-              <SelectContent>
-                {states.map((obj: { name: string; isoCode: string }) => {
-                  const { name, isoCode } = obj;
-                  return (
-                    <SelectItem key={isoCode} value={isoCode}>
-                      {name}
-                    </SelectItem>
-                  );
-                })}
-              </SelectContent>
-            </Select>
+            <VirtualizedSelect
+              items={states as STATE[]}
+              triggerRenderer={(item) => {
+                return <p>{item?.name || "Select State"}</p>;
+              }}
+              itemRenderer={(item, _, selectItem) => {
+                return (
+                  <p onClick={selectItem} key={item.isoCode}>
+                    {item.name}
+                  </p>
+                );
+              }}
+              onSelect={(state) => setStateCode(state.isoCode)}
+              mainWidth="w-60"
+            />
           )}
 
           {/* MARK: SELECT CITY OR DISTRICT */}
           {isLoadingStateCities && <Loading height={"full"} small={true} />}
+
           {stateCities && (
-            <Select
-              value={selectedDistrict}
-              onValueChange={(value) => setSelectedDistrict(value)}
-            >
-              <SelectTrigger className="w-[280px]">
-                <SelectValue placeholder="--select-city" />
-              </SelectTrigger>
-              <SelectContent>
-                {stateCities.map((obj: { name: string }) => {
-                  const { name } = obj;
-                  return (
-                    <SelectItem key={name} value={name.toLowerCase()}>
-                      {name}
-                    </SelectItem>
-                  );
-                })}
-              </SelectContent>
-            </Select>
+            <VirtualizedSelect
+              key={stateCode} // 👈 Force re-render when stateCode changes
+              items={stateCities as CITY[]}
+              triggerRenderer={(item) => {
+                return <p>{item?.name || "Select City"}</p>;
+              }}
+              itemRenderer={(item, _, selectItem) => {
+                return (
+                  <p onClick={selectItem} key={item.name}>
+                    {item.name}
+                  </p>
+                );
+              }}
+              onSelect={(city) => setSelectedDistrict(city.name.toLowerCase())}
+              mainWidth="w-60"
+            />
           )}
 
           <div className="flex gap-10 items-center h-12">
             <button
               disabled={isPending || isPendingUpdateAddress}
-              className="h-full px-20 bg-sky-200 flex items-center rounded-md text-blue-700 font-semibold tracking-wide "
+              className="h-full px-20 bg-sky-200 dark:bg-background flex items-center rounded-md text-blue-700 font-semibold tracking-wide "
               type="submit"
             >
               {isPending ? (

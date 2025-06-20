@@ -71,7 +71,7 @@ const Product = ({ product, wishlist: isWishlist = true }: Props) => {
         </div>
         <div className="flex justify-center items-center gap-2 ml-2">
           <p
-            className="p-[6px] bg-gray-50 border rounded-full text-xs cursor-pointer"
+            className="p-[6px] bg-bg_bg border rounded-full text-xs cursor-pointer"
             onClick={decreaseQuantity}
           >
             <Icons.minus />
@@ -80,7 +80,7 @@ const Product = ({ product, wishlist: isWishlist = true }: Props) => {
             {productQuantity}
           </p>
           <div
-            className="p-[6px] bg-gray-50 border rounded-full text-xs cursor-pointer"
+            className="p-[6px] bg-bg_bg border rounded-full text-xs cursor-pointer"
             onClick={increaseQuantity}
           >
             <Icons.plus />
@@ -118,13 +118,13 @@ const Product = ({ product, wishlist: isWishlist = true }: Props) => {
 
         <div className="flex gap-5 items-center mt-10">
           {isWishlist && isAddedToWishlist && (
-            <p className="p-1 w-max rounded-md bg-gray-200">
+            <p className="py-1 px-2 w-max rounded bg-bg_bg">
               Saved To Wishlist
             </p>
           )}
           {isWishlist && !isAddedToWishlist && (
             <p
-              className="p-1 w-max rounded-md cursor-pointer"
+              className="py-1 px-2 w-max rounded cursor-pointer"
               onClick={addToWishlist}
             >
               Save to Wishlist

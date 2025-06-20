@@ -104,8 +104,8 @@ const RateProduct = () => {
   };
 
   return (
-    <section className="bg-gray-100 p-5">
-      <main className="bg-white ">
+    <section className="bg-bg_bg p-5">
+      <main className="bg-background ">
         <p className="border-b-2 text-xl font-semibold p-5">
           Rate and Review the Order
         </p>

@@ -9,6 +9,7 @@ import {
   // eachMonthOfInterval,
 } from "date-fns";
 import { TimeScale } from "@/types";
+import { useTheme } from "@/providers/ThemeProvider";
 
 type Order = {
   _id: string;
@@ -21,6 +22,13 @@ type Props = {
 };
 
 const LineGraph = ({ orders, timeScale }: Props) => {
+  const { theme } = useTheme();
+  const isDarkModeOn = theme === "dark";
+
+  const labelColor = isDarkModeOn ? "#e5e7eb" : "#1f2937"; // Tailwind gray-200 / gray-800
+  const titleColor = isDarkModeOn ? "#f3f4f6" : "#111827"; // Tailwind gray-100 / gray-900
+  const gridColor = isDarkModeOn ? "#374151" : "#e5e7eb";
+
   const now = new Date();
   // const createdDates = orders.map((o) => parseISO(o.createdAt));
   // const minDate = createdDates.length
@@ -95,7 +103,12 @@ const LineGraph = ({ orders, timeScale }: Props) => {
   const options: ChartOptions<"line"> = {
     responsive: true,
     plugins: {
-      legend: { display: true },
+      legend: {
+        display: true,
+        labels: {
+          color: labelColor, // ✅ legend text color
+        },
+      },
       tooltip: {
         callbacks: {
           label: (ctx) => `Orders: ${ctx.parsed.y}`,
@@ -104,8 +117,16 @@ const LineGraph = ({ orders, timeScale }: Props) => {
     },
     scales: {
       x: {
+        ticks: {
+          color: labelColor, // 🔵 X-axis tick label color
+        },
         title: {
           display: true,
+          color: titleColor, // 🔵 X-axis title color (only visible if `display: true`)
+          font: {
+            size: 14,
+            weight: "bold",
+          },
           text:
             timeScale === "day"
               ? "Hour"
@@ -113,10 +134,27 @@ const LineGraph = ({ orders, timeScale }: Props) => {
               ? "Day"
               : "Month",
         },
+        grid: {
+          color: gridColor, // ✅ Y-axis grid lines
+        },
       },
       y: {
+        ticks: {
+          color: labelColor, // 🔵 X-axis tick label color
+        },
         beginAtZero: true,
-        title: { display: true, text: "Number of Orders" },
+        title: {
+          display: true,
+          text: "Number of Orders",
+          color: titleColor, // 🔵 X-axis title color (only visible if `display: true`)
+          font: {
+            size: 14,
+            weight: "bold",
+          },
+        },
+        grid: {
+          color: gridColor, // ✅ Y-axis grid lines
+        },
       },
     },
   };

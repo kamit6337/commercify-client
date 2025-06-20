@@ -1,9 +1,33 @@
-.todo_container {
-  -webkit-box-shadow: 0px 1px 15px -3px rgba(0, 0, 0, 0.2);
-  -moz-box-shadow: 0px 1px 15px -3px rgba(0, 0, 0, 0.2);
-  box-shadow: 0px 1px 15px -3px rgba(0, 0, 0, 0.2);
+/* === Base Scrollbar Styles (Light Mode) === */
+:root {
+  scrollbar-color: #888 #f1f1f1;
+  scrollbar-width: auto;
+}
+* {
+  -ms-overflow-style: none;
+}
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(0, 3%, 75%);
+  border-radius: 16px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsla(0, 2%, 39%, 0.63);
 }
 
-.virtual-row {
-  will-change: transform;
+/* === Dark Mode === */
+.dark {
+  scrollbar-color: #a8aaa8 #5c5c5e;
+}
+.dark ::-webkit-scrollbar-track {
+  background: #3f3c3c;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #a8aaa8;
+  border-radius: 16px;
 }

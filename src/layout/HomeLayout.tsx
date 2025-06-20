@@ -6,7 +6,7 @@ import HorizontalScrolling from "@/components/HorizontalScrolling";
 import { CATEGORY } from "@/types";
 
 const HomeLayout = () => {
-  const { data: allCategory, isLoading, error } = useAllCategory();
+  const { data, isLoading, error } = useAllCategory();
   const [optionIndex, setOptionIndex] = useState<number | null>(null);
 
   if (isLoading) {
@@ -20,6 +20,8 @@ const HomeLayout = () => {
   if (error) {
     return <div>{error.message}</div>;
   }
+
+  const allCategory = data as CATEGORY[];
 
   return (
     <>

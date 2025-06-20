@@ -1,3 +1,4 @@
+import { useTheme } from "@/providers/ThemeProvider";
 import { Doughnut } from "react-chartjs-2";
 
 type Single = {
@@ -13,7 +14,7 @@ type Props = {
   hoverText: string;
 };
 
-const centerTextPlugin = (count: number) => ({
+const centerTextPlugin = (count: number, labelColor: string) => ({
   id: "centerText",
   beforeDraw: (chart: any) => {
     const { width } = chart;
@@ -23,7 +24,7 @@ const centerTextPlugin = (count: number) => ({
 
     const text = `Total Orders (${count})`;
     ctx.font = "bold 16px Arial";
-    ctx.fillStyle = "#333";
+    ctx.fillStyle = labelColor;
     ctx.textBaseline = "middle";
 
     const textX = Math.round((width - ctx.measureText(text).width) / 2);
@@ -37,6 +38,12 @@ const centerTextPlugin = (count: number) => ({
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 const DoughnutGraph = ({ data, topLabel, hoverText }: Props) => {
+  const { theme } = useTheme();
+  const isDarkModeOn = theme === "dark";
+
+  const labelColor = isDarkModeOn ? "#e5e7eb" : "#1f2937"; // Tailwind gray-200 / gray-800
+  const titleColor = isDarkModeOn ? "#f3f4f6" : "#111827"; // Tailwind gray-100 / gray-900
+
   const chartData = {
     labels: data.map((single) => capitalize(single.name)),
     datasets: [
@@ -53,7 +60,12 @@ const DoughnutGraph = ({ data, topLabel, hoverText }: Props) => {
   const options = {
     responsive: true,
     plugins: {
-      legend: { position: "top" as const },
+      legend: {
+        position: "top" as const,
+        labels: {
+          color: labelColor, // ✅ legend text color
+        },
+      },
       tooltip: {
         callbacks: {
           label: (context: any) => ` ${context.parsed} ${hoverText}`,
@@ -77,7 +89,7 @@ const DoughnutGraph = ({ data, topLabel, hoverText }: Props) => {
       key={totalCount}
       data={chartData}
       options={options}
-      plugins={[centerTextPlugin(totalCount)]}
+      plugins={[centerTextPlugin(totalCount, titleColor)]}
     />
   );
 };

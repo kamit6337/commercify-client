@@ -41,19 +41,21 @@ const CountrySelection = ({
       <div className="h-12 flex items-center px-2">
         <input
           value={searchValue}
-          className="border rounded-full py-2 px-4 text-sm w-full"
+          className="border rounded-full py-2 px-4 text-sm w-full bg-inherit"
           placeholder="Search Country"
           onChange={(e) => handleSearchCountry(e.target.value)}
         />
       </div>
-      <div className="flex flex-col max-h-[380px] overflow-y-auto">
+      <div className="flex flex-col h-[380px] overflow-y-auto">
         {searchCountries.length > 0
           ? searchCountries.map((country) => {
               return (
                 <div
                   key={country._id}
                   className={`${
-                    countrySelected?._id === country._id ? "bg-gray-50" : ""
+                    countrySelected?._id === country._id
+                      ? "bg-gray-50 dark:text-black"
+                      : ""
                   }  flex relative items-center border-b cursor-pointer last:border-none p-2 gap-2`}
                   onClick={() => handleCountrySelected(country)}
                 >
@@ -78,7 +80,9 @@ const CountrySelection = ({
                 <div
                   key={country._id}
                   className={`${
-                    countrySelected?._id === country._id ? "bg-gray-100" : ""
+                    countrySelected?._id === country._id
+                      ? "bg-gray-100 dark:text-black"
+                      : ""
                   }  flex relative items-center border-b cursor-pointer last:border-none p-2 gap-2`}
                   onClick={() => handleCountrySelected(country)}
                 >

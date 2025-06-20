@@ -33,11 +33,8 @@ const CartLayout = () => {
         <Helmet>
           <title>Empty Cart</title>
         </Helmet>
-        <div
-          className="p-5 bg-gray-100 "
-          style={{ height: "calc(100vh - 180px)" }}
-        >
-          <div className="bg-white w-full h-full flex flex-col gap-4 justify-center items-center">
+        <div className="p-5 bg-bg_bg" style={{ height: "calc(100vh - 180px)" }}>
+          <div className="bg-background w-full h-full flex flex-col gap-4 justify-center items-center">
             <p className="text-lg">Your cart is empty!</p>
             <Link to={`/`}>
               <p className="bg-blue-500 py-3 px-20 text-sm text-white rounded-md">
@@ -51,7 +48,7 @@ const CartLayout = () => {
   }
 
   return (
-    <section className="py-3   lg:px-5 px-3 bg-gray-100">
+    <section className="py-3 lg:px-5 px-3 bg-bg_bg">
       <main className="flex lg:gap-5 gap-3">
         <div className="flex-1">
           <Outlet
@@ -64,7 +61,7 @@ const CartLayout = () => {
           />
         </div>
         {pathname === "/cart/address" || (
-          <div className="bg-white self-start lg:w-96 md:w-80 w-full sticky top-[92px] hidden md:flex">
+          <div className="bg-background self-start lg:w-96 md:w-80 w-full sticky top-[92px] hidden md:flex">
             <PriceList products={data} />
           </div>
         )}

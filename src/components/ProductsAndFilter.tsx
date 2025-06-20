@@ -47,9 +47,9 @@ const ProductsAndFilter = ({
 
   return (
     <>
-      <section className="w-full h-full flex gap-2 bg-gray-100 p-2 relative">
+      <section className="w-full h-full flex gap-2 bg-bg_bg p-2 relative">
         <div
-          className="w-64 lg:w-56 md:w-48 hidden md:flex border-r-2 sticky top-[88px] bg-white"
+          className="w-64 lg:w-56 md:w-48 hidden md:flex border-r-2 sticky top-[88px] bg-background"
           style={{ height: "calc(100vh - 80px)" }}
         >
           <FilterSection
@@ -59,7 +59,7 @@ const ProductsAndFilter = ({
           />
         </div>
 
-        <main className="flex-1 bg-white">
+        <main className="flex-1 bg-background">
           {filterProducts?.length > 0 ? (
             <ProductGrid
               products={filterProducts}

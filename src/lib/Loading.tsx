@@ -20,7 +20,7 @@ const Loading = ({ height, small = false, color = "text-blue-400" }: Props) => {
       style={{ height: height === "full" ? "100%" : "500px" }}
     >
       <div
-        className={`animate-spin rounded-full border-4 border-t-transparent  ${borderColor}`}
+        className={`animate-spin rounded-full border-4 border-t-transparent ${borderColor}`}
         style={spinnerStyle}
       />
     </div>

@@ -125,7 +125,7 @@ const UpdateCategory = () => {
                   return true;
                 },
               })}
-              className="w-full p-2"
+              className="w-full p-2 bg-inherit"
               spellCheck="false"
               autoComplete="off"
             />

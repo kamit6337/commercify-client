@@ -14,8 +14,8 @@ const Wishlist = () => {
           <title>Wishlist</title>
           <meta name="description" content={`Wishlist of Commercify App`} />
         </Helmet>
-        <section className="p-5 bg-gray-100">
-          <main className="bg-white h-96 flex flex-col gap-4 justify-center items-center">
+        <section className="p-5 bg-bg_bg">
+          <main className="bg-background h-96 flex flex-col gap-4 justify-center items-center">
             <p className="text-lg">Your wishlist is empty!</p>
             <Link to={`/`}>
               <p className="bg-blue-500 py-3 px-20 text-sm text-white rounded-md">
@@ -34,8 +34,8 @@ const Wishlist = () => {
         <title>Wishlist</title>
         <meta name="description" content={`Wishlist of Commercify App`} />
       </Helmet>
-      <section className="p-5 bg-gray-100">
-        <main className="bg-white">
+      <section className="p-5 bg-bg_bg">
+        <main className="bg-background">
           <p className="py-5 px-10 text-xl">
             My Wishlist <span className="text-sm">({wishlist.length})</span>
           </p>

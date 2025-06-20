@@ -54,7 +54,7 @@ const UserOrders = () => {
   if (page === 1 && buys.length === 0) {
     return (
       <div
-        className="w-full flex flex-col gap-3 items-center justify-center bg-white"
+        className="w-full flex flex-col gap-3 items-center justify-center bg-background"
         style={{ height: "calc(100vh - 120px)" }}
       >
         <p>No orders yet.</p>
@@ -69,7 +69,7 @@ const UserOrders = () => {
 
   return (
     <>
-      <section className="bg-white">
+      <section className="bg-background">
         <p className="border-b-2 py-4 px-10">Orders ({buysCount})</p>
         <main>
           {isFetchingNextPage && <Loading />}
@@ -85,7 +85,7 @@ const UserOrders = () => {
         </main>
       </section>
       <div className="mt-10 h-20  text-center flex justify-center items-center">
-        <div className="w-max bg-white h-full flex justify-center items-center gap-10 px-10">
+        <div className="w-max bg-background h-full flex justify-center items-center gap-10 px-10">
           <button
             disabled={page === 1}
             onClick={handlePrevFetch}

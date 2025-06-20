@@ -12,10 +12,13 @@ import Icons from "@/assets/icons";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
+import { useTheme } from "@/providers/ThemeProvider";
+import ReactIcons from "@/assets/icons";
 
 const UserProfile = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { theme, setTheme } = useTheme();
 
   const { data: user } = useLoginCheck();
   const [showUserInfo, setShowUserInfo] = useState<Boolean>(false);
@@ -72,6 +75,18 @@ const UserProfile = () => {
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => handleLogout()}>
           Logout
+        </DropdownMenuItem>
+        <DropdownMenuItem className="w-max">
+          {theme === "light" && (
+            <button className="" onClick={() => setTheme("dark")}>
+              <ReactIcons.sun />
+            </button>
+          )}
+          {theme === "dark" && (
+            <button onClick={() => setTheme("light")}>
+              <ReactIcons.moon />
+            </button>
+          )}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

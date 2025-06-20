@@ -57,6 +57,8 @@ import { CiFilter } from "react-icons/ci";
 
 import { PiNotepadFill } from "react-icons/pi";
 import { TiTick } from "react-icons/ti";
+import { CiBrightnessUp } from "react-icons/ci";
+import { IoIosMoon } from "react-icons/io";
 
 const ReactIcons = {
   notepad: PiNotepadFill,
@@ -112,6 +114,8 @@ const ReactIcons = {
   cart: IoCart,
   refresh: MdRefresh,
   tick: TiTick,
+  sun: CiBrightnessUp,
+  moon: IoIosMoon,
 };
 
 export default ReactIcons;

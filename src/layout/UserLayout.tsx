@@ -23,10 +23,10 @@ const UserLayout = () => {
   }
 
   return (
-    <section className="bg-gray-100 lg:px-6 px-4 py-5 flex flex-col md:flex-row md:items-start items-stretch gap-5">
+    <section className="bg-bg_bg lg:px-6 px-4 py-5 flex flex-col md:flex-row md:items-start items-stretch gap-5">
       <div className="md:w-72 grow-0 shrink-0 w-full flex flex-col gap-5 md:sticky static top-[100px] ">
         {/* MARK: PROFILE */}
-        <div className="bg-white p-3 px-4 flex gap-5">
+        <div className="bg-background p-3 px-4 flex gap-5">
           <div className="w-14">
             <img
               src={user.photo}
@@ -42,10 +42,10 @@ const UserLayout = () => {
         </div>
 
         {/* MARK: USER DATA */}
-        <div className="bg-white">
+        <div className="bg-background">
           <div className="border-b">
             <Link to={`/user/orders`}>
-              <div className="my-3 py-2 flex items-center cursor-pointer hover:bg-sky-200">
+              <div className="my-3 py-2 flex items-center cursor-pointer hover:bg-sky-200  dark:hover:text-blue-500">
                 <p className="text-2xl text-blue-500 w-16 flex justify-center">
                   <Icons.myOrders />
                 </p>
@@ -61,13 +61,13 @@ const UserLayout = () => {
               <p className="uppercase flex-1">Account Settings</p>
             </div>
 
-            <div className="hover:bg-sky-200 text-sm flex">
+            <div className="hover:bg-sky-200 text-sm flex dark:hover:text-blue-500">
               <NavLink
                 to={`/user`}
                 end
                 className={({ isActive }) => {
                   return isActive
-                    ? "bg-sky-100 py-2 pl-16 w-full"
+                    ? "bg-sky-200 py-2 pl-16 w-full dark:text-blue-500"
                     : "w-full py-2 pl-16";
                 }}
               >
@@ -75,12 +75,12 @@ const UserLayout = () => {
               </NavLink>
             </div>
 
-            <div className="hover:bg-sky-200 text-sm flex">
+            <div className="hover:bg-sky-200 text-sm flex dark:hover:text-blue-500">
               <NavLink
                 to={`/user/address`}
                 className={({ isActive }) => {
                   return isActive
-                    ? "bg-sky-100 w-full py-2 pl-16"
+                    ? "bg-sky-200 w-full py-2 pl-16 dark:text-blue-500"
                     : "w-full py-2 pl-16";
                 }}
               >

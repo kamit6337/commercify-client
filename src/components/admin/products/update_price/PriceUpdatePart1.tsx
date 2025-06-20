@@ -97,7 +97,7 @@ const PriceUpdatePart1 = ({
                 <div>
                   <input
                     value={productPriceValue[countrySelected?._id].price}
-                    className="border rounded py-1 px-2 text-sm w-full"
+                    className="border rounded py-1 px-2 text-sm w-full bg-inherit"
                     onChange={(e) => {
                       const countryId = countrySelected?._id;
                       if (!countryId) return;
@@ -157,7 +157,7 @@ const PriceUpdatePart1 = ({
                       productPriceValue[countrySelected?._id || ""]
                         .discountPercentage
                     }
-                    className="border rounded py-1 px-2 text-sm w-full"
+                    className="border rounded py-1 px-2 text-sm w-full bg-inherit"
                     onChange={(e) => {
                       const countryId = countrySelected?._id;
                       if (!countryId) return;
@@ -216,7 +216,7 @@ const PriceUpdatePart1 = ({
                     productPriceValue[countrySelected?._id].discountedPrice
                   }
                   readOnly={true}
-                  className="border rounded py-1 px-2 text-sm w-full"
+                  className="border rounded py-1 px-2 text-sm w-full bg-inherit"
                 />
               </div>
 
@@ -231,7 +231,7 @@ const PriceUpdatePart1 = ({
                     value={
                       productPriceValue[countrySelected?._id].deliveryCharge
                     }
-                    className="border rounded py-1 px-2 text-sm w-full"
+                    className="border rounded py-1 px-2 text-sm w-full bg-inherit"
                     onChange={(e) => {
                       const countryId = countrySelected?._id;
                       if (!countryId) return;

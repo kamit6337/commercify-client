@@ -40,10 +40,10 @@ const OrderStatusLayout = () => {
   };
 
   return (
-    <div className="bg-gray-100 p-5 flex gap-3 flex-col lg:flex-row lg:items-start">
+    <div className="bg-bg_bg p-5 flex gap-3 flex-col lg:flex-row lg:items-start">
       <div className="lg:w-60 w-full lg:sticky top-[100px] space-y-5">
         <div
-          className="bg-white py-5 cursor-pointer hover:text-blue-400"
+          className="bg-background py-5 cursor-pointer hover:text-blue-400"
           onClick={handleRefresh}
         >
           <div className="text-sm flex justify-center items-center gap-1">
@@ -56,7 +56,7 @@ const OrderStatusLayout = () => {
             Last refresh : {timeAgoFrom(currentTime, dataUpdatedAt)}
           </p>
         </div>
-        <div className="bg-white">
+        <div className="bg-background">
           <p
             className={`py-5 border-b font-semibold text-center cursor-pointer ${
               pathname.startsWith("/admin") ? "text-blue-500 " : ""

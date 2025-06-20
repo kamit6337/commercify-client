@@ -64,7 +64,7 @@ const SingleProduct = () => {
       <main>
         <section className="flex md:flex-row flex-col gap-5 py-16 section_padding">
           <div className="flex-1 md:w-3/5 w-full">
-            <div className="border w-full h-96 flex justify-center py-2">
+            <div className="border w-full h-96 flex justify-center py-2 rounded">
               <img
                 src={thumbnail}
                 alt={title}

@@ -41,7 +41,7 @@ const ProductReviews = ({ product }: Props) => {
         Ratings and Reviews
       </p>
       <section className="flex flex-col lg:flex-row  mt-10 gap-10">
-        <div className="sm:w-96 w-full flex flex-col gap-2 items-center lg:sticky static top-[100px] shadow-2xl py-10">
+        <div className="sm:w-96 w-full flex flex-col gap-2 items-center lg:sticky static top-[100px] shadow-2xl py-10 dark:border rounded h-60">
           {/* MARK: RATE AVERAGE VALUE */}
           <p className="text-3xl">{rate}</p>
 
@@ -56,7 +56,7 @@ const ProductReviews = ({ product }: Props) => {
         </div>
 
         {/* MARK: USER RATINGS */}
-        <main className="flex-1 border">
+        <main className="flex-1 border rounded">
           {productRatings.length === 0 ? (
             <div className="w-full h-96 flex justify-center items-center">
               No Reviews yet

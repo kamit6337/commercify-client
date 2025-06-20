@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ADDRESS } from "@/types";
 import Icons from "@/assets/icons";
 import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
@@ -11,6 +11,7 @@ import {
 import useUserAddressDelete from "@/hooks/address/useUserAddressDelete";
 import NewAddressForm from "@/components/NewAddressForm";
 import DeleteConfirmationDialog from "@/components/DeleteConfirmationDialog";
+import Toastify from "@/lib/Toastify";
 
 type Props = {
   singleAddress: ADDRESS;
@@ -18,11 +19,17 @@ type Props = {
 
 const SingleAddress = ({ singleAddress }: Props) => {
   const [isUpdateAddress, setIsUpdateAddress] = useState(false);
-
+  const { showSuccessMessage } = Toastify();
   const { _id, name, mobile, country, district, state, address } =
     singleAddress;
 
-  const { mutate, isPending } = useUserAddressDelete(_id);
+  const { mutate, isPending, isSuccess } = useUserAddressDelete(_id);
+
+  useEffect(() => {
+    if (isSuccess) {
+      showSuccessMessage({ message: "Address has been deleted successfully" });
+    }
+  }, [isSuccess]);
 
   if (isUpdateAddress) {
     return (
@@ -42,10 +49,10 @@ const SingleAddress = ({ singleAddress }: Props) => {
         </div>
         <p className="mt-6 mb-2 text-sm">{address}</p>
         <div className="flex">
-          <p className="text-sm">{district},</p>
-          <p className="ml-2 text-sm">{state}</p>
+          <p className="text-sm capitalize">{district},</p>
+          <p className="ml-2 text-sm capitalize">{state}</p>
           <p className="mx-1">-</p>
-          <p>{country}</p>
+          <p className="text-sm capitalize">{country}</p>
         </div>
       </div>
       <AlertDialog>

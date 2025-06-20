@@ -115,18 +115,18 @@ const SingleBuy = ({ buy }: Props) => {
       </div>
 
       {/* NOTE: RIGHT SIDE, DELIVERY, ORDER, CANCEL OR RETURNED */}
-      <div className="flex flex-row lg:flex-col justify-between items-center w-full gap-3 whitespace-nowrap lg:w-60 grow-0 shrink-0">
+      <div className="flex flex-row lg:flex-col justify-between w-full gap-3 whitespace-nowrap lg:w-52 grow-0 shrink-0">
         <div className="space-y-2 text-xs md:text-sm">
-          <OrderStatus {...buy} />
           <div className="flex items-center gap-3">
             <p>Ordered on:</p>
             <p className="">{makeDateFromUTC(createdAt)}</p>
           </div>
+          <OrderStatus {...buy} />
         </div>
 
         <AlertDialog>
           {!isCancelled && !isReturned && !isDelivered && (
-            <AlertDialogTrigger className="border rounded p-3 hover:bg-gray-50">
+            <AlertDialogTrigger className="border rounded p-3 hover:bg-gray-50 dark:hover:text-black">
               Click to Deliver
             </AlertDialogTrigger>
           )}

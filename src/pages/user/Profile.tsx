@@ -76,7 +76,7 @@ const Profile = () => {
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="min-h-96 p-5 flex flex-col gap-10 bg-white"
+        className="min-h-96 p-5 flex flex-col gap-10 bg-background"
       >
         {/* MARK: PERSONAL INFO */}
         <div className="flex flex-col">
@@ -102,7 +102,7 @@ const Profile = () => {
               spellCheck="false"
               autoComplete="off"
               disabled={!isEditable}
-              className="p-4 text-sm w-full"
+              className="p-4 text-sm w-full bg-background"
             />
           </div>
 

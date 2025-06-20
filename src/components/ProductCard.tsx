@@ -15,7 +15,7 @@ const ProductCard = ({ product }: Props) => {
   const { discountedPrice } = price;
 
   return (
-    <div className="xl:w-80 lg:w-64 md:w-52 w-56 lg:h-[420px] h-96 flex flex-col rounded-xl hover:shadow-2xl duration-200">
+    <div className="xl:w-80 lg:w-64 md:w-52 w-56 lg:h-[420px] h-96 flex flex-col rounded-xl hover:shadow-2xl duration-200 dark:border dark:hover:border-foreground">
       <div className="w-full h-3/5 p-3">
         <Link to={`/products/${_id}`}>
           <img

@@ -124,7 +124,7 @@ const UpdateStock = ({ product, handleCancel }: Props) => {
                   message: "Stock cannot be more than 100",
                 },
               })}
-              className="w-full p-2"
+              className="w-full p-2 bg-inherit"
               autoComplete="off"
               spellCheck="false"
             />

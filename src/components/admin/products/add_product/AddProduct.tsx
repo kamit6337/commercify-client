@@ -89,8 +89,6 @@ const AddProduct = () => {
         baseCountryId: id,
       };
 
-      console.log("finalobj", finalObj);
-
       mutate(finalObj);
     } catch (error) {
       showErrorMessage({

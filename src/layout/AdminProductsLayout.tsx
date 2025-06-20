@@ -42,7 +42,7 @@ const AdminProductsLayout = () => {
   }
 
   return (
-    <div className="bg-gray-100 p-5 flex gap-3 flex-col lg:flex-row lg:items-start">
+    <div className="bg-bg_bg p-5 flex gap-3 flex-col lg:flex-row lg:items-start">
       <div className="space-y-5 lg:w-60 w-full lg:sticky top-[100px] max-h-[550px] overflow-y-auto">
         <AlertDialog>
           <AlertDialogTrigger className="w-full">
@@ -69,7 +69,7 @@ const AdminProductsLayout = () => {
           <UpdateCategory />
         </AlertDialog>
 
-        <div className="bg-white ">
+        <div className="bg-background ">
           <p
             className={`py-5 border-b font-semibold text-center cursor-pointer ${
               pathname.startsWith("/admin") ? "text-blue-500 " : ""

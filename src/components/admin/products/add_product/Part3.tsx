@@ -303,7 +303,7 @@ const Part3 = ({ setStage, countries, part3Data, setPart3Data }: Props) => {
                 <div>
                   <input
                     value={part3Data[countrySelected?._id].price}
-                    className="border rounded py-1 px-2 text-sm w-full"
+                    className="border rounded py-1 px-2 text-sm w-full bg-inherit"
                     onChange={(e) => {
                       const countryId = countrySelected?._id;
                       if (!countryId) return;
@@ -372,7 +372,7 @@ const Part3 = ({ setStage, countries, part3Data, setPart3Data }: Props) => {
                     value={
                       part3Data[countrySelected?._id || ""].discountPercentage
                     }
-                    className="border rounded py-1 px-2 text-sm w-full"
+                    className="border rounded py-1 px-2 text-sm w-full bg-inherit"
                     onChange={(e) => {
                       const countryId = countrySelected?._id;
                       if (!countryId) return;
@@ -429,7 +429,7 @@ const Part3 = ({ setStage, countries, part3Data, setPart3Data }: Props) => {
                 <input
                   value={part3Data[countrySelected?._id].discountedPrice}
                   readOnly={true}
-                  className="border rounded py-1 px-2 text-sm w-full"
+                  className="border rounded py-1 px-2 text-sm w-full bg-inherit"
                 />
               </div>
 
@@ -442,7 +442,7 @@ const Part3 = ({ setStage, countries, part3Data, setPart3Data }: Props) => {
                 <div>
                   <input
                     value={part3Data[countrySelected?._id].deliveryCharge}
-                    className="border rounded py-1 px-2 text-sm w-full"
+                    className="border rounded py-1 px-2 text-sm w-full bg-inherit"
                     onChange={(e) => {
                       const countryId = countrySelected?._id;
                       if (!countryId) return;

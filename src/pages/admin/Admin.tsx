@@ -92,12 +92,12 @@ const Admin = () => {
   };
 
   return (
-    <main className="bg-gray-100 p-5 flex gap-3 flex-col lg:flex-row lg:items-start">
+    <main className="bg-bg_bg p-5 flex gap-3 flex-col lg:flex-row lg:items-start">
       {/* MARK: SIDE NAVBAR */}
 
       <div className=" lg:w-60 w-full lg:sticky top-[100px] space-y-5">
         <div
-          className="bg-white py-5 cursor-pointer hover:text-blue-400"
+          className="bg-background py-5 cursor-pointer hover:text-blue-400"
           onClick={handleRefresh}
         >
           <div className="text-sm flex justify-center items-center gap-1">
@@ -113,7 +113,7 @@ const Admin = () => {
               : "Fetching..."}
           </p>
         </div>
-        <div className="bg-white">
+        <div className="bg-background">
           <p
             className="py-5 border-b font-semibold text-center cursor-pointer"
             onClick={() => navigate("/admin/order-status")}
@@ -135,7 +135,7 @@ const Admin = () => {
         </div>
       </div>
 
-      <div className="bg-white flex-1">
+      <div className="bg-background flex-1">
         {/* MARK: ORDER STATUS */}
         {(isLoading || isLoadingOrdersCount) && <Loading />}
         {isSuccess && isSuccessOrdersCount && (
@@ -165,19 +165,19 @@ const Admin = () => {
               </Select>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              <p className="bg-gray-100 p-2 rounded">
+              <p className="bg-bg_bg p-2 rounded">
                 Ordered ({orderCounts.ordered})
               </p>
-              <p className="bg-gray-100 p-2 rounded">
+              <p className="bg-bg_bg p-2 rounded">
                 Un-Delievered ({orderCounts.undelivered})
               </p>
-              <p className="bg-gray-100 p-2 rounded">
+              <p className="bg-bg_bg p-2 rounded">
                 Delievered ({orderCounts.delivered})
               </p>
-              <p className="bg-gray-100 p-2 rounded">
+              <p className="bg-bg_bg p-2 rounded">
                 Cancelled ({orderCounts.cancelled})
               </p>
-              <p className="bg-gray-100 p-2 rounded">
+              <p className="bg-bg_bg p-2 rounded">
                 Returned ({orderCounts.returned})
               </p>
             </div>
@@ -202,7 +202,7 @@ const Admin = () => {
               <p className="font-semibold text-xl tracking-wide underline underline-offset-4">
                 Products
               </p>
-              <p className="bg-gray-100 p-2 rounded w-max">
+              <p className="bg-bg_bg p-2 rounded w-max">
                 Total Products ({totalProducts})
               </p>
             </div>
@@ -217,10 +217,7 @@ const Admin = () => {
                     const { _id, title, counts } = obj;
 
                     return (
-                      <p
-                        className="bg-gray-100 p-2 rounded capitalize"
-                        key={_id}
-                      >
+                      <p className="bg-bg_bg p-2 rounded capitalize" key={_id}>
                         {title} ({counts})
                       </p>
                     );

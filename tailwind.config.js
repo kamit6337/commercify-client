@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+
 export const darkMode = ["class"];
 export const content = [
   "./pages/**/*.{ts,tsx}",
@@ -20,6 +21,7 @@ export const theme = {
       sans: ["Poppins", "sans-serif"],
     },
     colors: {
+      bg_bg: "var(--bg_bg)",
       auth_background: "var(--auth-background)",
       auth_text: "var( --auth-text)",
       auth_input_border: "var(--auth-input-border)",

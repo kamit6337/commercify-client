@@ -23,7 +23,7 @@ const Address = () => {
       <Helmet>
         <title>Manage Addresses</title>
       </Helmet>
-      <section className="min-h-96 p-5 flex flex-col gap-10 bg-white">
+      <section className="min-h-96 p-5 flex flex-col gap-10 bg-background">
         <p className="text-lg">Manage Addresses</p>
 
         {openNewAddressForm ? (

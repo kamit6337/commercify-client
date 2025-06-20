@@ -148,7 +148,7 @@ const ImagePart = ({ id, isProductOutOfStock, noSale }: Props) => {
           </button>
         ) : (
           <button
-            className="border p-3 w-full  rounded-md cursor-pointer text-center bg-product_addToCart hover:bg-gray-100"
+            className="border p-3 w-full  rounded-md cursor-pointer text-center bg-product_addToCart hover:bg-gray-100 dark:hover:text-black"
             onClick={addToCart}
           >
             Add to Cart
@@ -163,7 +163,7 @@ const ImagePart = ({ id, isProductOutOfStock, noSale }: Props) => {
           </button>
         ) : (
           <button
-            className="  border p-3 sm_lap:text-sm w-full rounded-md cursor-pointer text-center text-black flex items-center justify-center hover:bg-gray-100"
+            className="  border p-3 sm_lap:text-sm w-full rounded-md cursor-pointer text-center flex items-center justify-center hover:bg-gray-100 dark:hover:text-black"
             onClick={addToWatchlist}
           >
             Add to Wishlist

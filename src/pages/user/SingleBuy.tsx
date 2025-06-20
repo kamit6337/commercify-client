@@ -29,17 +29,13 @@ const SingleBuy = ({ buy }: Props) => {
   return (
     <div
       key={id}
-      className="border-b-2 last:border-none lg:p-7 p-4 flex flex-col lg:flex-row lg:justify-between lg:gap-10 gap-6"
+      className="border-b-2 last:border-none lg:p-7 p-4 flex flex-col lg:flex-row lg:justify-between lg:gap-10 gap-6 h-60"
     >
       {/* MARK: FIRST PORTION */}
       <div className="flex gap-10 ">
-        <div className="h-full lg:w-48 md:w-40 w-32">
+        <div className="h-full lg:w-48 md:w-40 w-32 flex justify-center">
           <Link to={`/products/${id}`}>
-            <img
-              src={thumbnail}
-              alt={title}
-              className="h-full w-full object-cover"
-            />
+            <img src={thumbnail} alt={title} className="h-full object-cover" />
           </Link>
         </div>
         <div className="flex-1 flex flex-col gap-2">
@@ -73,7 +69,7 @@ const SingleBuy = ({ buy }: Props) => {
       </div>
 
       {/* NOTE: RIGHT SIDE, DELIVERY, ORDER, CANCEL OR RETURNED */}
-      <div className="flex flex-row lg:flex-col justify-between items-center w-full gap-3 whitespace-nowrap lg:w-60 grow-0 shrink-0">
+      <div className="flex flex-row lg:flex-col justify-between w-full gap-3 whitespace-nowrap lg:w-52 grow-0 shrink-0">
         <div className="space-y-2 text-xs md:text-sm">
           <div className="flex items-center gap-3">
             <p>Ordered on:</p>
@@ -85,14 +81,14 @@ const SingleBuy = ({ buy }: Props) => {
         <div className="flex gap-2 lg:mt-2">
           {!isReturned && !isCancelled && isDelivered && (
             <Link to={`/orders/return/${_id}`}>
-              <p className="cursor-pointer py-2 px-4 border rounded-md hover:bg-gray-200">
+              <p className="cursor-pointer py-2 px-4 border rounded-md hover:bg-gray-200 dark:hover:text-black">
                 Return The Order
               </p>
             </Link>
           )}
           {!isCancelled && !isReturned && !isDelivered && (
             <Link to={`/orders/cancel/${_id}`}>
-              <p className="cursor-pointer py-2 px-4 border rounded-md hover:bg-gray-200">
+              <p className="cursor-pointer py-2 px-4 border rounded-md hover:bg-gray-200 dark:hover:text-black">
                 Cancel The Order
               </p>
             </Link>

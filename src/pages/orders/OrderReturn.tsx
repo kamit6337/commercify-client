@@ -1,15 +1,12 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { currencyState } from "../../redux/slice/currencySlice";
 import Toastify from "../../lib/Toastify";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import changePriceDiscountByExchangeRate from "../../utils/javascript/changePriceDiscountByExchangeRate";
 import makeDateFromUTC from "../../utils/javascript/makeDateFromUTC";
 import useSingleBuy from "@/hooks/buys/useSingleBuy";
 import Loading from "@/lib/Loading";
 import useOrderReturn from "@/hooks/orders/useOrderReturn";
-import countries from "@/data/countries";
+import { BUY } from "@/types";
 
 const listOfReasons = [
   "Product is defective or expired",
@@ -31,7 +28,6 @@ const OrderReturn = () => {
   const navigate = useNavigate();
   const { buyId } = useParams() as Params;
   const [optionSelected, setOptionSelected] = useState<number | null>(null);
-  const { symbol } = useSelector(currencyState);
   const { showAlertMessage, showSuccessMessage } = Toastify();
   const { isLoading, error, data: buyProduct } = useSingleBuy(buyId);
 
@@ -46,22 +42,6 @@ const OrderReturn = () => {
       reason: "",
     },
   });
-
-  const countrySymbol = useMemo(() => {
-    if (!buyProduct) return symbol;
-
-    const {
-      address: { country },
-    } = buyProduct;
-
-    const findCountry = countries.find(
-      (countryObj) => countryObj.name.toLowerCase() === country.toLowerCase()
-    );
-
-    if (!findCountry) return symbol;
-
-    return findCountry.currency.symbol;
-  }, [buyProduct]);
 
   useEffect(() => {
     window.scrollTo({
@@ -95,14 +75,16 @@ const OrderReturn = () => {
 
   const {
     product,
-    price,
+    buyPrice,
     quantity,
     address: buyAddress,
-    isDelievered,
+    country: {
+      currency: { symbol },
+    },
+    isDelivered,
     deliveredDate,
     createdAt,
-    exchangeRate,
-  } = buyProduct;
+  } = buyProduct as BUY;
 
   const { _id: productId, title, description, thumbnail } = product;
   const { country, district, state, address } = buyAddress;
@@ -123,16 +105,10 @@ const OrderReturn = () => {
     mutate(reason);
   };
 
-  const { exchangeRatePrice } = changePriceDiscountByExchangeRate(
-    price,
-    0,
-    exchangeRate
-  );
-
   return (
     <>
-      <section className="bg-gray-100 p-2 md:p-5">
-        <main className="bg-white space-y-10 ">
+      <section className="bg-bg_bg p-2 md:p-5">
+        <main className="bg-background space-y-10 ">
           <p className="border-b-2 text-xl font-semibold p-5">
             Returning the Order
           </p>
@@ -160,8 +136,8 @@ const OrderReturn = () => {
                   </div>
 
                   <p className="text-xl font-semibold tracking-wide">
-                    {countrySymbol}
-                    {exchangeRatePrice}
+                    {symbol}
+                    {buyPrice}
                   </p>
                   <div className="text-xs">Qty : {quantity}</div>
 
@@ -182,7 +158,7 @@ const OrderReturn = () => {
               </section>
 
               <div className="w-60 grow-0 shrink-0">
-                {!isDelievered && (
+                {!isDelivered && (
                   <div className="flex items-center gap-3 text-sm">
                     <p>Delievered On:</p>
                     <p className="text-base">
@@ -229,7 +205,7 @@ const OrderReturn = () => {
               {optionSelected === listOfReasons.length && (
                 <div className="">
                   <div>
-                    <div className="border">
+                    <div className="border rounded">
                       <textarea
                         rows={5}
                         {...register("reason", {
@@ -237,7 +213,7 @@ const OrderReturn = () => {
                             "Please write the reason for returning the order",
                         })}
                         placeholder="Why do you want to return the order? Give issues related to product."
-                        className="p-3 w-full"
+                        className="p-3 w-full bg-inherit resize-none"
                         maxLength={200} // Add maxLength attribute
                       />
                     </div>
@@ -254,7 +230,7 @@ const OrderReturn = () => {
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="rounded cursor-pointer py-2 px-10 bg-slate-600 text-white"
+                  className="rounded cursor-pointer py-2 px-10 bg-slate-600 text-white hover:brightness-90"
                 >
                   {isPending ? (
                     <Loading small={true} height={"full"} />

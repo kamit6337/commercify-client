@@ -130,7 +130,7 @@ const Part1 = ({
             />
           )}
           <p
-            className="border rounded py-2 cursor-pointer hover:bg-gray-100 text-center"
+            className="border rounded py-2 cursor-pointer hover:bg-gray-100 dark:hover:text-black text-center"
             onClick={() => imageRef.current?.click()}
           >
             Select Thumbnail
@@ -161,7 +161,7 @@ const Part1 = ({
                 {...register("title", {
                   required: "Please provide title",
                 })}
-                className="w-full p-2"
+                className="w-full p-2 bg-inherit"
                 spellCheck="false"
                 autoComplete="off"
               />
@@ -177,7 +177,7 @@ const Part1 = ({
                 {...register("description", {
                   required: "Please provide description",
                 })}
-                className="w-full p-2 resize-none"
+                className="w-full p-2 resize-none bg-inherit rounded"
                 rows={7}
                 spellCheck="false"
                 autoComplete="off"

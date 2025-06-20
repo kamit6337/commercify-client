@@ -58,7 +58,7 @@ const OrderStatusGraph = ({
                 onClick={() => setSelectGraphType(graph.type)}
                 className={`${
                   graph.type === selectGraphType ? "font-semibold" : ""
-                } border-r border-sky-500 text-blue-600  last:border-none p-2 w-32 text-center`}
+                } border-r border-sky-500 text-blue-600 hover:text-foreground  last:border-none p-2 w-32 text-center`}
               >
                 {graph.name}
               </button>

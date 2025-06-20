@@ -1,15 +1,12 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
-import { currencyState } from "../../redux/slice/currencySlice";
-import changePriceDiscountByExchangeRate from "../../utils/javascript/changePriceDiscountByExchangeRate";
 import makeDateFromUTC from "../../utils/javascript/makeDateFromUTC";
 import useSingleBuy from "@/hooks/buys/useSingleBuy";
 import Loading from "@/lib/Loading";
 import useOrderCancel from "@/hooks/orders/useOrderCancel";
 import Toastify from "@/lib/Toastify";
-import countries from "@/data/countries";
+import { BUY } from "@/types";
 
 type Params = {
   buyId: string;
@@ -23,7 +20,6 @@ const OrderCancel = () => {
   const navigate = useNavigate();
   const { buyId } = useParams() as Params;
   const { showSuccessMessage } = Toastify();
-  const { symbol } = useSelector(currencyState);
   const { isLoading, error, data: buyProduct } = useSingleBuy(buyId);
   const { mutate, isPending, isSuccess } = useOrderCancel(buyId);
 
@@ -37,49 +33,12 @@ const OrderCancel = () => {
     },
   });
 
-  const countrySymbol = useMemo(() => {
-    if (!buyProduct) return symbol;
-
-    const {
-      address: { country },
-    } = buyProduct;
-
-    const findCountry = countries.find(
-      (countryObj) => countryObj.name.toLowerCase() === country.toLowerCase()
-    );
-
-    if (!findCountry) return symbol;
-
-    return findCountry.currency.symbol;
-  }, [buyProduct]);
-
   useEffect(() => {
     window.scrollTo({
       top: 0,
       behavior: "instant",
     });
   }, [buyId]);
-
-  // useEffect(() => {
-  //   const checkState = queryClient.getQueryState(["buy products of user"]);
-
-  //   if (checkState) {
-  //     const orders = queryClient.getQueryData([
-  //       "buy products of user",
-  //     ]) as BUY[];
-
-  //     const buy = orders.find((obj) => obj._id === buyId);
-
-  //     if (buy) {
-  //       setBuyProduct(buy);
-  //     } else {
-  //       refetch();
-  //     }
-  //     return;
-  //   }
-
-  //   refetch();
-  // }, [buyId]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -106,14 +65,16 @@ const OrderCancel = () => {
 
   const {
     product,
-    price,
+    buyPrice,
     quantity,
     address: buyAddress,
     isDelivered,
     deliveredDate,
-    exchangeRate,
     createdAt,
-  } = buyProduct;
+    country: {
+      currency: { symbol },
+    },
+  } = buyProduct as BUY;
 
   const { _id: productId, title, description, thumbnail } = product;
   const { country, district, state, address } = buyAddress;
@@ -123,16 +84,10 @@ const OrderCancel = () => {
     mutate(reason);
   };
 
-  const { exchangeRatePrice } = changePriceDiscountByExchangeRate(
-    price,
-    0,
-    exchangeRate
-  );
-
   return (
     <>
-      <section className="bg-gray-100 p-2 md:p-5">
-        <main className="bg-white ">
+      <section className="bg-bg_bg p-2 md:p-5">
+        <main className="bg-background ">
           <p className="border-b-2 text-xl font-semibold p-5">
             Cancelling the Order
           </p>
@@ -161,8 +116,8 @@ const OrderCancel = () => {
                   </div>
 
                   <p className="text-xl font-semibold tracking-wide">
-                    {countrySymbol}
-                    {exchangeRatePrice}
+                    {symbol}
+                    {buyPrice}
                   </p>
                   <div className="text-xs">Qty : {quantity}</div>
 
@@ -212,7 +167,7 @@ const OrderCancel = () => {
                         "Please write the reason for cancelling the order",
                     })}
                     placeholder="Why do you want to cancel the order. Give suggestion to improve our services"
-                    className="p-3 w-full"
+                    className="p-3 w-full bg-inherit resize-none"
                     maxLength={200} // Add maxLength attribute
                   />
                 </div>
@@ -221,13 +176,13 @@ const OrderCancel = () => {
                 </p>
               </div>
               <div className="flex justify-end items-center gap-10">
-                <button type="button" onClick={() => navigate(-1)}>
+                <button type="button" onClick={() => navigate("/user/orders")}>
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="rounded cursor-pointer py-2 px-10 bg-slate-600 text-white"
+                  className="rounded cursor-pointer py-2 px-10 bg-slate-600 text-white hover:brightness-90"
                 >
                   {isPending ? (
                     <Loading small={true} height={"full"} />

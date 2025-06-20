@@ -162,7 +162,7 @@ const UpdateProduct = ({ product, handleCancel }: Props) => {
           />
 
           <p
-            className="border rounded py-2 cursor-pointer hover:bg-gray-100 text-center"
+            className="border rounded py-2 cursor-pointer hover:bg-gray-100 dark:hover:text-black text-center"
             onClick={() => imageRef.current?.click()}
           >
             Select Thumbnail
@@ -190,7 +190,7 @@ const UpdateProduct = ({ product, handleCancel }: Props) => {
                 {...register("title", {
                   required: "Please provide title",
                 })}
-                className="w-full p-2"
+                className="w-full p-2 bg-inherit"
               />
             </div>
             <p className="h-1 text-red-500 text-xs">{errors?.title?.message}</p>
@@ -204,7 +204,7 @@ const UpdateProduct = ({ product, handleCancel }: Props) => {
                 {...register("description", {
                   required: "Please provide description",
                 })}
-                className="w-full p-2 resize-none"
+                className="w-full p-2 resize-none bg-inherit"
                 rows={7}
               />
             </div>

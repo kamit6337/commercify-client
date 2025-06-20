@@ -41,7 +41,7 @@ const AddressInCart = () => {
   return (
     <section className="flex flex-col gap-5">
       {/* MARK: LOGIN PART */}
-      <div className="bg-white w-full py-4 px-10 flex flex-col gap-2">
+      <div className="bg-background w-full py-4 px-10 flex flex-col gap-2">
         <p className="uppercase font-semibold tracking-wide">Login </p>
         <div className="flex items-center gap-1 text-sm">
           <p>{user.name}</p>
@@ -51,7 +51,7 @@ const AddressInCart = () => {
       </div>
 
       {/* MARK: ADDRESS PART */}
-      <div className="bg-white ">
+      <div className="bg-background ">
         <p className="uppercase font-semibold tracking-wide bg-blue-500 text-white py-4 px-10">
           Delivery Address
         </p>
@@ -118,7 +118,7 @@ const AddressInCart = () => {
         <NewAddressForm handleCancel={handleCancel} />
       ) : (
         <div
-          className="bg-white w-full p-5 flex items-center gap-2 text-blue-500 cursor-pointer"
+          className="bg-background w-full p-5 flex items-center gap-2 text-blue-500 cursor-pointer"
           onClick={() => setOpenNewAddressForm(true)}
         >
           <p>

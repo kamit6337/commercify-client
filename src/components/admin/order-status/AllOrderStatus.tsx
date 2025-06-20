@@ -100,7 +100,7 @@ const AllOrderStatus = ({ querykey, path }: Props) => {
 
   return (
     <div className="space-y-5">
-      <div className="bg-white w-full p-3 text-lg flex justify-between items-center">
+      <div className="bg-background w-full p-3 text-lg flex justify-between items-center">
         <p>
           Orders ({buys.length}) : Page ({page})
         </p>
@@ -114,7 +114,7 @@ const AllOrderStatus = ({ querykey, path }: Props) => {
           <p>Last Refresh : {timeAgoFrom(currentTime, dataUpdatedAt)}</p>
         </div>
       </div>
-      <div className="bg-white">
+      <div className="bg-background">
         {buys.length > 0 ? (
           buys.map((buy: BUY) => {
             return <SingleBuy buy={buy} key={buy._id} />;
@@ -126,7 +126,7 @@ const AllOrderStatus = ({ querykey, path }: Props) => {
         )}
       </div>
       <div className="mt-10 h-20  text-center flex justify-center items-center">
-        <div className="w-max bg-white h-full flex justify-center items-center gap-10 px-10">
+        <div className="w-max bg-background h-full flex justify-center items-center gap-10 px-10">
           <button
             onClick={() => setPage(1)}
             className={`${page > 2 ? "flex" : "hidden"} hover:text-blue-500 `}
