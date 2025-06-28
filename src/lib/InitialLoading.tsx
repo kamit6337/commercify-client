@@ -6,7 +6,7 @@ type Props = {
 };
 
 const InitialLoading = ({ onTimeout }: Props) => {
-  const [seconds, setSeconds] = useState(60);
+  const [seconds, setSeconds] = useState(100);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -30,7 +30,7 @@ const InitialLoading = ({ onTimeout }: Props) => {
         </p>
         <p>
           This loading is due to Render.com (free instance) which has a initial
-          sleep interval of 60 seconds. Afterthat, it won't delay.
+          sleep interval of few seconds. Afterthat, it won't delay.
         </p>
         <Loading height={"full"} />
         <p className="self-center">Countdown: {seconds}</p>
